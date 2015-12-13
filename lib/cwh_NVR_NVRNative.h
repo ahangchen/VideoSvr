@@ -47,6 +47,14 @@ JNIEXPORT void JNICALL Java_cwh_NVR_NVRNative_cleanUp
 JNIEXPORT jobject JNICALL Java_cwh_NVR_NVRNative_getLogs
   (JNIEnv *, jclass, jint, jint, jint, jint, jint, jint, jint, jint, jint, jint, jint, jint, jint);
 
+/*
+ * Class:     cwh_NVR_NVRNative
+ * Method:    time2VideoPath
+ * Signature: (IIIIIIIIIIIIILcwh/NVR/play/PlayCallback;)V
+ */
+JNIEXPORT void JNICALL Java_cwh_NVR_NVRNative_time2VideoPath
+  (JNIEnv *, jclass, jint, jint, jint, jint, jint, jint, jint, jint, jint, jint, jint, jint, jint, jobject);
+
 #ifdef __cplusplus
 }
 #endif

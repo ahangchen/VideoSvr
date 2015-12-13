@@ -5,12 +5,13 @@ package cwh.NVR;
  */
 
 import cwh.NVR.Log.LogItem;
+import cwh.NVR.play.PlayCallback;
 
 import java.util.ArrayList;
 
 /**
  * 1.use jni,call nvr method
- *  javah -classpath out/production/VideoSvr -d lib -jni cwh.NVR.NVRNative
+ *
  * 2.create cpp file.
  * 3.build .so:
  *      one way:
@@ -20,7 +21,7 @@ import java.util.ArrayList;
  *          build in clion, produce a so file for java.
  *  4.keep native.h in lib directory for future modify.
  *  5.to call java method in native code, you should get signature for a method
- *      cd out/production/SecSvr
+ *      cd out/production/VideoSvr
  *      javap -s -p cwh.NVR.Log.LogItem
  */
 public class NVRNative {
@@ -36,4 +37,8 @@ public class NVRNative {
     public static native ArrayList<LogItem> getLogs(int type,
                                                     int startYear, int startMon, int startDay, int startHour, int startMin, int startSec,
                                                     int endYear, int endMon, int endDay, int endHour, int endMin, int endSec);
+    public static native void time2VideoPath (int channel ,
+                                              int startYear, int startMon, int startDay, int startHour, int startMin, int startSec,
+                                              int endYear, int endMon, int endDay, int endHour, int endMin, int endSec,
+                                              PlayCallback playCallback);
 }

@@ -9,6 +9,6 @@
     </servlet-mapping>
     <servlet>
         <servlet-name>Time2Video</servlet-name>
-        <servlet-class>cwh.web.Time2Video</servlet-class>
+        <servlet-class>cwh.web.servlet.Time2Video</servlet-class>
     </servlet>
 </web-app>
