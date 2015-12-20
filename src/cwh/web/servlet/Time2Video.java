@@ -20,6 +20,8 @@ import java.io.PrintWriter;
  */
 @WebServlet(name = "Time2Video", asyncSupported = true)
 public class Time2Video extends HttpServlet{
+    // http://localhost:8888/VideoSvr/Time2Video?start=15-12-11-0-0-0&end=15-12-11-0-0-3&channel=0
+    // http://localhost:8888/VideoSvr/Time2Video?start=2015-12-11-0-0-0&end=2015-12-11-0-0-3&channel=0
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         doGet(request,response);
