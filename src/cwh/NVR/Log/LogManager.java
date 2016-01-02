@@ -2,6 +2,7 @@ package cwh.NVR.Log;
 
 import cwh.NVR.NVRNative;
 import cwh.NVR.NvrService;
+import cwh.utils.log.VSLog;
 
 import java.util.ArrayList;
 
@@ -44,10 +45,10 @@ public class LogManager {
 //        NvrService.getInstance().start();
         ArrayList<LogItem> logs = LogManager.getInstance().getLogs(LogManager.DH_LOG_QUERY_TYPE.DHLOG_ALL, 2015, 11, 17, 0, 0, 0, 2015, 11, 29, 0, 0, 0);
         for (LogItem log : logs) {
-            System.out.println(log.getStrLogType());
-            System.out.println(log.getStrLogTime());
-            System.out.println(log.getStrLogContext());
-            System.out.println("-----------------------");
+            VSLog.log(VSLog.DEBUG, log.getStrLogType());
+            VSLog.log(VSLog.DEBUG, log.getStrLogTime());
+            VSLog.log(VSLog.DEBUG, log.getStrLogContext());
+            VSLog.log(VSLog.DEBUG, "-----------------------");
         }
         NvrService.getInstance().finish();
     }

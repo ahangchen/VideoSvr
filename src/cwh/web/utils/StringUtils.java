@@ -1,5 +1,6 @@
 package cwh.web.utils;
 
+import cwh.web.model.PBParam;
 import cwh.web.model.VideoQueryParam;
 
 /**
@@ -11,7 +12,7 @@ public class StringUtils {
         if (startTime == null || endTime == null) {
             filePath = "video.mp4";
         } else {
-            filePath = "/videocache/" + startTime + "_" + endTime + "_video.mp4";
+            filePath = "/videocache/" + startTime + "_" + endTime + "_video"+ PBParam.EXT;
         }
         return filePath;
     }

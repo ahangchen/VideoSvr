@@ -1,5 +1,6 @@
 package cwh.web.servlet;
 
+import cwh.utils.log.VSLog;
 import cwh.web.model.AsyncQueryVideo;
 
 import javax.servlet.AsyncContext;
@@ -14,7 +15,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 /**
  * Created by cwh on 15-12-13
  */
-public class ServletHelper {
+public class PlaybackHelper {
     public static void responseString(ServletResponse response, String stringResponse) {
         PrintWriter out = null;
         try {
@@ -30,6 +31,7 @@ public class ServletHelper {
     }
 
     public static void asyncResponse(HttpServletRequest request, AsyncListener asyncListener) {
+        VSLog.log(VSLog.DEBUG, "playback asyncResponse");
         AsyncContext asyncContext = request.startAsync();
         asyncContext.setTimeout(60 * 1000);
         asyncContext.addListener(asyncListener);

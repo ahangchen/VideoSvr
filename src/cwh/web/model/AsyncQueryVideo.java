@@ -1,8 +1,9 @@
 package cwh.web.model;
 
-import cwh.NVR.NVRNative;
+import cwh.NVR.NvrService;
 import cwh.NVR.play.PlayCallback;
-import cwh.web.servlet.ServletHelper;
+import cwh.utils.log.VSLog;
+import cwh.web.servlet.PlaybackHelper;
 import cwh.web.utils.StringUtils;
 
 import javax.servlet.AsyncContext;
@@ -21,7 +22,7 @@ public class AsyncQueryVideo implements Runnable {
 
     @Override
     public void run() {
-        System.out.print("run");
+        VSLog.log(VSLog.DEBUG, "run");
 //        new Thread(){
 //            @Override
 //            public void run() {
@@ -36,23 +37,23 @@ public class AsyncQueryVideo implements Runnable {
 //                        ServletHelper.responseString(context.getResponse(), "videocache/videoweb/1.mp4");
 //                        context.complete();
 //                    }
-//                    System.out.println(i);
+//                    VSLog.log(i);
 //                }
 //
 //            }
 //        }.start();
         ServletRequest request = context.getRequest();
         final VideoQueryParam videoQueryParam = StringUtils.DateTime2Param(request.getParameter("channel"),request.getParameter("start"), request.getParameter("end"));
-        NVRNative.time2VideoPath(videoQueryParam.getChannel(),
+        NvrService.getInstance().time2VideoPath(videoQueryParam.getChannel(),
                 videoQueryParam.getStartYear(), videoQueryParam.getStartMon(), videoQueryParam.getStartDay(),
                 videoQueryParam.getStartHour(), videoQueryParam.getStartMin(), videoQueryParam.getStartSec(),
                 videoQueryParam.getEndYear(), videoQueryParam.getEndMon(), videoQueryParam.getEndDay(),
                 videoQueryParam.getEndHour(), videoQueryParam.getEndMin(), videoQueryParam.getEndSec(), new PlayCallback() {
                     @Override
                     public void onComplete(String filePath) {
-                        ServletHelper.responseString(context.getResponse(), filePath);
+                        PlaybackHelper.responseString(context.getResponse(), filePath);
                         context.complete();
-                        System.out.println("on Complete");
+                        VSLog.log(VSLog.DEBUG, "on Complete");
                     }
                 });
     }

@@ -1,9 +1,8 @@
 package cwh;
 
-import cwh.NVR.Log.LogManager;
 import cwh.NVR.NVRNative;
 import cwh.NVR.play.PlayCallback;
-import cwh.NVR.play.PlayCallbackImpl;
+import cwh.utils.log.VSLog;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -12,8 +11,8 @@ import java.io.FileOutputStream;
 /**
  * Created by cwh on 15-11-28
  * 第一次在tomcat的首页中，用manager的deploy部署，
- * 之后run，编class
- * cp /home/cwh/coding/Mission/VideoSvr/out/artifacts/VideoSvr_war_exploded/. -r /home/cwh/tomcat/webapps/VideoSvr
+ * 之后run， build artifact rebuild
+ * cp /home/cwh/Mission/coding/VideoSvr/out/artifacts/VideoSvr_war_exploded/. -r /home/cwh/tomcat/webapps/VideoSvr
  */
 public class Master {
     public static void cp(File f1,File f2){
@@ -28,21 +27,25 @@ public class Master {
                     in.close();
                     out.flush();
                     out.close();
+                    break;
                 } else
                     out.write(buffer, 0, ins);
                 Thread.sleep(1000);
-                System.out.println("cp");
+                VSLog.log(VSLog.DEBUG, "cp");
+                VSLog.log(VSLog.DEBUG, "cp");
             }
         } catch (Exception e){
-
+            VSLog.err("cp", e);
         }
     }
+
     public static void main(String[] args) {
 //        LogManager.getInstance().displayLogs();
+
         NVRNative.time2VideoPath(0, 2015, 12, 11, 0, 0, 0, 2015, 12, 11, 0, 0, 3, new PlayCallback(){
             @Override
             public void onComplete(String filePath) {
-                System.out.println("Java onComplete :" + filePath);
+                VSLog.log(VSLog.DEBUG, "Java onComplete :" + filePath);
             }
 
         });
@@ -52,6 +55,6 @@ public class Master {
 //        } catch (Exception e) {
 //            e.printStackTrace();
 //        }
-//        System.out.println("copy finish");
+//        VSLog.log("copy finish");
     }
 }

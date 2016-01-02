@@ -4,11 +4,19 @@
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
          version="3.1">
     <servlet-mapping>
-        <servlet-name>Time2Video</servlet-name>
-        <url-pattern>/Time2Video</url-pattern>
+        <servlet-name>Playback</servlet-name>
+        <url-pattern>/Playback</url-pattern>
     </servlet-mapping>
     <servlet>
-        <servlet-name>Time2Video</servlet-name>
-        <servlet-class>cwh.web.servlet.Time2Video</servlet-class>
+        <servlet-name>Playback</servlet-name>
+        <servlet-class>cwh.web.servlet.PlayBack</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>RealPlay</servlet-name>
+        <url-pattern>/RealPlay</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>RealPlay</servlet-name>
+        <servlet-class>cwh.web.servlet.RealPlay</servlet-class>
     </servlet>
 </web-app>
