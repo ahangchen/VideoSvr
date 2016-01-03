@@ -19,10 +19,7 @@ public class VSLog {
     public static void log(String type, String logStr) {
         String logName = Calendar.getInstance().get(Calendar.YEAR) + "-" + (Calendar.getInstance().get(Calendar.MONTH) + 1)
                 + "-" + Calendar.getInstance().get(Calendar.DAY_OF_MONTH) + EXT;
-        String log = Calendar.getInstance().get(Calendar.HOUR) + "-" + (Calendar.getInstance().get(Calendar.MINUTE))
-                + "-" + Calendar.getInstance().get(Calendar.HOUR_OF_DAY) + " "
-                + type
-                + " : " + logStr + "\n";
+        String log = format(logStr, type);
         try {
             FileOutputStream out = new FileOutputStream(new File(logPath + logName), true);
             out.write(log.getBytes());
@@ -33,8 +30,8 @@ public class VSLog {
     }
 
     private static String format(String log, String type) {
-        return Calendar.getInstance().get(Calendar.HOUR) + ":" + (Calendar.getInstance().get(Calendar.MINUTE))
-                + ":" + Calendar.getInstance().get(Calendar.HOUR_OF_DAY) + " "
+        return Calendar.getInstance().get(Calendar.HOUR_OF_DAY) + ":" + (Calendar.getInstance().get(Calendar.MINUTE))
+                + ":" + Calendar.getInstance().get(Calendar.SECOND) + " "
                 + type
                 + " : " + log + "\n";
     }
