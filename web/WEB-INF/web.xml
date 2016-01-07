@@ -9,7 +9,15 @@
     </servlet-mapping>
     <servlet>
         <servlet-name>Playback</servlet-name>
-        <servlet-class>cwh.web.servlet.PlayBack</servlet-class>
+        <servlet-class>cwh.web.servlet.playback.PlayBack</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>PlaybackClean</servlet-name>
+        <url-pattern>/PlaybackClean</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>PlaybackClean</servlet-name>
+        <servlet-class>cwh.web.servlet.playback.PlaybackClean</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>RealPlay</servlet-name>
@@ -17,6 +25,23 @@
     </servlet-mapping>
     <servlet>
         <servlet-name>RealPlay</servlet-name>
-        <servlet-class>cwh.web.servlet.RealPlay</servlet-class>
+        <servlet-class>cwh.web.servlet.realplay.RealPlay</servlet-class>
     </servlet>
+
+    <servlet-mapping>
+        <servlet-name>Test</servlet-name>
+        <url-pattern>/test</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>Test</servlet-name>
+        <servlet-class>cwh.web.servlet.Test</servlet-class>
+    </servlet>
+    
+    <listener>
+        <listener-class>cwh.web.listener.CleanListener</listener-class>
+    </listener>
+    <session-config>
+        <session-timeout>30</session-timeout>
+    </session-config>
+
 </web-app>

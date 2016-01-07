@@ -1,4 +1,4 @@
-package cwh.web.model;
+package cwh.web.model.playback;
 
 /**
  * Created by cwh on 15-12-13.

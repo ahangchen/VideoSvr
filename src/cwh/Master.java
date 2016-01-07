@@ -1,8 +1,9 @@
 package cwh;
 
-import cwh.NVR.NVRNative;
-import cwh.NVR.play.PlayCallback;
+import cwh.utils.console.ConsoleUtils;
 import cwh.utils.log.VSLog;
+import cwh.web.model.realplay.AsyncRealPlay;
+import cwh.web.model.realplay.M3U8Mng;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -15,46 +16,17 @@ import java.io.FileOutputStream;
  * cp /home/cwh/Mission/coding/VideoSvr/out/artifacts/VideoSvr_war_exploded/. -r /home/cwh/tomcat/webapps/VideoSvr
  */
 public class Master {
-    public static void cp(File f1,File f2){
-        try {
-            int length = 1024;
-            FileInputStream in = new FileInputStream(f1);
-            FileOutputStream out = new FileOutputStream(f2);
-            byte[] buffer = new byte[length];
-            while (true) {
-                int ins = in.read(buffer);
-                if (ins == -1) {
-                    in.close();
-                    out.flush();
-                    out.close();
-                    break;
-                } else
-                    out.write(buffer, 0, ins);
-                Thread.sleep(1000);
-                VSLog.log(VSLog.DEBUG, "cp");
-                VSLog.log(VSLog.DEBUG, "cp");
-            }
-        } catch (Exception e){
-            VSLog.err("cp", e);
-        }
-    }
 
     public static void main(String[] args) {
 //        LogManager.getInstance().displayLogs();
 
-        NVRNative.time2VideoPath(0, 2015, 12, 11, 0, 0, 0, 2015, 12, 11, 0, 0, 3, new PlayCallback(){
-            @Override
-            public void onComplete(String filePath) {
-                VSLog.log(VSLog.DEBUG, "Java onComplete :" + filePath);
-            }
-
-        });
-//        new File("/home/cwh/Mission/lab/data/videoweb/video.mp4").delete();
-//        try {
-//            cp(new File("/home/cwh/Mission/lab/data/videoweb/video0.mp4"),new File("/home/cwh/Mission/lab/data/videoweb/video.mp4"));
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        VSLog.log("copy finish");
+//        NVRNative.time2VideoPath(0, 2015, 12, 11, 0, 0, 0, 2015, 12, 11, 0, 0, 3, new PlayCallback(){
+//            @Override
+//            public void onComplete(String filePath) {
+//                VSLog.log(VSLog.DEBUG, "Java onComplete :" + filePath);
+//            }
+//
+//        });
+//        M3U8Mng.dueClean(AsyncRealPlay.realPlayDir("125.216.247.121", "38888", "1"), 3);
     }
 }

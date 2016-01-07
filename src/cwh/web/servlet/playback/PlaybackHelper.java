@@ -1,7 +1,8 @@
-package cwh.web.servlet;
+package cwh.web.servlet.playback;
 
 import cwh.utils.log.VSLog;
-import cwh.web.model.AsyncQueryVideo;
+import cwh.web.model.playback.AsyncQueryVideo;
+import cwh.web.model.playback.PlaybackState;
 
 import javax.servlet.AsyncContext;
 import javax.servlet.AsyncListener;
@@ -37,5 +38,9 @@ public class PlaybackHelper {
         asyncContext.addListener(asyncListener);
         ThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(10);
         executor.execute(new AsyncQueryVideo(asyncContext));
+    }
+
+    public static void clean(PlaybackState playbackState) {
+
     }
 }

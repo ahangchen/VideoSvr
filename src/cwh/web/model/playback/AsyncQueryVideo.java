@@ -1,9 +1,9 @@
-package cwh.web.model;
+package cwh.web.model.playback;
 
 import cwh.NVR.NvrService;
 import cwh.NVR.play.PlayCallback;
 import cwh.utils.log.VSLog;
-import cwh.web.servlet.PlaybackHelper;
+import cwh.web.servlet.playback.PlaybackHelper;
 import cwh.web.utils.StringUtils;
 
 import javax.servlet.AsyncContext;
@@ -23,25 +23,6 @@ public class AsyncQueryVideo implements Runnable {
     @Override
     public void run() {
         VSLog.log(VSLog.DEBUG, "run");
-//        new Thread(){
-//            @Override
-//            public void run() {
-//                int i = 5;
-//                while (i-->0) {
-//                    try {
-//                        Thread.sleep(1000);
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                    if (i == 1) {
-//                        ServletHelper.responseString(context.getResponse(), "videocache/videoweb/1.mp4");
-//                        context.complete();
-//                    }
-//                    VSLog.log(i);
-//                }
-//
-//            }
-//        }.start();
         ServletRequest request = context.getRequest();
         final VideoQueryParam videoQueryParam = StringUtils.DateTime2Param(request.getParameter("channel"),request.getParameter("start"), request.getParameter("end"));
         NvrService.getInstance().time2VideoPath(videoQueryParam.getChannel(),

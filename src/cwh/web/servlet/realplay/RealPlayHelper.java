@@ -1,6 +1,6 @@
-package cwh.web.servlet;
+package cwh.web.servlet.realplay;
 
-import cwh.web.model.AsyncRealPlay;
+import cwh.web.model.realplay.AsyncRealPlay;
 
 import javax.servlet.AsyncContext;
 import javax.servlet.AsyncListener;

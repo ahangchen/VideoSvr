@@ -1,5 +1,6 @@
-package cwh.web.servlet;
+package cwh.web.servlet.playback;
 
+import cwh.utils.log.VSLog;
 import cwh.web.model.QueryVideoListerner;
 
 import javax.servlet.ServletException;

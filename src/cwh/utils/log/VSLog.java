@@ -12,9 +12,27 @@ import java.util.Calendar;
 public class VSLog {
     public static String logPath = "/media/Software/lab/data/";
     public static String EXT = ".log";
+    public static String INFO = "[I]";
     public static String DEBUG = "[D]";
     public static String ERROR = "[E]";
     public static String WARN = "[W]";
+
+    public static boolean LOG = true;
+
+
+    public static void i(String logStr) {
+        log(INFO, logStr);
+    }
+    public static void d(String logStr) {
+        log(DEBUG, logStr);
+    }
+    public static void w(String logStr) {
+        log(WARN, logStr);
+    }
+    public static void E(String logStr) {
+        log(ERROR, logStr);
+    }
+
 
     public static void log(String type, String logStr) {
         String logName = Calendar.getInstance().get(Calendar.YEAR) + "-" + (Calendar.getInstance().get(Calendar.MONTH) + 1)
@@ -22,10 +40,11 @@ public class VSLog {
         String log = format(logStr, type);
         try {
             FileOutputStream out = new FileOutputStream(new File(logPath + logName), true);
-            out.write(log.getBytes());
+            if (LOG)out.write(log.getBytes());
+            System.out.print(log);
             out.close();
         } catch (Exception e) {
-
+            System.out.println();
         }
     }
 
@@ -42,14 +61,16 @@ public class VSLog {
         String log = format(logStr, ERROR);
         try {
             FileOutputStream out = new FileOutputStream(new File(logPath + logName), true);
-            out.write(log.getBytes());
+            if (LOG)out.write(log.getBytes());
+            System.out.print(log);
             StackTraceElement[] stacks = throwable.getStackTrace();
             for (int i = 0; i < stacks.length; i++) {
-                out.write(format(stacks[i].toString(), ERROR).getBytes());
+                if (LOG)out.write(format(stacks[i].toString(), ERROR).getBytes());
+                System.out.print(format(stacks[i].toString(), ERROR));
             }
             out.close();
         } catch (Exception e) {
-
+            System.out.println();
         }
     }
 

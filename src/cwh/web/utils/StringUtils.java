@@ -1,7 +1,7 @@
 package cwh.web.utils;
 
-import cwh.web.model.PBParam;
-import cwh.web.model.VideoQueryParam;
+import cwh.web.model.CommonDefine;
+import cwh.web.model.playback.VideoQueryParam;
 
 /**
  * Created by cwh on 15-12-13
@@ -12,7 +12,7 @@ public class StringUtils {
         if (startTime == null || endTime == null) {
             filePath = "video.mp4";
         } else {
-            filePath = "/videocache/" + startTime + "_" + endTime + "_video"+ PBParam.EXT;
+            filePath = "/videocache/" + startTime + "_" + endTime + "_video"+ CommonDefine.MP4;
         }
         return filePath;
     }

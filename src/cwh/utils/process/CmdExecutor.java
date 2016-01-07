@@ -2,6 +2,8 @@ package cwh.utils.process;
 
 import cwh.utils.log.VSLog;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 
@@ -11,7 +13,7 @@ import java.io.LineNumberReader;
 public class CmdExecutor {
     public static String exec(String cmd) {
         try {
-            String[] cmdA = { "/bin/sh", "-c", cmd };
+            String[] cmdA = {"/bin/sh", "-c", cmd};
             Process process = Runtime.getRuntime().exec(cmdA);
             LineNumberReader br = new LineNumberReader(
                     new InputStreamReader(process
@@ -27,6 +29,38 @@ public class CmdExecutor {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static void wait(String command) {
+        Process proc = null;
+        try {
+            Runtime runtime = Runtime.getRuntime();
+            proc = runtime.exec(command);
+            InputStream err = proc.getErrorStream();
+            InputStreamReader isr = new InputStreamReader(err);
+            BufferedReader br = new BufferedReader(isr);
+            String line = null;
+
+//            VSLog.log(VSLog.DEBUG, proc.toString());
+            while ((line = br.readLine()) != null) {
+                VSLog.log(VSLog.DEBUG, line);
+            }
+            int exitVal = proc.waitFor();
+            VSLog.log(VSLog.DEBUG, "Process exitValue: " + exitVal);
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
+    }
+
+    public static Process run(String command) {
+        Process proc = null;
+        try {
+            Runtime runtime = Runtime.getRuntime();
+            proc = runtime.exec(command);
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
+        return proc;
     }
 
     public static void main(String[] args) {
