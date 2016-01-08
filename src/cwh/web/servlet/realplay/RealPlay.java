@@ -12,9 +12,10 @@ import java.io.IOException;
 /**
  * Created by cwh on 16-1-2
  */
-@WebServlet(name = "RealPlay")
+@WebServlet(name = "RealPlay", asyncSupported = true)
 public class RealPlay extends HttpServlet {
-    // http://localhost:8888/VideoSvr/RealPlay?ip=192.168.199.108&channel=1
+    // http://localhost:8888/VideoSvr/RealPlay?ip=192.168.199.108&port=554&channel=1&sid=12121212
+    // return {"sid":"123423411","rpp":"/home/cwh"}
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         doGet(request,response);
     }

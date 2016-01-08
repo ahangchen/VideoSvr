@@ -9,8 +9,8 @@ public class PlaybackState {
     private String sessionId;
     private String playFilePath;
 
-    public PlaybackState(String playFilePath) {
-        this.sessionId = hashSession();
+    public PlaybackState(String sessionId, String playFilePath) {
+        this.sessionId = sessionId;
         this.playFilePath = playFilePath;
     }
 
@@ -30,13 +30,13 @@ public class PlaybackState {
         this.playFilePath = playFilePath;
     }
 
-    public String hashSession(){
-        long seed = 131; // 31 131 1313 13131 131313 etc..  BKDRHash
-        long hash=0;
-        String value = playFilePath + new Date();
-        for (int i = 0; i< value.length(); i++) {
-            hash = (hash * seed) + value.charAt(i);
-        }
-        return String.valueOf(hash);
+
+    public String toJson() {
+        return "{" +
+                "\"sid\":\"" + getSessionId() +
+                "\"," +
+                "\"rpp\":\"" + getPlayFilePath() +
+                "\"}";
     }
+
 }

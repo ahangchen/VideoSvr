@@ -3,6 +3,9 @@ package cwh.web.listener; /**
  */
 
 import cwh.utils.log.VSLog;
+import cwh.web.model.CommonDefine;
+import cwh.web.session.SessionManager;
+import cwh.web.session.SessionState;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -53,6 +56,10 @@ public class CleanListener implements ServletContextListener,
     public void sessionDestroyed(HttpSessionEvent se) {
       /* Session is destroyed. */
         VSLog.d("session destroy");
+        String sid = se.getSession().getAttribute(CommonDefine.SID).toString();
+        SessionState sessionState = SessionManager.getInstance().getSessionState(sid, se.getSession().getServletContext());
+        VSLog.d("session:" + sessionState);
+        SessionManager.getInstance().sessionClean(sessionState);
     }
 
     // -------------------------------------------------------

@@ -1,7 +1,9 @@
 package cwh.web.model.realplay;
 
+import cwh.utils.date.DateUtils;
 import cwh.utils.file.FileUtils;
 import cwh.utils.log.VSLog;
+import cwh.web.model.CommonDefine;
 
 import java.io.*;
 
@@ -11,8 +13,8 @@ import java.io.*;
 public class M3U8Mng {
     private static boolean stopRealPlay = false;
 
-    public static int curTSNum() {
-        String curM3U8Name = AsyncRealPlay.realPlayPath("192.168.199.108", "554", "1");
+    public static int curTSNum(String curDir) {
+        String curM3U8Name = realPlayDir2Path(curDir);
 
         File file = new File(curM3U8Name);
         BufferedReader reader = null;
@@ -29,8 +31,8 @@ public class M3U8Mng {
         } catch (IOException e) {
             e.printStackTrace();
 
-        } catch (ClassCastException e){
-          e.printStackTrace();
+        } catch (ClassCastException e) {
+            e.printStackTrace();
             //也可能M3U8文件里还没ts记录，发生空转int错误，返回-1
         } finally {
             if (reader != null) {
@@ -47,7 +49,7 @@ public class M3U8Mng {
 
     public static void timelyClean(String curPath) {
         while (!stopRealPlay) {
-            dueClean(curPath, curTSNum());
+            dueClean(curPath, curTSNum(curPath));
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
@@ -76,7 +78,27 @@ public class M3U8Mng {
         return Integer.parseInt(file.getName().substring(1).split("\\.")[0]);
     }
 
-    public static void main(String[]args) {
-        timelyClean(AsyncRealPlay.realPlayDir("192.168.199.108", "554", "1"));
+    public static String realPlayPath2Dir(String realPlayPath) {
+        return realPlayPath.replace("/" + CommonDefine.rpFile + CommonDefine.M3U8, "");
+    }
+
+    public static String realPlayDir2Path(String realPlayDirPath) {
+        return realPlayDirPath + "/" + CommonDefine.rpFile + CommonDefine.M3U8;
+    }
+
+    public static String realPlayDir(String ip, String port, String channel) {
+        String curDirPath = ip.replace(".", "-") + "-" + port + "-" + channel + "-"
+                + DateUtils.formatCurDate() /*+"-"+ DateUtils.formatCurTime().replace(":","-") */;
+        File curDir = new File(CommonDefine.dataPath + "/" + CommonDefine.realPlayDirPath + "/" + curDirPath);
+        curDir.mkdir();
+        return CommonDefine.dataPath + "/" + CommonDefine.realPlayDirPath + "/" + curDirPath;
+    }
+
+    // 先拿到path
+    public static String realPlayPath(String ip, String port, String channel) {
+        return realPlayDir(ip, port, channel) + "/" + CommonDefine.rpFile + CommonDefine.M3U8;
+    }
+    public static void main(String[] args) {
+        timelyClean(realPlayDir("192.168.199.108", "554", "1"));
     }
 }

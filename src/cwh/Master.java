@@ -1,13 +1,7 @@
 package cwh;
 
-import cwh.utils.console.ConsoleUtils;
 import cwh.utils.log.VSLog;
 import cwh.web.model.realplay.AsyncRealPlay;
-import cwh.web.model.realplay.M3U8Mng;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 
 /**
  * Created by cwh on 15-11-28
@@ -27,6 +21,18 @@ public class Master {
 //            }
 //
 //        });
-//        M3U8Mng.dueClean(AsyncRealPlay.realPlayDir("125.216.247.121", "38888", "1"), 3);
+        final Process convert = AsyncRealPlay.sysRealPlay("192.168.199.108", "554", "1");
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    convert.waitFor();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+        VSLog.d("1");
+//        M3U8Mng.dueClean(M3U8Mng.realPlayDir("125.216.247.121", "38888", "1"), 3);
     }
 }

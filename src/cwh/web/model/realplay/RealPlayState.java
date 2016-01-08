@@ -33,30 +33,30 @@ public class RealPlayState {
     }
 
     public String getRealPlayFilePath() {
-        return getRealPlayDirPath() + "/"+CommonDefine.rpFile + CommonDefine.M3U8;
+        return getRealPlayDirPath() + "/" + CommonDefine.rpFile + CommonDefine.M3U8;
     }
 
     public String toJson() {
         return "{" +
-                "\"sid\":\""+ getSessionId() +
+                "\"sid\":\"" + getSessionId() +
                 "\"," +
-                "\"rpp\":\"" + getRealPlayFilePath()+
+                "\"rpp\":\"" + getRealPlayFilePath().replace(CommonDefine.dataPath + "/", "") +
                 "\"}";
     }
 
-    public String hashSession(){
+    public String hashSession() {
         long seed = 131; // 31 131 1313 13131 131313 etc..  BKDRHash
-        long hash=0;
+        long hash = 0;
         String value = getRealPlayDirPath() + new Date();
-        for (int i = 0; i< value.length(); i++) {
+        for (int i = 0; i < value.length(); i++) {
             hash = (hash * seed) + value.charAt(i);
         }
         return String.valueOf(hash);
     }
 
-    public static void main(String[]args) {
+    public static void main(String[] args) {
         try {
-            VSLog.d( new RealPlayState("11", "/home/cwh", Runtime.getRuntime().exec("ls")).toJson()
+            VSLog.d(new RealPlayState("11", "/home/cwh", Runtime.getRuntime().exec("ls")).toJson()
             );
         } catch (IOException e) {
             e.printStackTrace();

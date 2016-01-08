@@ -29,8 +29,11 @@ public class VSLog {
     public static void w(String logStr) {
         log(WARN, logStr);
     }
-    public static void E(String logStr) {
+    public static void e(String logStr) {
         log(ERROR, logStr);
+    }
+    public static void e(String logStr,Throwable t) {
+        err(logStr, t);
     }
 
 

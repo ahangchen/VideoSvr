@@ -16,8 +16,8 @@ import java.io.IOException;
  */
 @WebServlet(name = "Playback", asyncSupported = true)
 public class PlayBack extends HttpServlet{
-    // http://localhost:8888/VideoSvr/Playback?start=15-12-11-0-0-0&end=15-12-11-0-0-3&channel=0
-    // http://localhost:8888/VideoSvr/Playback?start=2015-12-11-0-0-0&end=2015-12-11-0-0-3&channel=
+    // http://localhost:8888/VideoSvr/Playback?start=2015-12-11-0-0-0&end=2015-12-11-0-0-3&channel=0&sid=131212121
+    // return {"sid":"1154234445","rpp":"/home/cwh"}
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         doGet(request,response);
     }

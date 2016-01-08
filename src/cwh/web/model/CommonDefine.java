@@ -1,11 +1,13 @@
 package cwh.web.model;
 
 /**
- * Created by cwh on 16-1-5.
+ * Created by cwh on 16-1-5
  */
 public class CommonDefine {
     // file
-    public static String videoFilePath = "/home/cwh/Mission/lab/data/videoweb/realplay";
+    public static String dataPath = "/home/cwh/Mission/lab/data/videoweb";
+    public static String realPlayDirPath = "realplay";
+    public static String playBackDirPath = dataPath + "/playback";
     public static String rpFile = "t";
 
     // device
@@ -23,4 +25,12 @@ public class CommonDefine {
             + "channel=%s&subtype=0 "
             + "-vcodec copy -f hls %s"
             ;
+
+    // query
+    public static String IP = "ip";
+    public static String PORT = "port";
+    public static String SID = "sid";
+    public static String CHANNEL = "channel";
+    public static String START = "start";
+    public static String END = "end";
 }

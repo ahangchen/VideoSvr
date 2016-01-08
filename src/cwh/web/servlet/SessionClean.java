@@ -1,7 +1,9 @@
-package cwh.web.servlet.playback;
+package cwh.web.servlet;
 
 import cwh.utils.log.VSLog;
 import cwh.web.model.playback.PlaybackState;
+import cwh.web.session.SessionManager;
+import cwh.web.session.SessionState;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -13,20 +15,15 @@ import java.io.IOException;
 /**
  * Created by cwh on 16-1-7
  */
-@WebServlet(name = "PlaybackClean")
-public class PlaybackClean extends HttpServlet {
+@WebServlet(name = "SessionClean")
+public class SessionClean extends HttpServlet {
+    // http://localhost:8888/VideoSvr/SessionClean?sid=12121212
+    // return 木有
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         doGet(request,response);
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String sid = request.getParameter("sid");
-        if (sid == null) return; //不清理，等timeout来做
-        Object playbackState;
-        if ((playbackState = getServletContext().getAttribute(sid)) == null) {
-            VSLog.d("obj null");
-            //发起清理时sid不对，也用timeout来清理
-        }
-
+        request.getSession().invalidate();
     }
 }

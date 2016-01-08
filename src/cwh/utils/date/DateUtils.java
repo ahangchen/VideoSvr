@@ -3,7 +3,7 @@ package cwh.utils.date;
 import java.util.Calendar;
 
 /**
- * Created by cwh on 16-1-5.
+ * Created by cwh on 16-1-5
  */
 public class DateUtils {
     public static String formatCurDate() {

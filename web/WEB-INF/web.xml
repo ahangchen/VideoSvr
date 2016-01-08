@@ -12,12 +12,12 @@
         <servlet-class>cwh.web.servlet.playback.PlayBack</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>PlaybackClean</servlet-name>
-        <url-pattern>/PlaybackClean</url-pattern>
+        <servlet-name>SessionClean</servlet-name>
+        <url-pattern>/SessionClean</url-pattern>
     </servlet-mapping>
     <servlet>
-        <servlet-name>PlaybackClean</servlet-name>
-        <servlet-class>cwh.web.servlet.playback.PlaybackClean</servlet-class>
+        <servlet-name>SessionClean</servlet-name>
+        <servlet-class>cwh.web.servlet.SessionClean</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>RealPlay</servlet-name>

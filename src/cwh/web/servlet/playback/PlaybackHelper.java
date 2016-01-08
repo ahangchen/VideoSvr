@@ -40,7 +40,4 @@ public class PlaybackHelper {
         executor.execute(new AsyncQueryVideo(asyncContext));
     }
 
-    public static void clean(PlaybackState playbackState) {
-
-    }
 }
