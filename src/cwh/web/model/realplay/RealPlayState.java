@@ -4,46 +4,32 @@ import cwh.utils.log.VSLog;
 import cwh.web.model.CommonDefine;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.Date;
 
 /**
  * Created by cwh on 16-1-7
  */
-public class RealplayState {
-    private String session;
+public class RealPlayState {
+    private String sessionId;
     private String realPlayDirPath;
     private Process convertProcess;
 
-    public RealplayState(String session, String realPlayDirPath, Process convertProcess) {
-        this.session = session;
+    public RealPlayState(String sessionId, String realPlayDirPath, Process convertProcess) {
+        this.sessionId = sessionId;
         this.realPlayDirPath = realPlayDirPath;
         this.convertProcess = convertProcess;
     }
 
-    public String getSession() {
-        return session;
-    }
-
-    public void setSession(String session) {
-        this.session = session;
+    public String getSessionId() {
+        return sessionId;
     }
 
     public String getRealPlayDirPath() {
         return realPlayDirPath;
     }
 
-    public void setRealPlayDirPath(String realPlayDirPath) {
-        this.realPlayDirPath = realPlayDirPath;
-    }
-
     public Process getConvertProcess() {
         return convertProcess;
-    }
-
-    public void setConvertProcess(Process convertProcess) {
-        this.convertProcess = convertProcess;
     }
 
     public String getRealPlayFilePath() {
@@ -52,9 +38,9 @@ public class RealplayState {
 
     public String toJson() {
         return "{" +
-                "\"sid\":\""+getSession() +
+                "\"sid\":\""+ getSessionId() +
                 "\"," +
-                "\"rpp\":\"" + getRealPlayDirPath()+
+                "\"rpp\":\"" + getRealPlayFilePath()+
                 "\"}";
     }
 
@@ -70,7 +56,7 @@ public class RealplayState {
 
     public static void main(String[]args) {
         try {
-            VSLog.d( new RealplayState("11", "/home/cwh", Runtime.getRuntime().exec("ls")).toJson()
+            VSLog.d( new RealPlayState("11", "/home/cwh", Runtime.getRuntime().exec("ls")).toJson()
             );
         } catch (IOException e) {
             e.printStackTrace();
