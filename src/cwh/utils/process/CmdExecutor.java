@@ -1,11 +1,9 @@
 package cwh.utils.process;
 
+import cwh.utils.concurrent.ThreadUtils;
 import cwh.utils.log.VSLog;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.LineNumberReader;
+import java.io.*;
 
 /**
  * Created by cwh on 16-1-2
@@ -57,6 +55,30 @@ public class CmdExecutor {
         try {
             Runtime runtime = Runtime.getRuntime();
             proc = runtime.exec(command);
+
+//          todo  打调用过程中的输出,有些log很多，后期还是给它单独开一个log文件比较好
+            InputStream err = proc.getErrorStream();
+            InputStreamReader isr = new InputStreamReader(err);
+            final BufferedReader br = new BufferedReader(isr);
+            // 开一个新线程，否则会卡进程
+            ThreadUtils.runInBackGround(new Runnable() {
+                @Override
+                public void run() {
+                    String line = null;
+                    try {
+                        while ((line = br.readLine()) != null) {
+                            if (line.startsWith("frame=")) {
+                                continue;
+                            }
+                            VSLog.log(VSLog.DEBUG, line);
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    // 这里的stream由外层proc控制关闭
+                }
+            });
+
         } catch (Throwable t) {
             t.printStackTrace();
         }

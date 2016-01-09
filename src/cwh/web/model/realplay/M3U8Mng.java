@@ -1,5 +1,6 @@
 package cwh.web.model.realplay;
 
+import cwh.utils.concurrent.ThreadUtils;
 import cwh.utils.date.DateUtils;
 import cwh.utils.file.FileUtils;
 import cwh.utils.log.VSLog;
@@ -11,9 +12,8 @@ import java.io.*;
  * Created by cwh on 16-1-6
  */
 public class M3U8Mng {
-    private static boolean stopRealPlay = false;
-
     public static int curTSNum(String curDir) {
+        // 也可以考虑通过读取文件，排序来做
         String curM3U8Name = realPlayDir2Path(curDir);
 
         File file = new File(curM3U8Name);
@@ -24,7 +24,7 @@ public class M3U8Mng {
             //一次读一行，读入null时文件结束
             while ((tempString = reader.readLine()) != null) {
                 if (!tempString.substring(0, 1).equals("#")) {
-                    VSLog.log(VSLog.DEBUG, tempString + " " + Integer.parseInt(tempString.substring(1).split("\\.")[0]));
+//                    VSLog.log(VSLog.DEBUG, tempString + " " + Integer.parseInt(tempString.substring(1).split("\\.")[0]));
                     return Integer.parseInt(tempString.substring(1).split("\\.")[0]);
                 }
             }
@@ -47,17 +47,16 @@ public class M3U8Mng {
         return -1;
     }
 
-    public static void timelyClean(String curPath) {
-        while (!stopRealPlay) {
+    public static void timelyClean(String curPath, CleanToggle cleanToggle) {
+        ThreadUtils.sleep(5000);//一开始还不用工作，先睡会
+        while (!cleanToggle.isStop()) {
             dueClean(curPath, curTSNum(curPath));
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            ThreadUtils.sleep(1000);
         }
+        VSLog.d("stop timelyClean");
     }
 
+    // 通过读取m3u8文件的数据来决定删除的文件，可能会有文件并行读写问题，但效率高。
     public static void dueClean(String curPath, final int curRcd) {
         FileUtils.flatTravel(curPath, new FileUtils.Travel() {
             @Override
@@ -73,7 +72,7 @@ public class M3U8Mng {
     }
 
     public static int getTsNum(File file) {
-        VSLog.log(VSLog.DEBUG, file.getName());
+//        VSLog.log(VSLog.DEBUG, file.getName());
         if (file.getName().equals("t.m3u8")) return -1;
         return Integer.parseInt(file.getName().substring(1).split("\\.")[0]);
     }
@@ -98,7 +97,9 @@ public class M3U8Mng {
     public static String realPlayPath(String ip, String port, String channel) {
         return realPlayDir(ip, port, channel) + "/" + CommonDefine.rpFile + CommonDefine.M3U8;
     }
+
+
     public static void main(String[] args) {
-        timelyClean(realPlayDir("192.168.199.108", "554", "1"));
+
     }
 }

@@ -22,16 +22,17 @@ public class FileUtils {
         }
         for (File f : listFiles) {
             if (f.isFile()) {
-                VSLog.log(VSLog.DEBUG, "isFile");
+//                VSLog.log(VSLog.DEBUG, "isFile");
                 onTravel.onFile(f);
             }
         }
     }
 
-    public interface ReadLine{
+    public interface ReadLine {
         void onLine(String string);
     }
-    public static void readLine(String fileName,ReadLine readLine){
+
+    public static void readLine(String fileName, ReadLine readLine) {
         File file = new File(fileName);
         BufferedReader reader = null;
         try {
@@ -83,5 +84,43 @@ public class FileUtils {
         } catch (Exception e) {
             VSLog.err("cp", e);
         }
+    }
+
+    /**
+     * 递归删除目录下的所有文件及子目录下所有文件
+     *
+     * @param dir 将要删除的文件目录
+     * @return boolean Returns "true" if all deletions were successful.
+     * If a deletion fails, the method stops attempting to
+     * delete and returns "false".
+     */
+    public static boolean deleteDir(File dir) {
+        if (dir.isDirectory()) {
+            String[] children = dir.list();
+            //递归删除目录中的子目录下
+            for (String child : children) {
+                boolean success = deleteDir(new File(dir, child));
+                if (!success) {
+                    VSLog.d("delete filedir failed:" + child);
+                    return false;
+                }
+            }
+        }
+        // 目录此时为空，可以删除
+        return dir.delete();
+    }
+
+    public static boolean rmDir(String dirPath) {
+        return deleteDir(new File(dirPath));
+    }
+
+    public static void main(String[] args) {
+//        FileUtils.flatTravel("/media/Software/lab/data/videoweb/realplay/192-168-199-108-554-1-2016-0-9", new Travel() {
+//            @Override
+//            public void onFile(File file) {
+//                VSLog.d(file.getName());
+//            }
+//        });
+        rmDir("/media/Software/lab/data/videoweb/realplay/192-168-199-108-554-1-2016-0-9");
     }
 }

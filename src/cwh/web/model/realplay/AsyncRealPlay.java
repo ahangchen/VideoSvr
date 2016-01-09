@@ -31,13 +31,13 @@ public class AsyncRealPlay implements Runnable {
         String channel = request.getParameter("channel");
 
         // ffmpeg -i rtsp://admin:admin@192.168.1.108:554/cam/realmonitor?channel=1&subtype=0 -vcodec copy -f hls out.m3u8
-        final String realPlayVideoPath = M3U8Mng.realPlayPath(ip, channel, port);
-        // 要交给全局控制，等待前端传回终止信息或超时以终止这个进程
-        // 在这里开始转换
-        final Process convert = sysRealPlay(ip, channel, port);
+        final String realPlayVideoPath = M3U8Mng.realPlayPath(ip, port, channel);
+        // 在这里发起转换，然后把进程交给Session，等待前端传回终止信息或超时以终止这个进程
+        final Process convert = sysRealPlay(ip, port, channel);
 
-        SessionState sessionState = SessionManager.getInstance().getSessionState((HttpServletRequest) request);
-        RealPlayState realPlayState = new RealPlayState(sessionState.getSessionId(), M3U8Mng.realPlayPath2Dir(realPlayVideoPath), convert);
+        SessionState sessionState = SessionManager.getInstance().getSessionState((HttpServletRequest)request);
+        final CleanToggle cleanToggle = new CleanToggle();
+        RealPlayState realPlayState = new RealPlayState(sessionState.getSessionId(), M3U8Mng.realPlayPath2Dir(realPlayVideoPath), convert, cleanToggle);
         sessionState.addRealPlay(realPlayState);
 
         ThreadUtils.sleep(1000);
@@ -46,16 +46,10 @@ public class AsyncRealPlay implements Runnable {
         ThreadUtils.runInBackGround(new Runnable() {
             @Override
             public void run() {
-                M3U8Mng.timelyClean(M3U8Mng.realPlayPath2Dir(realPlayVideoPath));
+                M3U8Mng.timelyClean(M3U8Mng.realPlayPath2Dir(realPlayVideoPath), cleanToggle);
             }
         });
 
-        // 后台等待
-        try {
-            convert.waitFor();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
         public static String waitRealPlay(String ip, String port, String channel) {
         // ffmpeg -i rtsp://admin:admin@192.168.1.108:554/cam/realmonitor?channel=1&subtype=0 -vcodec copy -f hls out.m3u8

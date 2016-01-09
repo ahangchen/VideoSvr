@@ -1,6 +1,7 @@
 package cwh.web.session;
 
 import cwh.utils.VMath;
+import cwh.utils.file.FileUtils;
 import cwh.utils.log.VSLog;
 import cwh.web.model.CommonDefine;
 import cwh.web.model.playback.PlaybackState;
@@ -82,7 +83,11 @@ public class SessionManager {
     }
 
     public boolean realPlayClean(RealPlayState realPlayState) {
+        realPlayState.getCleanToggle().setStop(true);
+        VSLog.d(realPlayState.getCleanToggle().toString());
         realPlayState.getConvertProcess().destroy();
-        return new File(realPlayState.getRealPlayDirPath()).delete();
+        boolean ret = FileUtils.rmDir(realPlayState.getRealPlayDirPath());
+        VSLog.d("delete ret: " + ret);
+        return ret;
     }
 }

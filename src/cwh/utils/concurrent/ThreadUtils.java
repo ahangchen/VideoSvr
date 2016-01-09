@@ -9,7 +9,7 @@ import java.util.concurrent.ThreadPoolExecutor;
  * Created by cwh on 15-12-25
  */
 public class ThreadUtils {
-	private static ThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(3);
+	private static ThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(10);
 
 	public static void runInBackGround(Runnable task) {
 		executor.execute(task);

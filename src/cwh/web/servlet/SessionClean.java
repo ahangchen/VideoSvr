@@ -1,9 +1,6 @@
 package cwh.web.servlet;
 
 import cwh.utils.log.VSLog;
-import cwh.web.model.playback.PlaybackState;
-import cwh.web.session.SessionManager;
-import cwh.web.session.SessionState;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -24,6 +21,8 @@ public class SessionClean extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        VSLog.d("session clean do get");
         request.getSession().invalidate();
+        VSLog.d("after invalidate");
     }
 }

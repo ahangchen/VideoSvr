@@ -41,7 +41,6 @@ public class AsyncQueryVideo implements Runnable {
                     public void onComplete(String filePath) {
                         VSLog.d("after convert");
                         SessionState sessionState = SessionManager.getInstance().getSessionState(request);
-                        VSLog.d("after get session STATE" + (sessionState == null));
                         PlaybackState playbackState = new PlaybackState(sessionState.getSessionId(), filePath);
                         VSLog.d("after new playback");
                         sessionState.addPlayback(playbackState);

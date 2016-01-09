@@ -4,7 +4,6 @@ import cwh.utils.log.VSLog;
 import cwh.web.model.CommonDefine;
 
 import java.io.IOException;
-import java.util.Date;
 
 /**
  * Created by cwh on 16-1-7
@@ -13,11 +12,17 @@ public class RealPlayState {
     private String sessionId;
     private String realPlayDirPath;
     private Process convertProcess;
+    private CleanToggle cleanToggle;
 
-    public RealPlayState(String sessionId, String realPlayDirPath, Process convertProcess) {
+    public RealPlayState(String sessionId, String realPlayDirPath, Process convertProcess, CleanToggle cleanToggle) {
         this.sessionId = sessionId;
         this.realPlayDirPath = realPlayDirPath;
         this.convertProcess = convertProcess;
+        this.cleanToggle = cleanToggle;
+    }
+
+    public CleanToggle getCleanToggle() {
+        return cleanToggle;
     }
 
     public String getSessionId() {
@@ -44,19 +49,9 @@ public class RealPlayState {
                 "\"}";
     }
 
-    public String hashSession() {
-        long seed = 131; // 31 131 1313 13131 131313 etc..  BKDRHash
-        long hash = 0;
-        String value = getRealPlayDirPath() + new Date();
-        for (int i = 0; i < value.length(); i++) {
-            hash = (hash * seed) + value.charAt(i);
-        }
-        return String.valueOf(hash);
-    }
-
     public static void main(String[] args) {
         try {
-            VSLog.d(new RealPlayState("11", "/home/cwh", Runtime.getRuntime().exec("ls")).toJson()
+            VSLog.d(new RealPlayState("11", "/home/cwh", Runtime.getRuntime().exec("ls"), new CleanToggle()).toJson()
             );
         } catch (IOException e) {
             e.printStackTrace();
