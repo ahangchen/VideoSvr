@@ -1,7 +1,9 @@
 package cwh.web.model.playback;
 
+import cwh.web.model.CommonDefine;
+
 /**
- * Created by cwh on 15-12-13.
+ * Created by cwh on 15-12-13
  */
 public class VideoQueryParam {
     int channel;
@@ -123,4 +125,19 @@ public class VideoQueryParam {
     public void setEndSec(int endSec) {
         this.endSec = endSec;
     }
+
+    @Override
+    public String toString() {
+        return getChannel() + "-" +
+                getStartYear() + "-" + getStartMon() + "-" + getStartDay() + "-" +
+                getStartHour() + "-" + getStartMin() + "-" +getStartSec() + "-" +
+                getEndYear() + "-" +getEndMon() + "-" +getEndDay() + "-" +
+                getEndHour() + "-" +getEndMin() + "-" +getEndSec()
+                ;
+    }
+
+    public static String formatPath(VideoQueryParam param) {
+        return param.toString() + CommonDefine.MP4;
+    }
+
 }

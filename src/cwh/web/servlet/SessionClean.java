@@ -2,6 +2,7 @@ package cwh.web.servlet;
 
 import cwh.utils.log.VSLog;
 import cwh.web.servlet.playback.PlaybackHelper;
+import cwh.web.session.SessionManager;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -24,6 +25,8 @@ public class SessionClean extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         VSLog.d("session clean do get");
         VSLog.d(request.getSession().toString());
+        VSLog.d(request.getServletContext().toString());
+        VSLog.d(SessionManager.getInstance().toString());
         request.getSession().invalidate();
         PlaybackHelper.responseString(response, "hello");
         VSLog.d("after invalidate");

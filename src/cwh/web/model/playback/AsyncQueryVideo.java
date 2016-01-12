@@ -10,7 +10,6 @@ import cwh.web.session.SessionState;
 import cwh.web.utils.StringUtils;
 
 import javax.servlet.AsyncContext;
-import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -32,22 +31,39 @@ public class AsyncQueryVideo implements Runnable {
                 request.getParameter(CommonDefine.CHANNEL),
                 request.getParameter(CommonDefine.START),
                 request.getParameter(CommonDefine.END));
-        NvrService.getInstance().time2VideoPath(videoQueryParam.getChannel(),
-                videoQueryParam.getStartYear(), videoQueryParam.getStartMon(), videoQueryParam.getStartDay(),
-                videoQueryParam.getStartHour(), videoQueryParam.getStartMin(), videoQueryParam.getStartSec(),
-                videoQueryParam.getEndYear(), videoQueryParam.getEndMon(), videoQueryParam.getEndDay(),
-                videoQueryParam.getEndHour(), videoQueryParam.getEndMin(), videoQueryParam.getEndSec(), new PlayCallback() {
-                    @Override
-                    public void onComplete(String filePath) {
-                        VSLog.d("after convert");
-                        SessionState sessionState = SessionManager.getInstance().getSessionState(request);
-                        PlaybackState playbackState = new PlaybackState(sessionState.getSessionId(), filePath);
-                        VSLog.d("after new playback");
-                        sessionState.addPlayback(playbackState);
-                        PlaybackHelper.responseString(context.getResponse(), playbackState.toJson());
-                        context.complete();
-                        VSLog.log(VSLog.DEBUG, "on Complete");
-                    }
-                });
+        final SessionState sessionState = SessionManager.getInstance().getSessionState(request);
+        String videoPath = VideoQueryParam.formatPath(videoQueryParam);
+        SessionManager.getInstance().requestVideo(videoPath, sessionState.getSessionId(), new SessionManager.CacheCallback() {
+            @Override
+            public void onOld(String filePath) {
+                VSLog.d("cached");
+                PlaybackState playbackState = new PlaybackState(sessionState.getSessionId(), filePath);
+                sessionState.addPlayback(playbackState);
+                PlaybackHelper.responseString(context.getResponse(), playbackState.toJson());
+                context.complete();
+                VSLog.log(VSLog.DEBUG, "on Complete");
+            }
+
+            @Override
+            public void onNew() {
+                NvrService.getInstance().time2VideoPath(videoQueryParam.getChannel(),
+                        videoQueryParam.getStartYear(), videoQueryParam.getStartMon(), videoQueryParam.getStartDay(),
+                        videoQueryParam.getStartHour(), videoQueryParam.getStartMin(), videoQueryParam.getStartSec(),
+                        videoQueryParam.getEndYear(), videoQueryParam.getEndMon(), videoQueryParam.getEndDay(),
+                        videoQueryParam.getEndHour(), videoQueryParam.getEndMin(), videoQueryParam.getEndSec(),
+                        new PlayCallback() {
+                            @Override
+                            public void onComplete(String filePath) {
+                                VSLog.d("after convert");
+                                PlaybackState playbackState = new PlaybackState(sessionState.getSessionId(), filePath);
+                                sessionState.addPlayback(playbackState);
+                                PlaybackHelper.responseString(context.getResponse(), playbackState.toJson());
+                                context.complete();
+                                VSLog.log(VSLog.DEBUG, "on Complete");
+                            }
+                        });
+            }
+        });
+
     }
 }

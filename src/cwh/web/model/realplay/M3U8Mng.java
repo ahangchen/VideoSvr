@@ -12,6 +12,16 @@ import java.io.*;
  * Created by cwh on 16-1-6
  */
 public class M3U8Mng {
+
+    private static class Holder {
+        static final M3U8Mng instance = new M3U8Mng();
+    }
+
+    public static M3U8Mng getInstance() {
+        return Holder.instance;
+    }
+
+
     public static int curTSNum(String curDir) {
         // 也可以考虑通过读取文件，排序来做
         String curM3U8Name = realPlayDir2Path(curDir);
@@ -88,8 +98,9 @@ public class M3U8Mng {
     }
 
     public static String realPlayDir(String ip, String port, String channel) {
-        String curDirPath = ip.replace(".", "-") + "-" + port + "-" + channel + "-"
-                + DateUtils.formatCurDate()/* +"-"+ DateUtils.formatCurTime().replace(":","-")*/ ;
+        // 目录名只与摄像头相关
+        String curDirPath = ip.replace(".", "-") + "-" + port + "-" + channel /* + "-"
+                + DateUtils.formatCurDate()+"-"+ DateUtils.formatCurTime().replace(":","-")*/ ;
         File curDir = new File(CommonDefine.DATA_PATH + "/" + CommonDefine.REAL_PLAY_DIR_PATH + "/" + curDirPath);
         curDir.mkdir();
         return CommonDefine.DATA_PATH + "/" + CommonDefine.REAL_PLAY_DIR_PATH + "/" + curDirPath;
