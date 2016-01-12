@@ -2,6 +2,7 @@ package cwh.web.servlet;
 
 import cwh.utils.log.VSLog;
 import cwh.web.model.CommonDefine;
+import cwh.web.session.SessionManager;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -29,6 +30,7 @@ public class Test extends HttpServlet {
 //        }
 //        VSLog.d(obj.toString());
         VSLog.d(request.getSession().toString());
-
+        VSLog.d(request.getServletContext().toString());
+        VSLog.d(SessionManager.getInstance().toString());
     }
 }
