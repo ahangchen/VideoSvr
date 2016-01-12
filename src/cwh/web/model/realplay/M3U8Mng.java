@@ -65,7 +65,7 @@ public class M3U8Mng {
             public void onFile(File file) {
                 int tsNum = getTsNum(file);
                 if (curRcd == -1 || tsNum == -1) return;
-                if (curRcd > tsNum) {
+                if (curRcd - 20> tsNum) { // 宽松的删除条件，保留当前的ts之前的20个
                     VSLog.log(VSLog.DEBUG, "to delete");
                     file.delete();
                 }
