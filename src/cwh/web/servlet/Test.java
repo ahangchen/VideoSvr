@@ -1,6 +1,7 @@
 package cwh.web.servlet;
 
 import cwh.utils.log.VSLog;
+import cwh.web.model.CommonDefine;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -19,15 +20,15 @@ public class Test extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String sid = request.getParameter("sid");
-        Object obj;
-        if ((obj = getServletContext().getAttribute(sid)) == null) {
-            VSLog.d("obj null");
-            obj = sid + "obj";
-            getServletContext().setAttribute(sid, obj);
-        }
-        VSLog.d(obj.toString());
-
+//        String sid = request.getParameter(CommonDefine.SID);
+//        Object obj;
+//        if ((obj = getServletContext().getAttribute(sid)) == null) {
+//            VSLog.d("obj null");
+//            obj = sid + "obj";
+//            getServletContext().setAttribute(sid, obj);
+//        }
+//        VSLog.d(obj.toString());
+        VSLog.d(request.getSession().toString());
 
     }
 }

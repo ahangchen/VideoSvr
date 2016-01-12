@@ -54,6 +54,7 @@ public class CmdExecutor {
         Process proc = null;
         try {
             Runtime runtime = Runtime.getRuntime();
+            VSLog.d(command);
             proc = runtime.exec(command);
 
 //          todo  打调用过程中的输出,有些log很多，后期还是给它单独开一个log文件比较好

@@ -38,14 +38,14 @@ public class RealPlayState {
     }
 
     public String getRealPlayFilePath() {
-        return getRealPlayDirPath() + "/" + CommonDefine.rpFile + CommonDefine.M3U8;
+        return getRealPlayDirPath() + "/" + CommonDefine.REAL_PLAY_PATH + CommonDefine.M3U8;
     }
 
     public String toJson() {
         return "{" +
                 "\"sid\":\"" + getSessionId() +
                 "\"," +
-                "\"rpp\":\"" + getRealPlayFilePath().replace(CommonDefine.dataPath + "/", "") +
+                "\"rpp\":\"" + getRealPlayFilePath().replace(CommonDefine.DATA_PATH + "/", "") +
                 "\"}";
     }
 

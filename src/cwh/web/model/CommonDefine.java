@@ -5,10 +5,10 @@ package cwh.web.model;
  */
 public class CommonDefine {
     // file
-    public static String dataPath = "/home/cwh/Mission/lab/data/videoweb";
-    public static String realPlayDirPath = "realplay";
-    public static String playBackDirPath = dataPath + "/playback";
-    public static String rpFile = "t";
+    public static String DATA_PATH = "/home/cwh/Mission/lab/data/videoweb";
+    public static String REAL_PLAY_DIR_PATH = "realplay";
+    public static String PLAY_BACK_DIR_PATH = DATA_PATH + "/playback";
+    public static String REAL_PLAY_PATH = "t";
 
     // device
     public static String USER = "admin";

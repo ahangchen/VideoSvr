@@ -26,21 +26,21 @@ public class AsyncRealPlay implements Runnable {
     @Override
     public void run() {
         ServletRequest request = context.getRequest();
-        String ip = request.getParameter("ip");
-        String port = request.getParameter("port");
-        String channel = request.getParameter("channel");
+        String ip = request.getParameter(CommonDefine.IP);
+        String port = request.getParameter(CommonDefine.PORT);
+        String channel = request.getParameter(CommonDefine.CHANNEL);
 
         // ffmpeg -i rtsp://admin:admin@192.168.1.108:554/cam/realmonitor?channel=1&subtype=0 -vcodec copy -f hls out.m3u8
         final String realPlayVideoPath = M3U8Mng.realPlayPath(ip, port, channel);
         // 在这里发起转换，然后把进程交给Session，等待前端传回终止信息或超时以终止这个进程
-        final Process convert = sysRealPlay(ip, port, channel);
+        final Process convert = sysRealPlay(ip, port, channel, realPlayVideoPath);
 
         SessionState sessionState = SessionManager.getInstance().getSessionState((HttpServletRequest)request);
         final CleanToggle cleanToggle = new CleanToggle();
         RealPlayState realPlayState = new RealPlayState(sessionState.getSessionId(), M3U8Mng.realPlayPath2Dir(realPlayVideoPath), convert, cleanToggle);
         sessionState.addRealPlay(realPlayState);
 
-        ThreadUtils.sleep(1000);
+        ThreadUtils.sleep(5000);
         PlaybackHelper.responseString(context.getResponse(), realPlayState.toJson());
         // 后台清理
         ThreadUtils.runInBackGround(new Runnable() {
@@ -64,6 +64,13 @@ public class AsyncRealPlay implements Runnable {
     public static Process sysRealPlay(String ip, String port, String channel) {
         // ffmpeg -i rtsp://admin:admin@192.168.1.108:554/cam/realmonitor?channel=1&subtype=0 -vcodec copy -f hls out.m3u8
         String realPlayVideoPath = M3U8Mng.realPlayPath(ip, port, channel);
+        return CmdExecutor.run(String.format(CommonDefine.FFMPEG_CONVERT, ip, port, channel, realPlayVideoPath));
+    }
+
+    // 拿到创建出来的线程
+    public static Process sysRealPlay(String ip, String port, String channel, String realPlayVideoPath) {
+        // ffmpeg -i rtsp://admin:admin@192.168.1.108:554/cam/realmonitor?channel=1&subtype=0 -vcodec copy -f hls out.m3u8
+        VSLog.d("ffmpeg to :"+realPlayVideoPath);
         return CmdExecutor.run(String.format(CommonDefine.FFMPEG_CONVERT, ip, port, channel, realPlayVideoPath));
     }
 

@@ -1,6 +1,7 @@
 package cwh.web.session;
 
 import cwh.utils.VMath;
+import cwh.utils.concurrent.ThreadUtils;
 import cwh.utils.file.FileUtils;
 import cwh.utils.log.VSLog;
 import cwh.web.model.CommonDefine;
@@ -79,13 +80,15 @@ public class SessionManager {
 
     public boolean playBackClean(PlaybackState playbackState) {
         VSLog.d(playbackState.getPlayFilePath());
-        return new File(CommonDefine.playBackDirPath + "/" + playbackState.getPlayFilePath()).delete();
+        return new File(CommonDefine.PLAY_BACK_DIR_PATH + "/" + playbackState.getPlayFilePath()).delete();
     }
 
     public boolean realPlayClean(RealPlayState realPlayState) {
         realPlayState.getCleanToggle().setStop(true);
         VSLog.d(realPlayState.getCleanToggle().toString());
         realPlayState.getConvertProcess().destroy();
+        // 等ffmepg进程结束再删，否则m3u8文件会删不掉
+        ThreadUtils.sleep(2000);
         boolean ret = FileUtils.rmDir(realPlayState.getRealPlayDirPath());
         VSLog.d("delete ret: " + ret);
         return ret;

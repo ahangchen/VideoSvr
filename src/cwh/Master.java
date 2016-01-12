@@ -32,7 +32,7 @@ public class Master {
                 }
             }
         }.start();
-        VSLog.d("1");
+//        VSLog.d("1");
 //        M3U8Mng.dueClean(M3U8Mng.realPlayDir("125.216.247.121", "38888", "1"), 3);
     }
 }

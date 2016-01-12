@@ -17,10 +17,12 @@ public class M3U8Mng {
         String curM3U8Name = realPlayDir2Path(curDir);
 
         File file = new File(curM3U8Name);
+        FileReader fileReader;
         BufferedReader reader = null;
         try {
-            reader = new BufferedReader(new FileReader(file));
-            String tempString = null;
+            fileReader = new FileReader(file);
+            reader = new BufferedReader(fileReader);
+            String tempString;
             //一次读一行，读入null时文件结束
             while ((tempString = reader.readLine()) != null) {
                 if (!tempString.substring(0, 1).equals("#")) {
@@ -51,7 +53,7 @@ public class M3U8Mng {
         ThreadUtils.sleep(5000);//一开始还不用工作，先睡会
         while (!cleanToggle.isStop()) {
             dueClean(curPath, curTSNum(curPath));
-            ThreadUtils.sleep(1000);
+            ThreadUtils.sleep(2000);//不要清理太快
         }
         VSLog.d("stop timelyClean");
     }
@@ -78,28 +80,35 @@ public class M3U8Mng {
     }
 
     public static String realPlayPath2Dir(String realPlayPath) {
-        return realPlayPath.replace("/" + CommonDefine.rpFile + CommonDefine.M3U8, "");
+        return realPlayPath.replace("/" + CommonDefine.REAL_PLAY_PATH + CommonDefine.M3U8, "");
     }
 
     public static String realPlayDir2Path(String realPlayDirPath) {
-        return realPlayDirPath + "/" + CommonDefine.rpFile + CommonDefine.M3U8;
+        return realPlayDirPath + "/" + CommonDefine.REAL_PLAY_PATH + CommonDefine.M3U8;
     }
 
     public static String realPlayDir(String ip, String port, String channel) {
         String curDirPath = ip.replace(".", "-") + "-" + port + "-" + channel + "-"
-                + DateUtils.formatCurDate() /*+"-"+ DateUtils.formatCurTime().replace(":","-") */;
-        File curDir = new File(CommonDefine.dataPath + "/" + CommonDefine.realPlayDirPath + "/" + curDirPath);
+                + DateUtils.formatCurDate()/* +"-"+ DateUtils.formatCurTime().replace(":","-")*/ ;
+        File curDir = new File(CommonDefine.DATA_PATH + "/" + CommonDefine.REAL_PLAY_DIR_PATH + "/" + curDirPath);
         curDir.mkdir();
-        return CommonDefine.dataPath + "/" + CommonDefine.realPlayDirPath + "/" + curDirPath;
+        return CommonDefine.DATA_PATH + "/" + CommonDefine.REAL_PLAY_DIR_PATH + "/" + curDirPath;
     }
 
     // 先拿到path
     public static String realPlayPath(String ip, String port, String channel) {
-        return realPlayDir(ip, port, channel) + "/" + CommonDefine.rpFile + CommonDefine.M3U8;
+        return realPlayDir(ip, port, channel) + "/" + CommonDefine.REAL_PLAY_PATH + CommonDefine.M3U8;
     }
 
 
     public static void main(String[] args) {
+//        String ip = "192.168.199.108";
+//        String port = "554";
+//        String channel = "1";
+//// ffmpeg -i rtsp://admin:admin@192.168.1.108:554/cam/realmonitor?channel=1&subtype=0 -vcodec copy -f hls out.m3u8
+//        final String realPlayVideoPath = M3U8Mng.realPlayPath(ip, port, channel);
+//        // 在这里发起转换，然后把进程交给Session，等待前端传回终止信息或超时以终止这个进程
+//        final Process convert = AsyncRealPlay.sysRealPlay(ip, port, channel, realPlayVideoPath);
 
     }
 }
