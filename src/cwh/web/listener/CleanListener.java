@@ -56,8 +56,8 @@ public class CleanListener implements ServletContextListener,
     public void sessionDestroyed(HttpSessionEvent se) {
       /* Session is destroyed. */
         VSLog.d("session destroy");
-        String sid = se.getSession().getAttribute(CommonDefine.SID).toString();
-        SessionState sessionState = SessionManager.getInstance().getSessionState(sid, se.getSession().getServletContext());
+        String sid = se.getSession().getId();// 超时时用session本身的id，主动清理用参数里的id
+        SessionState sessionState = SessionManager.getInstance().getSessionState(sid);
         VSLog.d("session:" + sessionState);
         SessionManager.getInstance().sessionClean(sessionState);
     }

@@ -2,6 +2,7 @@ package cwh.web.servlet;
 
 import cwh.utils.log.VSLog;
 import cwh.web.model.CommonDefine;
+import cwh.web.servlet.playback.PlaybackHelper;
 import cwh.web.session.SessionManager;
 
 import javax.servlet.ServletException;
@@ -29,6 +30,7 @@ public class Test extends HttpServlet {
 //            getServletContext().setAttribute(sid, obj);
 //        }
 //        VSLog.d(obj.toString());
+        PlaybackHelper.responseString(response, request.getSession().toString());
         VSLog.d(request.getSession().toString());
         VSLog.d(request.getServletContext().toString());
         VSLog.d(SessionManager.getInstance().toString());

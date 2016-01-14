@@ -5,7 +5,7 @@ package cwh.web.model;
  */
 public class CommonDefine {
     // file
-    public static String DATA_PATH = "/home/cwh/Mission/lab/data/videoweb";
+    public static String DATA_PATH = "/home/cwh/tomcat/webapps/VideoSvr/videos";
     public static String REAL_PLAY_DIR_PATH = "realplay";
     public static String PLAY_BACK_DIR_PATH = DATA_PATH + "/playback";
     public static String REAL_PLAY_PATH = "t";
@@ -23,7 +23,7 @@ public class CommonDefine {
             + "@%s:%s"
             + "/cam/realmonitor?"
             + "channel=%s&subtype=0 "
-            + "-vcodec copy -f hls %s"
+            + "-vcodec copy -f hls %s -rtsp_transport tcp"
             ;
 
     // query

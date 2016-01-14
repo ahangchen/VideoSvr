@@ -1,11 +1,11 @@
 package cwh.web.model.playback;
 
-import java.util.Date;
+import cwh.web.model.RequestState;
 
 /**
  * Created by cwh on 16-1-7
  */
-public class PlaybackState {
+public class PlaybackState extends RequestState {
     private String sessionId;
     private String playFilePath;
 

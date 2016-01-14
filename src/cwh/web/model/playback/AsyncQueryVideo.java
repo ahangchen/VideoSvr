@@ -2,8 +2,10 @@ package cwh.web.model.playback;
 
 import cwh.NVR.NvrService;
 import cwh.NVR.play.PlayCallback;
+import cwh.utils.concurrent.ThreadUtils;
 import cwh.utils.log.VSLog;
 import cwh.web.model.CommonDefine;
+import cwh.web.model.RequestState;
 import cwh.web.servlet.playback.PlaybackHelper;
 import cwh.web.session.SessionManager;
 import cwh.web.session.SessionState;
@@ -33,19 +35,26 @@ public class AsyncQueryVideo implements Runnable {
                 request.getParameter(CommonDefine.END));
         final SessionState sessionState = SessionManager.getInstance().getSessionState(request);
         String videoPath = VideoQueryParam.formatPath(videoQueryParam);
-        SessionManager.getInstance().requestVideo(videoPath, sessionState.getSessionId(), new SessionManager.CacheCallback() {
+        SessionManager.getInstance().requestPlayBack(videoPath, sessionState, new SessionManager.CacheCallback() {
             @Override
-            public void onOld(String filePath) {
+            public void addTo(SessionState sessionState, RequestState requestState) {
+                sessionState.addPlayback((PlaybackState)requestState);
+            }
+
+            @Override
+            public void onOld(RequestState playbackState) {
                 VSLog.d("cached");
-                PlaybackState playbackState = new PlaybackState(sessionState.getSessionId(), filePath);
-                sessionState.addPlayback(playbackState);
-                PlaybackHelper.responseString(context.getResponse(), playbackState.toJson());
+                PlaybackHelper.responseString(context.getResponse(), ((PlaybackState)playbackState).toJson());
                 context.complete();
                 VSLog.log(VSLog.DEBUG, "on Complete");
             }
 
             @Override
-            public void onNew() {
+            public RequestState onNew() {
+                // 数组实现执向引用的常引用
+                final String[] playBackPath = new String[1];
+                final boolean[] waitEnd = new boolean[1];
+                waitEnd[0] = false;
                 NvrService.getInstance().time2VideoPath(videoQueryParam.getChannel(),
                         videoQueryParam.getStartYear(), videoQueryParam.getStartMon(), videoQueryParam.getStartDay(),
                         videoQueryParam.getStartHour(), videoQueryParam.getStartMin(), videoQueryParam.getStartSec(),
@@ -54,14 +63,20 @@ public class AsyncQueryVideo implements Runnable {
                         new PlayCallback() {
                             @Override
                             public void onComplete(String filePath) {
-                                VSLog.d("after convert");
-                                PlaybackState playbackState = new PlaybackState(sessionState.getSessionId(), filePath);
-                                sessionState.addPlayback(playbackState);
-                                PlaybackHelper.responseString(context.getResponse(), playbackState.toJson());
-                                context.complete();
-                                VSLog.log(VSLog.DEBUG, "on Complete");
+                                playBackPath[0] = filePath;
+                                waitEnd[0] = true;
                             }
                         });
+                while (!waitEnd[0]) {
+                    // 阻塞只为onNew返回requestState
+                    ThreadUtils.sleep(1000);
+                }
+                VSLog.d("after convert");
+                PlaybackState playbackState = new PlaybackState(sessionState.getSessionId(), playBackPath[0]);
+                PlaybackHelper.responseString(context.getResponse(), playbackState.toJson());
+                context.complete();
+                VSLog.log(VSLog.DEBUG, "on Complete");
+                return playbackState;
             }
         });
 

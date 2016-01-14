@@ -36,7 +36,16 @@
         <servlet-name>Test</servlet-name>
         <servlet-class>cwh.web.servlet.Test</servlet-class>
     </servlet>
-    
+
+    <servlet-mapping>
+        <servlet-name>Download</servlet-name>
+        <url-pattern>/Download</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>Download</servlet-name>
+        <servlet-class>cwh.web.servlet.file.Download</servlet-class>
+    </servlet>
+
     <listener>
         <listener-class>cwh.web.listener.CleanListener</listener-class>
     </listener>

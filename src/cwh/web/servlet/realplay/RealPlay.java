@@ -1,5 +1,6 @@
 package cwh.web.servlet.realplay;
 
+import cwh.utils.log.VSLog;
 import cwh.web.model.QueryVideoListerner;
 
 import javax.servlet.ServletException;
@@ -22,6 +23,8 @@ public class RealPlay extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 //        getServletContext().setAttribute("");
+        // todo 如果参数格式不正常，拒绝请求
+        VSLog.d("param:" + request.getQueryString());
         RealPlayHelper.asyncResponse(request, new QueryVideoListerner());
     }
 }

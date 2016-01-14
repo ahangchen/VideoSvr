@@ -23,6 +23,8 @@ public class PlayBack extends HttpServlet{
     }
 
     protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
+        // todo 如果参数格式不正常，拒绝请求
+        VSLog.d("param:" + request.getQueryString());
         PlaybackHelper.asyncResponse(request, new QueryVideoListerner());
     }
 }

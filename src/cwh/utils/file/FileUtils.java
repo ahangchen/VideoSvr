@@ -114,6 +114,10 @@ public class FileUtils {
         return deleteDir(new File(dirPath));
     }
 
+    public static boolean isExist(String filePath) {
+        return new File(filePath).exists();
+    }
+
     public static void main(String[] args) {
 //        FileUtils.flatTravel("/media/Software/lab/data/videoweb/realplay/192-168-199-108-554-1-2016-0-9", new Travel() {
 //            @Override

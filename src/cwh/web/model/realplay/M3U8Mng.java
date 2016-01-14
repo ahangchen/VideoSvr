@@ -59,14 +59,26 @@ public class M3U8Mng {
         return -1;
     }
 
-    public static void timelyClean(String curPath, CleanToggle cleanToggle) {
+    public static void waitForM3U8(String m3u8Path) {
+        while (true) {
+            // 存在即结束，不存在就sleep
+            if (FileUtils.isExist(m3u8Path)){
+                break;
+            }
+            ThreadUtils.sleep(1000);
+        }
+    }
+
+    public static void timelyClean(String curPath, boolean[] stopClean) {
         ThreadUtils.sleep(5000);//一开始还不用工作，先睡会
-        while (!cleanToggle.isStop()) {
+        while (!stopClean[0] && FileUtils.isExist(curPath)) {
             dueClean(curPath, curTSNum(curPath));
             ThreadUtils.sleep(2000);//不要清理太快
         }
         VSLog.d("stop timelyClean");
     }
+
+
 
     // 通过读取m3u8文件的数据来决定删除的文件，可能会有文件并行读写问题，但效率高。
     public static void dueClean(String curPath, final int curRcd) {
