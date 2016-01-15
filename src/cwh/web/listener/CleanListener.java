@@ -21,9 +21,11 @@ import javax.servlet.http.HttpSessionBindingEvent;
 public class CleanListener implements ServletContextListener,
         HttpSessionListener, HttpSessionAttributeListener, ServletRequestListener {
 
+    public static String TAG = "CleanListener";
+
     // Public constructor is required by servlet spec
     public CleanListener() {
-        VSLog.d("create");
+        VSLog.d(TAG, "create");
     }
 
     // -------------------------------------------------------
@@ -34,7 +36,7 @@ public class CleanListener implements ServletContextListener,
          initialized(when the Web application is deployed). 
          You can initialize servlet context related data here.
       */
-        VSLog.d("context initial");
+        VSLog.d(TAG, "context initial");
     }
 
     public void contextDestroyed(ServletContextEvent sce) {
@@ -42,7 +44,7 @@ public class CleanListener implements ServletContextListener,
          (the Web application) is undeployed or 
          Application Server shuts down.
       */
-        VSLog.d("context destroy");
+        VSLog.d(TAG, "context destroy");
     }
 
     // -------------------------------------------------------
@@ -50,16 +52,19 @@ public class CleanListener implements ServletContextListener,
     // -------------------------------------------------------
     public void sessionCreated(HttpSessionEvent se) {
       /* Session is created. */
-        VSLog.d("session create");
+        VSLog.d(TAG, "session create");
     }
 
     public void sessionDestroyed(HttpSessionEvent se) {
       /* Session is destroyed. */
-        VSLog.d("session destroy");
+        VSLog.d(TAG, "session destroy");
         String sid = se.getSession().getId();// 超时时用session本身的id，主动清理用参数里的id
         SessionState sessionState = SessionManager.getInstance().getSessionState(sid);
-        VSLog.d("session:" + sessionState);
+        if (sessionState == null) {
+            VSLog.d(TAG, "no such session:" + sid);
+        }
         SessionManager.getInstance().sessionClean(sessionState);
+        VSLog.d(TAG, "session" + sid + " destroyed");
     }
 
     // -------------------------------------------------------
@@ -70,30 +75,30 @@ public class CleanListener implements ServletContextListener,
       /* This method is called when an attribute 
          is added to a session.
       */
-        VSLog.d("attr add");
+//        VSLog.d("attr add");
     }
 
     public void attributeRemoved(HttpSessionBindingEvent sbe) {
       /* This method is called when an attribute
          is removed from a session.
       */
-        VSLog.d("attr remove");
+//        VSLog.d("attr remove");
     }
 
     public void attributeReplaced(HttpSessionBindingEvent sbe) {
       /* This method is invoked when an attibute
          is replaced in a session.
       */
-        VSLog.d("attr replace");
+//        VSLog.d("attr replace");
     }
 
     @Override
     public void requestDestroyed(ServletRequestEvent servletRequestEvent) {
-        VSLog.d("request destroy");
+//        VSLog.d("request destroy");
     }
 
     @Override
     public void requestInitialized(ServletRequestEvent servletRequestEvent) {
-        VSLog.d("request init");
+//        VSLog.d("request init");
     }
 }

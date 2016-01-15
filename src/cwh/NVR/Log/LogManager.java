@@ -23,6 +23,8 @@ public class LogManager {
         DHLOG_PLAYBACK,
         DHLOG_MANAGER
     }
+
+    public static String TAG = "LogManager";
     private static class Holder {
         public static final LogManager instance = new LogManager();
     }

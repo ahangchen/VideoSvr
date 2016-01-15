@@ -47,7 +47,7 @@ public class AsyncRealPlay implements Runnable {
             public void onOld(RequestState requestState) {
                 VSLog.d("cached");
                 RealPlayState realPlayState = (RealPlayState) requestState;
-                PlaybackHelper.responseString(context.getResponse(), realPlayState.toJson());
+                PlaybackHelper.responseString(context.getResponse(), realPlayState.toJson(sessionState.getSessionId()));
                 context.complete();
             }
 
@@ -59,7 +59,7 @@ public class AsyncRealPlay implements Runnable {
                 RealPlayState realPlayState = new RealPlayState(sessionState.getSessionId(), realPlayVideoPath, convert, stopClean);
                 // 等m3u8生成
                 M3U8Mng.waitForM3U8(realPlayVideoPath);
-                PlaybackHelper.responseString(context.getResponse(), realPlayState.toJson());
+                PlaybackHelper.responseString(context.getResponse(), realPlayState.toJson(sessionState.getSessionId()));
                 context.complete();
                 return realPlayState;
             }

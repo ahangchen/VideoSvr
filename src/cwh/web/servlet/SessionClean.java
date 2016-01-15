@@ -1,5 +1,6 @@
 package cwh.web.servlet;
 
+import cwh.utils.StringUtils;
 import cwh.utils.log.VSLog;
 import cwh.web.model.CommonDefine;
 import cwh.web.servlet.playback.PlaybackHelper;
@@ -21,23 +22,30 @@ public class SessionClean extends HttpServlet {
     // http://localhost:8888/VideoSvr/SessionClean?sid=12121212
     // return 木有
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        doGet(request,response);
+        doGet(request, response);
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        VSLog.d("session clean do get");
-        VSLog.d("param:" + request.getQueryString());
-        PlaybackHelper.responseString(response, request.getSession().toString());
-        VSLog.d(request.getSession().toString());
-        VSLog.d(request.getServletContext().toString());
-        VSLog.d(SessionManager.getInstance().toString());
-//        request.getSession().invalidate();
+        VSLog.d("Session clean param:" + request.getQueryString());
         String sid = request.getParameter(CommonDefine.SID);
         if (sid == null) {
             VSLog.e("clean but not sid");
+            PlaybackHelper.responseString(response, "clean but not sid");
+            return;
+        }
+
+        if (!StringUtils.isMatch(sid, PlaybackHelper.regxSid)) {
+            VSLog.e("illegal sid:" + sid);
+            PlaybackHelper.responseString(response, "illegal sid:" + sid);
             return;
         }
         SessionState sessionState = SessionManager.getInstance().getSessionState(sid);
+        if (sessionState == null) {
+            VSLog.e("required session not found");
+            PlaybackHelper.responseString(response, "required session not found");
+            return;
+        }
         SessionManager.getInstance().sessionClean(sessionState);
+        PlaybackHelper.responseString(response, "Session " + sid + "cleaned");
     }
 }

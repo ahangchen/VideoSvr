@@ -46,9 +46,20 @@ public class RealPlayState extends RequestState{
 //        return getRealPlayPath() + "/" + CommonDefine.REAL_PLAY_PATH + CommonDefine.M3U8;
 //    }
 
+    @Deprecated
     public String toJson() {
         return "{" +
                 "\"sid\":\"" + getSessionId() +
+                "\"," +
+                "\"rpp\":\"" + getRealPlayPath().replace(CommonDefine.DATA_PATH + "/", "") +
+                "\"," +
+                "\"svrt\":\"" + NvrService.getInstance().getDevTime() +
+                "\"}";
+    }
+
+    public String toJson(String sid) {
+        return "{" +
+                "\"sid\":\"" + sid +
                 "\"," +
                 "\"rpp\":\"" + getRealPlayPath().replace(CommonDefine.DATA_PATH + "/", "") +
                 "\"," +
@@ -68,7 +79,7 @@ public class RealPlayState extends RequestState{
 
     public static void main(String[] args) {
         try {
-            VSLog.d(new RealPlayState("11", "/home/cwh", Runtime.getRuntime().exec("ls"), new boolean[1]).toJson()
+            VSLog.d(new RealPlayState("11", "/home/cwh", Runtime.getRuntime().exec("ls"), new boolean[1]).toJson("")
             );
         } catch (IOException e) {
             e.printStackTrace();

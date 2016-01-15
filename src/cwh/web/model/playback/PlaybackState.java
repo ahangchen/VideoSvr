@@ -30,10 +30,18 @@ public class PlaybackState extends RequestState {
         this.playFilePath = playFilePath;
     }
 
-
+    @Deprecated
     public String toJson() {
         return "{" +
                 "\"sid\":\"" + getSessionId() +
+                "\"," +
+                "\"rpp\":\"" + getPlayFilePath() +
+                "\"}";
+    }
+
+    public String toJson(String sid) {
+        return "{" +
+                "\"sid\":\"" + sid +
                 "\"," +
                 "\"rpp\":\"" + getPlayFilePath() +
                 "\"}";

@@ -44,7 +44,7 @@ public class AsyncQueryVideo implements Runnable {
             @Override
             public void onOld(RequestState playbackState) {
                 VSLog.d("cached");
-                PlaybackHelper.responseString(context.getResponse(), ((PlaybackState)playbackState).toJson());
+                PlaybackHelper.responseString(context.getResponse(), ((PlaybackState)playbackState).toJson(sessionState.getSessionId()));
                 context.complete();
                 VSLog.log(VSLog.DEBUG, "on Complete");
             }
@@ -73,7 +73,7 @@ public class AsyncQueryVideo implements Runnable {
                 }
                 VSLog.d("after convert");
                 PlaybackState playbackState = new PlaybackState(sessionState.getSessionId(), playBackPath[0]);
-                PlaybackHelper.responseString(context.getResponse(), playbackState.toJson());
+                PlaybackHelper.responseString(context.getResponse(), playbackState.toJson(sessionState.getSessionId()));
                 context.complete();
                 VSLog.log(VSLog.DEBUG, "on Complete");
                 return playbackState;

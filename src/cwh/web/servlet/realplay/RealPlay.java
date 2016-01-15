@@ -23,8 +23,9 @@ public class RealPlay extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 //        getServletContext().setAttribute("");
-        // todo 如果参数格式不正常，拒绝请求
-        VSLog.d("param:" + request.getQueryString());
-        RealPlayHelper.asyncResponse(request, new QueryVideoListerner());
+        VSLog.d("RealPlay param:" + request.getQueryString());
+        if (RealPlayHelper.isParamOk(request)) {
+            RealPlayHelper.asyncResponse(request, new QueryVideoListerner());
+        }
     }
 }

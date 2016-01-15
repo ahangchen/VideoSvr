@@ -9,8 +9,12 @@ import java.util.LinkedList;
 public class RequestState {
     protected LinkedList<String> attachSessions = new LinkedList<String>();
 
-    public LinkedList<String> getAttachSessions() {
-        return attachSessions;
+    public boolean isAttached(){
+        return !attachSessions.isEmpty();
+    }
+
+    public boolean contain(String sid) {
+        return attachSessions.contains(sid);
     }
 
     public void addSession(String sid) {

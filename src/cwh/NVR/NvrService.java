@@ -13,6 +13,7 @@ import cwh.utils.log.VSLog;
  * 全局多线程单例
  */
 public class NvrService {
+    public static String TAG = "NvrService";
 
     private static class Holder {
         public static final NvrService instance = new NvrService();
