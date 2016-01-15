@@ -23,6 +23,7 @@ public class SessionManager {
     private static class Holder {
         static final SessionManager instance = new SessionManager();
     }
+
     public static String TAG = "SessionManager";
 
     public static SessionManager getInstance() {
@@ -61,12 +62,20 @@ public class SessionManager {
 
         // 客户端给的sid不对
         if (sessionState == null) {
-            VSLog.e(TAG, "session state no found");
-            sessionState = new SessionState();
+            VSLog.e(TAG, "session of sid " + sid + " no found, get sid from request");
             sid = request.getSession().getId();
 //            sid = VMath.hashLong(request);
-            sessionState.setSessionId(sid);
-            sessionStates.put(sid, sessionState);
+            // 再检查一发它是否存在
+            sessionState = sessionStates.get(sid);
+            if (sessionState == null) {
+                // 当做新请求
+                sessionState = new SessionState();
+                sessionState.setSessionId(sid);
+                sessionStates.put(sid, sessionState);
+            } else {
+                // 居然存在，偷拿别人的sid，打回原型
+                VSLog.d(TAG, "old session" + sid + ";" + sessionState);
+            }
         }
         return sessionState;
     }
@@ -157,7 +166,7 @@ public class SessionManager {
 
     public void requestPlayBack(String videoPath, SessionState sessionState, CacheCallback cacheCallback) {
         String sid = sessionState.getSessionId();
-        VSLog.d(TAG, "session:" + sessionState.toString() + "playback size:" + sessionState.getPlaybackStates().size());
+        VSLog.d(TAG, "session:" + sessionState.toString() + " playback size:" + sessionState.getPlaybackStates().size());
         synchronized (mp4Maps) {
             RequestState requestState = mp4Maps.get(videoPath);
             if (requestState != null) {
