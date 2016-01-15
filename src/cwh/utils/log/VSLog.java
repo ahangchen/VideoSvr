@@ -54,7 +54,7 @@ public class VSLog {
 
     private static String format(String tag, String log, String type) {
         return DateUtils.formatCurTime() + " "
-                + type + "[" + tag + "]" + " : "
+                + type + " : " + "[" + tag + "]\t\t"
                 + log + "\n";
     }
 
