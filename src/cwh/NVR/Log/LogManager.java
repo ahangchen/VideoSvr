@@ -47,10 +47,10 @@ public class LogManager {
 //        NvrService.getInstance().start();
         ArrayList<LogItem> logs = LogManager.getInstance().getLogs(LogManager.DH_LOG_QUERY_TYPE.DHLOG_ALL, 2015, 11, 17, 0, 0, 0, 2015, 11, 29, 0, 0, 0);
         for (LogItem log : logs) {
-            VSLog.log(VSLog.DEBUG, log.getStrLogType());
-            VSLog.log(VSLog.DEBUG, log.getStrLogTime());
-            VSLog.log(VSLog.DEBUG, log.getStrLogContext());
-            VSLog.log(VSLog.DEBUG, "-----------------------");
+            VSLog.d(TAG, log.getStrLogType());
+            VSLog.d(TAG, log.getStrLogTime());
+            VSLog.d(TAG, log.getStrLogContext());
+            VSLog.d(TAG, "-----------------------");
         }
         NvrService.getInstance().finish();
     }

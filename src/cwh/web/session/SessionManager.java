@@ -23,6 +23,7 @@ public class SessionManager {
     private static class Holder {
         static final SessionManager instance = new SessionManager();
     }
+    public static String TAG = "SessionManager";
 
     public static SessionManager getInstance() {
         return Holder.instance;
@@ -45,22 +46,22 @@ public class SessionManager {
                 sessionState.setSessionId(sid);
                 // 将这个session的sid写入session对象中,用于超时清理
                 request.getSession().setAttribute(CommonDefine.SID, sid);
-                VSLog.d("after set sid");
+                VSLog.d(TAG, "after set sid");
                 // 将sessionState写入全局的sessionStates中,而非servletContext，防止拖慢运行速度
                 sessionStates.put(sid, sessionState);
-                VSLog.d("put session <" + sid + "," + sessionState + ">");
+                VSLog.d(TAG, "put session <" + sid + "," + sessionState + ">");
             } else {
                 // 确实是客户端忘了带sid，拿request的sid
-                VSLog.d("old session" + sid + ";" + sessionState);
+                VSLog.d(TAG, "old session" + sid + ";" + sessionState);
             }
         } else {
             sessionState = sessionStates.get(sid);
-            VSLog.d("old session" + sid + ";" + sessionState);
+            VSLog.d(TAG, "old session" + sid + ";" + sessionState);
         }
 
         // 客户端给的sid不对
         if (sessionState == null) {
-            VSLog.e("session state no found");
+            VSLog.e(TAG, "session state no found");
             sessionState = new SessionState();
             sid = request.getSession().getId();
 //            sid = VMath.hashLong(request);
@@ -90,11 +91,11 @@ public class SessionManager {
     }
 
     public void sessionClean(SessionState sessionState) {
-        VSLog.d("play back count:" + sessionState.getPlaybackStates().size());
+        VSLog.d(TAG, "play back count:" + sessionState.getPlaybackStates().size());
         for (PlaybackState playbackState : sessionState.getPlaybackStates()) {
             playBackClean(playbackState, sessionState.getSessionId());
         }
-        VSLog.d("real play count:" + sessionState.getRealPlayStates().size());
+        VSLog.d(TAG, "real play count:" + sessionState.getRealPlayStates().size());
         for (RealPlayState realPlayState : sessionState.getRealPlayStates()) {
             realPlayClean(realPlayState, sessionState.getSessionId());
         }
@@ -105,9 +106,9 @@ public class SessionManager {
         requestDestroy(playbackState.getPlayFilePath(), sid, new DestroyCallback() {
             @Override
             public void onEmpty() {
-                VSLog.d("delete:" + playbackState.getPlayFilePath());
+                VSLog.d(TAG, "delete:" + playbackState.getPlayFilePath());
                 boolean ret = new File(CommonDefine.PLAY_BACK_DIR_PATH + "/" + playbackState.getPlayFilePath()).delete();
-                VSLog.d("ret: " + ret);
+                VSLog.d(TAG, "ret: " + ret);
             }
         });
     }
@@ -117,12 +118,12 @@ public class SessionManager {
             @Override
             public void onEmpty() {
                 realPlayState.getStopClean()[0] = true;
-                VSLog.d(realPlayState.getStopClean()[0] + "");
+                VSLog.d(TAG, realPlayState.getStopClean()[0] + "");
                 realPlayState.getConvertProcess().destroy();
                 // 等ffmepg进程结束再删，否则m3u8文件会删不掉
                 ThreadUtils.sleep(2000);
                 boolean ret = FileUtils.rmDir(M3U8Mng.realPlayPath2Dir(realPlayState.getRealPlayPath()));
-                VSLog.d("delete ret: " + ret);
+                VSLog.d(TAG, "delete ret: " + ret);
             }
         });
     }
@@ -134,10 +135,10 @@ public class SessionManager {
 
     public RequestState isCached(String requestPath) {
         if (mp4Maps.containsKey(requestPath)) {
-//            VSLog.d("contain key: " + requestPath);
+//            VSLog.d(TAG, "contain key: " + requestPath);
             return mp4Maps.get(requestPath);
         } else {
-//            VSLog.d("no cached " + requestPath);
+//            VSLog.d(TAG, "no cached " + requestPath);
             return null;
         }
     }
@@ -156,22 +157,22 @@ public class SessionManager {
 
     public void requestPlayBack(String videoPath, SessionState sessionState, CacheCallback cacheCallback) {
         String sid = sessionState.getSessionId();
-        VSLog.d("session:" + sessionState.toString() + "playback size:" + sessionState.getPlaybackStates().size());
+        VSLog.d(TAG, "session:" + sessionState.toString() + "playback size:" + sessionState.getPlaybackStates().size());
         synchronized (mp4Maps) {
             RequestState requestState = mp4Maps.get(videoPath);
             if (requestState != null) {
                 if (!requestState.contain(sid)) {
-//                    VSLog.d("has cache "+videoPath +" no contain " + sid);
+//                    VSLog.d(TAG, "has cache "+videoPath +" no contain " + sid);
                     requestState.addSession(sid);
                     cacheCallback.addTo(sessionState, requestState);
-//                    VSLog.d("add sid " + sid);
+//                    VSLog.d(TAG, "add sid " + sid);
                 } else { // same sesion request for the file again
-//                    VSLog.d("contain " + sid);
+//                    VSLog.d(TAG, "contain " + sid);
                 }
                 cacheCallback.onOld(requestState);
 
             } else {
-//                VSLog.d("add sid " + sid);
+//                VSLog.d(TAG, "add sid " + sid);
                 requestState = cacheCallback.onNew();
                 requestState.addSession(sid);
                 cacheCallback.addTo(sessionState, requestState);
@@ -186,19 +187,19 @@ public class SessionManager {
             if (requestState.isAttached()) {
                 if (requestState.contain(sid)) {
                     requestState.removeSession(sid);
-                    VSLog.d("remove sid :" + sid);
+                    VSLog.d(TAG, "remove sid :" + sid);
                     if (!requestState.isAttached()) {
                         // video文件的删除由playbackstate, realplaystate来做
                         destroyCallback.onEmpty();
                         // videoClean(videoPath);
-                        VSLog.d("clean " + videoPath);
+                        VSLog.d(TAG, "clean " + videoPath);
                         mp4Maps.remove(videoPath);
                     }
                 } else {
-                    VSLog.e("video cached, but required session not found");
+                    VSLog.e(TAG, "video cached, but required session not found");
                 }
             } else {
-                VSLog.e("video not found");
+                VSLog.e(TAG, "video not found");
             }
         }
     }

@@ -9,8 +9,9 @@ import java.io.IOException;
  */
 
 public class ConsoleUtils {
+    public static String TAG = "ConsoleUtils";
     public static void waitE() {
-        VSLog.log(VSLog.DEBUG, "press e to abort");
+        VSLog.d(TAG, "press e to abort");
         char c;
         try {
             c = (char) System.in.read();
@@ -22,7 +23,7 @@ public class ConsoleUtils {
         }
     }
     public static void waitE(Process process) {
-        VSLog.log(VSLog.DEBUG, "press e to abort");
+        VSLog.d(TAG, "press e to abort");
         char c;
         try {
             c = (char) System.in.read();

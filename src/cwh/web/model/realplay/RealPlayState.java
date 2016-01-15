@@ -16,7 +16,7 @@ public class RealPlayState extends RequestState{
     private String realPlayPath;
     private Process convertProcess;
     private boolean[] stopClean;
-
+    public static String TAG = "RealPlayState";
 
     public RealPlayState(String sessionId, String realPlayPath, Process convertProcess, boolean[] stopClean) {
         this.sessionId = sessionId;
@@ -79,7 +79,7 @@ public class RealPlayState extends RequestState{
 
     public static void main(String[] args) {
         try {
-            VSLog.d(new RealPlayState("11", "/home/cwh", Runtime.getRuntime().exec("ls"), new boolean[1]).toJson("")
+            VSLog.d(TAG, new RealPlayState("11", "/home/cwh", Runtime.getRuntime().exec("ls"), new boolean[1]).toJson("")
             );
         } catch (IOException e) {
             e.printStackTrace();

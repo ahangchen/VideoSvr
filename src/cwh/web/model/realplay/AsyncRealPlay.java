@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class AsyncRealPlay implements Runnable {
     AsyncContext context;
-
+    public static String TAG = "AsyncRealPlay";
     public AsyncRealPlay(AsyncContext context) {
         this.context = context;
     }
@@ -45,7 +45,7 @@ public class AsyncRealPlay implements Runnable {
 
             @Override
             public void onOld(RequestState requestState) {
-                VSLog.d("cached");
+                VSLog.d(TAG, "cached");
                 RealPlayState realPlayState = (RealPlayState) requestState;
                 PlaybackHelper.responseString(context.getResponse(), realPlayState.toJson(sessionState.getSessionId()));
                 context.complete();
@@ -71,7 +71,7 @@ public class AsyncRealPlay implements Runnable {
     public static String waitRealPlay(String ip, String port, String channel) {
         // ffmpeg -i rtsp://admin:admin@192.168.1.108:554/cam/realmonitor?channel=1&subtype=0 -vcodec copy -f hls out.m3u8
         String path = M3U8Mng.realPlayPath(ip, port, channel);
-        VSLog.log(VSLog.DEBUG, path);
+        VSLog.d(TAG, path);
         Process convert = sysRealPlay(ip, port, channel);
         ConsoleUtils.waitE(convert);
         return path;
@@ -87,7 +87,7 @@ public class AsyncRealPlay implements Runnable {
     // 拿到创建出来的线程
     public static Process sysRealPlay(String ip, String port, String channel, String realPlayVideoPath) {
         // ffmpeg -i rtsp://admin:admin@192.168.1.108:554/cam/realmonitor?channel=1&subtype=0 -vcodec copy -f hls out.m3u8
-        VSLog.d("ffmpeg to :" + realPlayVideoPath);
+        VSLog.d(TAG, "ffmpeg to :" + realPlayVideoPath);
         return CmdExecutor.run(String.format(CommonDefine.FFMPEG_CONVERT, ip, port, channel, realPlayVideoPath));
     }
 

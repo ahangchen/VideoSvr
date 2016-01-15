@@ -9,6 +9,8 @@ import java.io.*;
  * Created by cwh on 16-1-2
  */
 public class CmdExecutor {
+    public static String TAG = "CmdExecutor";
+
     public static String exec(String cmd) {
         try {
             String[] cmdA = {"/bin/sh", "-c", cmd};
@@ -19,7 +21,7 @@ public class CmdExecutor {
             StringBuilder sb = new StringBuilder();
             String line;
             while ((line = br.readLine()) != null) {
-                VSLog.log(VSLog.DEBUG, line);
+                VSLog.d(TAG, line);
                 sb.append(line).append("\n");
             }
             return sb.toString();
@@ -39,12 +41,12 @@ public class CmdExecutor {
             BufferedReader br = new BufferedReader(isr);
             String line = null;
 
-//            VSLog.log(VSLog.DEBUG, proc.toString());
+//            VSLog.d(TAG, proc.toString());
             while ((line = br.readLine()) != null) {
-                VSLog.log(VSLog.DEBUG, line);
+                VSLog.d(TAG, line);
             }
             int exitVal = proc.waitFor();
-            VSLog.log(VSLog.DEBUG, "Process exitValue: " + exitVal);
+            VSLog.d(TAG, "Process exitValue: " + exitVal);
         } catch (Throwable t) {
             t.printStackTrace();
         }
@@ -54,7 +56,7 @@ public class CmdExecutor {
         Process proc = null;
         try {
             Runtime runtime = Runtime.getRuntime();
-            VSLog.d(command);
+            VSLog.d(TAG, command);
             proc = runtime.exec(command);
 
 //          todo  打调用过程中的输出,有些log很多，后期还是给它单独开一个log文件比较好
@@ -71,7 +73,7 @@ public class CmdExecutor {
                             if (line.startsWith("frame=")) {
                                 continue;
                             }
-                            VSLog.log(VSLog.DEBUG, line);
+                            VSLog.d(TAG, line);
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -88,6 +90,6 @@ public class CmdExecutor {
 
     public static void main(String[] args) {
         String rst = exec("ls");
-        VSLog.log(VSLog.DEBUG, rst);
+        VSLog.d(TAG, rst);
     }
 }

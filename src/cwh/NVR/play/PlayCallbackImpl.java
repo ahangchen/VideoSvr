@@ -9,7 +9,7 @@ public class PlayCallbackImpl implements PlayCallback {
     public static String TAG = "PlayCallback";
     @Override
     public void onComplete(String filePath) {
-        VSLog.log(VSLog.DEBUG, "Java onComplete :" + filePath);
+        VSLog.d(TAG, "Java onComplete :" + filePath);
     }
 
 }

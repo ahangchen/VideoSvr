@@ -68,6 +68,6 @@ public class NvrService {
     }
 
     public static void main(String[] args) {
-        VSLog.d(NvrService.getInstance().getDevTime());
+        VSLog.d(TAG, NvrService.getInstance().getDevTime());
     }
 }

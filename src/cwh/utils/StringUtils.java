@@ -29,6 +29,6 @@ public class StringUtils {
     }
 
     public static void main(String[]args) {
-        VSLog.d(isMatch("125.216.2.122", REGX_IP)+"");
+        VSLog.d(TAG, isMatch("125.216.2.122", REGX_IP)+"");
     }
 }

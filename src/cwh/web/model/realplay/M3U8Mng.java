@@ -12,7 +12,7 @@ import java.io.*;
  * Created by cwh on 16-1-6
  */
 public class M3U8Mng {
-
+    public static String TAG = "M3U8Mng";
     private static class Holder {
         static final M3U8Mng instance = new M3U8Mng();
     }
@@ -36,7 +36,7 @@ public class M3U8Mng {
             //一次读一行，读入null时文件结束
             while ((tempString = reader.readLine()) != null) {
                 if (!tempString.substring(0, 1).equals("#")) {
-//                    VSLog.log(VSLog.DEBUG, tempString + " " + Integer.parseInt(tempString.substring(1).split("\\.")[0]));
+//                    VSLog.d(TAG, tempString + " " + Integer.parseInt(tempString.substring(1).split("\\.")[0]));
                     return Integer.parseInt(tempString.substring(1).split("\\.")[0]);
                 }
             }
@@ -75,7 +75,7 @@ public class M3U8Mng {
             dueClean(curPath, curTSNum(curPath));
             ThreadUtils.sleep(2000);//不要清理太快
         }
-        VSLog.d("stop timelyClean");
+        VSLog.d(TAG, "stop timelyClean");
     }
 
 
@@ -88,7 +88,7 @@ public class M3U8Mng {
                 int tsNum = getTsNum(file);
                 if (curRcd == -1 || tsNum == -1) return;
                 if (curRcd - 20> tsNum) { // 宽松的删除条件，保留当前的ts之前的20个
-                    VSLog.log(VSLog.DEBUG, "to delete");
+                    VSLog.d(TAG, "to delete");
                     file.delete();
                 }
             }
@@ -96,7 +96,7 @@ public class M3U8Mng {
     }
 
     public static int getTsNum(File file) {
-//        VSLog.log(VSLog.DEBUG, file.getName());
+//        VSLog.d(TAG, file.getName());
         if (file.getName().equals("t.m3u8")) return -1;
         return Integer.parseInt(file.getName().substring(1).split("\\.")[0]);
     }

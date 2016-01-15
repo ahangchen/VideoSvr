@@ -37,7 +37,7 @@ public class PlaybackHelper {
     }
 
     public static void asyncResponse(HttpServletRequest request, AsyncListener asyncListener) {
-        VSLog.log(VSLog.DEBUG, "playback asyncResponse");
+        VSLog.d(TAG, "playback asyncResponse");
         AsyncContext asyncContext = request.startAsync();
         asyncContext.setTimeout(60 * 1000);
         asyncContext.addListener(asyncListener);

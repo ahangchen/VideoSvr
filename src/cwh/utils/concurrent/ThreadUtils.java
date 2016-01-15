@@ -9,6 +9,7 @@ import java.util.concurrent.ThreadPoolExecutor;
  * Created by cwh on 15-12-25
  */
 public class ThreadUtils {
+	public static String TAG = "ThreadUtils";
 	private static ThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(10);
 
 	public static void runInBackGround(Runnable task) {
@@ -35,7 +36,7 @@ public class ThreadUtils {
 		try {
 			Thread.sleep(time);
 		} catch (InterruptedException e) {
-			VSLog.e("sleep interrupted", e);
+			VSLog.e(TAG, "sleep interrupted", e);
 		}
 	}
 }

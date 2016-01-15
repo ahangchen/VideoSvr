@@ -17,6 +17,7 @@ import java.io.IOException;
  */
 @WebServlet(name = "Test")
 public class Test extends HttpServlet {
+    public static String TAG = "Test";
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         doGet(request,response);
     }
@@ -25,14 +26,14 @@ public class Test extends HttpServlet {
 //        String sid = request.getParameter(CommonDefine.SID);
 //        Object obj;
 //        if ((obj = getServletContext().getAttribute(sid)) == null) {
-//            VSLog.d("obj null");
+//            VSLog.d(TAG, "obj null");
 //            obj = sid + "obj";
 //            getServletContext().setAttribute(sid, obj);
 //        }
 //        VSLog.d(obj.toString());
         PlaybackHelper.responseString(response, request.getSession().toString());
-        VSLog.d(request.getSession().toString());
-        VSLog.d(request.getServletContext().toString());
-        VSLog.d(SessionManager.getInstance().toString());
+        VSLog.d(TAG, request.getSession().toString());
+        VSLog.d(TAG, request.getServletContext().toString());
+        VSLog.d(TAG, SessionManager.getInstance().toString());
     }
 }

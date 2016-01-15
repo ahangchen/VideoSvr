@@ -75,30 +75,30 @@ public class CleanListener implements ServletContextListener,
       /* This method is called when an attribute 
          is added to a session.
       */
-//        VSLog.d("attr add");
+//        VSLog.d(TAG, "attr add");
     }
 
     public void attributeRemoved(HttpSessionBindingEvent sbe) {
       /* This method is called when an attribute
          is removed from a session.
       */
-//        VSLog.d("attr remove");
+//        VSLog.d(TAG, "attr remove");
     }
 
     public void attributeReplaced(HttpSessionBindingEvent sbe) {
       /* This method is invoked when an attibute
          is replaced in a session.
       */
-//        VSLog.d("attr replace");
+//        VSLog.d(TAG, "attr replace");
     }
 
     @Override
     public void requestDestroyed(ServletRequestEvent servletRequestEvent) {
-//        VSLog.d("request destroy");
+//        VSLog.d(TAG, "request destroy");
     }
 
     @Override
     public void requestInitialized(ServletRequestEvent servletRequestEvent) {
-//        VSLog.d("request init");
+//        VSLog.d(TAG, "request init");
     }
 }

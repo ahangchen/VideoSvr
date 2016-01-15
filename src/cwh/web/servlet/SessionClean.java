@@ -21,27 +21,28 @@ import java.io.IOException;
 public class SessionClean extends HttpServlet {
     // http://localhost:8888/VideoSvr/SessionClean?sid=12121212
     // return 木有
+    public static String TAG = "SessionClean";
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         doGet(request, response);
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        VSLog.d("Session clean param:" + request.getQueryString());
+        VSLog.d(TAG, "Session clean param:" + request.getQueryString());
         String sid = request.getParameter(CommonDefine.SID);
         if (sid == null) {
-            VSLog.e("clean but not sid");
+            VSLog.e(TAG, "clean but not sid");
             PlaybackHelper.responseString(response, "clean but not sid");
             return;
         }
 
         if (!StringUtils.isMatch(sid, PlaybackHelper.regxSid)) {
-            VSLog.e("illegal sid:" + sid);
+            VSLog.e(TAG, "illegal sid:" + sid);
             PlaybackHelper.responseString(response, "illegal sid:" + sid);
             return;
         }
         SessionState sessionState = SessionManager.getInstance().getSessionState(sid);
         if (sessionState == null) {
-            VSLog.e("required session not found");
+            VSLog.e(TAG, "required session not found");
             PlaybackHelper.responseString(response, "required session not found");
             return;
         }

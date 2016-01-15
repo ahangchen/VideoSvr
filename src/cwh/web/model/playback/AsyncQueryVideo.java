@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletRequest;
  * Created by cwh on 15-12-13
  */
 public class AsyncQueryVideo implements Runnable {
-
+    public static String TAG = "AsyncQueryVideo";
     AsyncContext context;
 
     public AsyncQueryVideo(AsyncContext context) {
@@ -27,7 +27,7 @@ public class AsyncQueryVideo implements Runnable {
 
     @Override
     public void run() {
-        VSLog.log(VSLog.DEBUG, "run");
+        VSLog.d(TAG, "run");
         final HttpServletRequest request = (HttpServletRequest) context.getRequest();
         final VideoQueryParam videoQueryParam = StringUtils.DateTime2Param(
                 request.getParameter(CommonDefine.CHANNEL),
@@ -43,10 +43,10 @@ public class AsyncQueryVideo implements Runnable {
 
             @Override
             public void onOld(RequestState playbackState) {
-                VSLog.d("cached");
+                VSLog.d(TAG, "cached");
                 PlaybackHelper.responseString(context.getResponse(), ((PlaybackState)playbackState).toJson(sessionState.getSessionId()));
                 context.complete();
-                VSLog.log(VSLog.DEBUG, "on Complete");
+                VSLog.d(TAG, "on Complete");
             }
 
             @Override
@@ -71,11 +71,11 @@ public class AsyncQueryVideo implements Runnable {
                     // 阻塞只为onNew返回requestState
                     ThreadUtils.sleep(1000);
                 }
-                VSLog.d("after convert");
+                VSLog.d(TAG, "after convert");
                 PlaybackState playbackState = new PlaybackState(sessionState.getSessionId(), playBackPath[0]);
                 PlaybackHelper.responseString(context.getResponse(), playbackState.toJson(sessionState.getSessionId()));
                 context.complete();
-                VSLog.log(VSLog.DEBUG, "on Complete");
+                VSLog.d(TAG, "on Complete");
                 return playbackState;
             }
         });

@@ -17,7 +17,7 @@ public class Master {
 //        NVRNative.time2VideoPath(0, 2015, 12, 11, 0, 0, 0, 2015, 12, 11, 0, 0, 3, new PlayCallback(){
 //            @Override
 //            public void onComplete(String filePath) {
-//                VSLog.log(VSLog.DEBUG, "Java onComplete :" + filePath);
+//                VSLog.d(TAG, "Java onComplete :" + filePath);
 //            }
 //
 //        });
@@ -32,7 +32,7 @@ public class Master {
                 }
             }
         }.start();
-//        VSLog.d("1");
+//        VSLog.d(TAG, "1");
 //        M3U8Mng.dueClean(M3U8Mng.realPlayDir("125.216.247.121", "38888", "1"), 3);
     }
 }

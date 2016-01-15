@@ -18,12 +18,13 @@ import java.io.IOException;
 public class PlayBack extends HttpServlet{
     // http://localhost:8888/VideoSvr/Playback?start=2015-12-11-0-0-0&end=2015-12-11-0-0-3&channel=0&sid=131212121
     // return {"sid":"1154234445","rpp":"/home/cwh"}
+    public static String TAG = "PlayBack";
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         doGet(request,response);
     }
 
     protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
-        VSLog.d("Playback param:" + request.getQueryString());
+        VSLog.d(TAG, "Playback param:" + request.getQueryString());
         if (PlaybackHelper.isParamOk(request)) {
             PlaybackHelper.asyncResponse(request, new QueryVideoListerner());
         }

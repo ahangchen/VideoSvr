@@ -8,6 +8,7 @@ import java.io.*;
  * Created by cwh on 16-1-5
  */
 public class FileUtils {
+    public static String TAG = "FileUtils";
     public interface Travel {
         public void onFile(File file);
     }
@@ -17,12 +18,12 @@ public class FileUtils {
         File dir = new File(dirStr);
         File[] listFiles = dir.listFiles();
         if (listFiles == null) {
-            VSLog.log(VSLog.DEBUG, "listFiles null");
+            VSLog.d(TAG, "listFiles null");
             return;
         }
         for (File f : listFiles) {
             if (f.isFile()) {
-//                VSLog.log(VSLog.DEBUG, "isFile");
+//                VSLog.d(TAG, "isFile");
                 onTravel.onFile(f);
             }
         }
@@ -78,11 +79,11 @@ public class FileUtils {
                 } else
                     out.write(buffer, 0, ins);
                 Thread.sleep(1000);
-                VSLog.log(VSLog.DEBUG, "cp");
-                VSLog.log(VSLog.DEBUG, "cp");
+                VSLog.d(TAG, "cp");
+                VSLog.d(TAG, "cp");
             }
         } catch (Exception e) {
-            VSLog.err("cp", e);
+            VSLog.err(TAG, "cp", e);
         }
     }
 
@@ -101,7 +102,7 @@ public class FileUtils {
             for (String child : children) {
                 boolean success = deleteDir(new File(dir, child));
                 if (!success) {
-                    VSLog.d("delete filedir failed:" + child);
+                    VSLog.d(TAG, "delete filedir failed:" + child);
                     return false;
                 }
             }
