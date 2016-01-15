@@ -1,5 +1,6 @@
 package cwh.web.model.realplay;
 
+import cwh.NVR.NvrService;
 import cwh.utils.date.DateUtils;
 import cwh.utils.log.VSLog;
 import cwh.web.model.CommonDefine;
@@ -51,7 +52,7 @@ public class RealPlayState extends RequestState{
                 "\"," +
                 "\"rpp\":\"" + getRealPlayPath().replace(CommonDefine.DATA_PATH + "/", "") +
                 "\"," +
-                "\"svrt\":\"" + DateUtils.formatCurDateTime() +
+                "\"svrt\":\"" + NvrService.getInstance().getDevTime() +
                 "\"}";
     }
 
@@ -61,7 +62,7 @@ public class RealPlayState extends RequestState{
                 "\"," +
                 "\"rpp\":\"" + realPlayDirPath.replace(CommonDefine.DATA_PATH + "/", "") +
                 "\"," +
-                "\"svrt\":\"" + DateUtils.formatCurDateTime() +
+                "\"svrt\":\"" + NvrService.getInstance().getDevTime() +
                 "\"}";
     }
 

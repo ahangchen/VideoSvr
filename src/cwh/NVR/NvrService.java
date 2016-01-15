@@ -5,6 +5,7 @@ package cwh.NVR;
  */
 
 import cwh.NVR.play.PlayCallback;
+import cwh.utils.log.VSLog;
 
 /**
  * Nvr相关操作都放在这里调用
@@ -48,11 +49,11 @@ public class NvrService {
     }
 
     public void time2VideoPath(int channel,
-                                             int startYear, int startMon, int startDay,
-                                             int startHour, int startMin, int startSec,
-                                             int endYear, int endMon, int endDay,
-                                             int endHour, int endMin, int endSec,
-                                             PlayCallback playCallback) {
+                               int startYear, int startMon, int startDay,
+                               int startHour, int startMin, int startSec,
+                               int endYear, int endMon, int endDay,
+                               int endHour, int endMin, int endSec,
+                               PlayCallback playCallback) {
         NVRNative.time2VideoPath(channel,
                 startYear, startMon, startDay,
                 startHour, startMin, startSec,
@@ -61,7 +62,11 @@ public class NvrService {
                 playCallback);
     }
 
-    public void realPlay(String ipStr) {
-        
+    public String getDevTime() {
+        return NVRNative.getDevTime() + ".000";
+    }
+
+    public static void main(String[] args) {
+        VSLog.d(NvrService.getInstance().getDevTime());
     }
 }

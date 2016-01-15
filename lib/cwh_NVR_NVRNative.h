@@ -55,6 +55,14 @@ JNIEXPORT jobject JNICALL Java_cwh_NVR_NVRNative_getLogs
 JNIEXPORT void JNICALL Java_cwh_NVR_NVRNative_time2VideoPath
   (JNIEnv *, jclass, jint, jint, jint, jint, jint, jint, jint, jint, jint, jint, jint, jint, jint, jobject);
 
+/*
+ * Class:     cwh_NVR_NVRNative
+ * Method:    getDevTime
+ * Signature: ()Ljava/lang/String;
+ */
+JNIEXPORT jstring JNICALL Java_cwh_NVR_NVRNative_getDevTime
+  (JNIEnv *, jclass);
+
 #ifdef __cplusplus
 }
 #endif

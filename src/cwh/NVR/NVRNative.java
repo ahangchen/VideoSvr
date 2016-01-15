@@ -13,6 +13,7 @@ import java.util.ArrayList;
  * 1.use jni,call nvr method
  *
  * 2.create cpp file.
+ * javah -d lib -classpath out/production/VideoSvr -jni cwh.NVR.NVRNative
  * 3.build .so:
  *      one way:
  *          gcc -fPIC -D_REENTRANT -I /home/cwh/java/include -I /home/cwh/java/include/linux -c lib/cwh_NVR_NVRNative.c
@@ -41,4 +42,6 @@ public class NVRNative {
                                               int startYear, int startMon, int startDay, int startHour, int startMin, int startSec,
                                               int endYear, int endMon, int endDay, int endHour, int endMin, int endSec,
                                               PlayCallback playCallback);
+
+    public static native String getDevTime();
 }
