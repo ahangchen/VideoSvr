@@ -3,6 +3,7 @@ package cwh.web.model.playback;
 import cwh.NVR.NvrService;
 import cwh.NVR.play.PlayCallback;
 import cwh.utils.concurrent.ThreadUtils;
+import cwh.utils.file.FileUtils;
 import cwh.utils.log.VSLog;
 import cwh.web.model.CommonDefine;
 import cwh.web.model.RequestState;
@@ -35,16 +36,16 @@ public class AsyncQueryVideo implements Runnable {
                 request.getParameter(CommonDefine.END));
         final SessionState sessionState = SessionManager.getInstance().getSessionState(request);
         String videoPath = VideoQueryParam.formatPath(videoQueryParam);
-        SessionManager.getInstance().requestPlayBack(videoPath, sessionState, new SessionManager.CacheCallback() {
+        SessionManager.getInstance().requestVideo(videoPath, sessionState, new SessionManager.CacheCallback() {
             @Override
             public void addTo(SessionState sessionState, RequestState requestState) {
-                sessionState.addPlayback((PlaybackState)requestState);
+                sessionState.addPlayback((PlaybackState) requestState);
             }
 
             @Override
             public void onOld(RequestState playbackState) {
                 VSLog.d(TAG, "cached");
-                PlaybackHelper.responseString(context.getResponse(), ((PlaybackState)playbackState).toJson(sessionState.getSessionId()));
+                PlaybackHelper.responseString(context.getResponse(), ((PlaybackState) playbackState).toJson(sessionState.getSessionId()));
                 context.complete();
                 VSLog.d(TAG, "on Complete");
             }
@@ -67,9 +68,22 @@ public class AsyncQueryVideo implements Runnable {
                                 waitEnd[0] = true;
                             }
                         });
-                while (!waitEnd[0]) {
+                int i = 50;
+                while (!waitEnd[0] && i > 0) {
                     // 阻塞只为onNew返回requestState
                     ThreadUtils.sleep(1000);
+                    i--;
+                }
+                VSLog.d(TAG, "convert time :" + i);
+                if (!waitEnd[0] || !FileUtils.isExist(CommonDefine.PLAY_BACK_DIR_PATH + "/" + playBackPath[0])) {
+                    if (waitEnd[0]) {
+                        VSLog.e(TAG, "generate required file failed");
+                    } else {
+                        VSLog.e(TAG, "wait for playback over 50 seconds");
+                        PlaybackHelper.responseString(context.getResponse(), "wait for playback over 50 seconds");
+                    }
+                    context.complete();
+                    return null;
                 }
                 VSLog.d(TAG, "after convert");
                 PlaybackState playbackState = new PlaybackState(sessionState.getSessionId(), playBackPath[0]);

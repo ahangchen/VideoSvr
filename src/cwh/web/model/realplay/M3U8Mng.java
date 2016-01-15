@@ -13,6 +13,7 @@ import java.io.*;
  */
 public class M3U8Mng {
     public static String TAG = "M3U8Mng";
+
     private static class Holder {
         static final M3U8Mng instance = new M3U8Mng();
     }
@@ -59,25 +60,28 @@ public class M3U8Mng {
         return -1;
     }
 
-    public static void waitForM3U8(String m3u8Path) {
-        while (true) {
+    public static boolean waitForM3U8(String m3u8Path) {
+        int i = 50; // counter
+        while (i > 0) {
             // 存在即结束，不存在就sleep
-            if (FileUtils.isExist(m3u8Path)){
-                break;
+            if (FileUtils.isExist(m3u8Path)) {
+                return true;
             }
             ThreadUtils.sleep(1000);
+            i--;
         }
+        return false;
     }
 
     public static void timelyClean(String curPath, boolean[] stopClean) {
         ThreadUtils.sleep(5000);//一开始还不用工作，先睡会
-        while (!stopClean[0] && FileUtils.isExist(curPath)) {
+        while (!stopClean[0] && FileUtils.isExist(curPath)
+                && FileUtils.isExist(M3U8Mng.realPlayDir2Path(curPath))) {
             dueClean(curPath, curTSNum(curPath));
-            ThreadUtils.sleep(2000);//不要清理太快
+            ThreadUtils.sleep(2000);//不要清理太快, 省点cpu
         }
         VSLog.d(TAG, "stop timelyClean");
     }
-
 
 
     // 通过读取m3u8文件的数据来决定删除的文件，可能会有文件并行读写问题，但效率高。
@@ -87,7 +91,7 @@ public class M3U8Mng {
             public void onFile(File file) {
                 int tsNum = getTsNum(file);
                 if (curRcd == -1 || tsNum == -1) return;
-                if (curRcd - 20> tsNum) { // 宽松的删除条件，保留当前的ts之前的20个
+                if (curRcd - 20 > tsNum) { // 宽松的删除条件，保留当前的ts之前的20个
                     VSLog.d(TAG, "to delete");
                     file.delete();
                 }
@@ -112,7 +116,7 @@ public class M3U8Mng {
     public static String realPlayDir(String ip, String port, String channel) {
         // 目录名只与摄像头相关
         String curDirPath = ip.replace(".", "-") + "-" + port + "-" + channel /* + "-"
-                + DateUtils.formatCurDate()+"-"+ DateUtils.formatCurTime().replace(":","-")*/ ;
+                + DateUtils.formatCurDate()+"-"+ DateUtils.formatCurTime().replace(":","-")*/;
         File curDir = new File(CommonDefine.DATA_PATH + "/" + CommonDefine.REAL_PLAY_DIR_PATH + "/" + curDirPath);
         curDir.mkdir();
         return CommonDefine.DATA_PATH + "/" + CommonDefine.REAL_PLAY_DIR_PATH + "/" + curDirPath;

@@ -1,6 +1,7 @@
 package cwh.web.model.realplay;
 
 import cwh.utils.console.ConsoleUtils;
+import cwh.utils.file.FileUtils;
 import cwh.utils.log.VSLog;
 import cwh.utils.process.CmdExecutor;
 import cwh.web.model.CommonDefine;
@@ -36,7 +37,7 @@ public class AsyncRealPlay implements Runnable {
         final boolean[] stopClean = new boolean[1];// 控制是否停止清理
         stopClean[0] = false;
         // 整个调用与回调都是同步阻塞进行的，需要等它们都执行完才会起clean。之所以用回调写是为了隐藏session管理细节，并且与playback兼容
-        SessionManager.getInstance().requestPlayBack(realPlayVideoPath, sessionState, new SessionManager.CacheCallback() {
+        SessionManager.getInstance().requestVideo(realPlayVideoPath, sessionState, new SessionManager.CacheCallback() {
             @Override
             public void addTo(SessionState sessionState, RequestState requestState) {
                 // sessionManager会在除了同一个session重复访问同一个资源之外的情况下执行addTo
@@ -58,10 +59,16 @@ public class AsyncRealPlay implements Runnable {
                 Process convert = sysRealPlay(ip, port, channel, realPlayVideoPath);
                 RealPlayState realPlayState = new RealPlayState(sessionState.getSessionId(), realPlayVideoPath, convert, stopClean);
                 // 等m3u8生成
-                M3U8Mng.waitForM3U8(realPlayVideoPath);
-                PlaybackHelper.responseString(context.getResponse(), realPlayState.toJson(sessionState.getSessionId()));
-                context.complete();
-                return realPlayState;
+                boolean m3u8Ret = M3U8Mng.waitForM3U8(realPlayVideoPath);
+                if (m3u8Ret && FileUtils.isExist(realPlayVideoPath)) {
+                    PlaybackHelper.responseString(context.getResponse(), realPlayState.toJson(sessionState.getSessionId()));
+                    context.complete();
+                    return realPlayState;
+                } else {
+                    PlaybackHelper.responseString(context.getResponse(), "generate m3u8 time out");
+                    context.complete();
+                    return null;
+                }
             }
         });
         // 清理,可以用不开线程的方式来做，前面已经response了

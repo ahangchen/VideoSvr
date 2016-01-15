@@ -8,13 +8,10 @@ import cwh.web.model.RequestState;
 import cwh.web.model.playback.PlaybackState;
 import cwh.web.model.realplay.M3U8Mng;
 import cwh.web.model.realplay.RealPlayState;
-import cwh.web.servlet.playback.PlaybackHelper;
 
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.util.HashMap;
-import java.util.LinkedList;
 
 /**
  * Created by cwh on 16-1-7
@@ -31,72 +28,59 @@ public class SessionManager {
     }
 
     // 用hashMap代替linkedList，冗余sessionId，加快查询速度
-    private HashMap<String, SessionState> sessionStates = new HashMap<String, SessionState>();
+    private final HashMap<String, SessionState> sessionStates = new HashMap<String, SessionState>();
 
     public SessionState getSessionState(HttpServletRequest request) {
         SessionState sessionState;
         String sid = request.getParameter(CommonDefine.SID);
-        if (sid == null) {
-            // 第一次建立session或者client在后来的请求中没有带上sid
-            sid = request.getSession().getId();
-            // 检查是否是client忘了带上sid
-            sessionState = sessionStates.get(sid);
-            if (sessionState == null) {
+        synchronized (sessionStates) {
+            if (sid == null) {
+                // 第一次建立session或者client在后来的请求中没有带上sid
+                sid = request.getSession().getId();
+                // 检查是否是client忘了带上sid
+                sessionState = sessionStates.get(sid);
+                if (sessionState == null) {
 //            sid = VMath.hashLong(request);
-                sessionState = new SessionState();
-                sessionState.setSessionId(sid);
-                // 将这个session的sid写入session对象中,用于超时清理
-                request.getSession().setAttribute(CommonDefine.SID, sid);
-                VSLog.d(TAG, "after set sid");
-                // 将sessionState写入全局的sessionStates中,而非servletContext，防止拖慢运行速度
-                sessionStates.put(sid, sessionState);
-                VSLog.d(TAG, "put session <" + sid + "," + sessionState + ">");
+                    sessionState = new SessionState();
+                    sessionState.setSessionId(sid);
+                    // 将这个session的sid写入session对象中,用于超时清理
+                    request.getSession().setAttribute(CommonDefine.SID, sid);
+                    VSLog.d(TAG, "after set sid");
+                    // 将sessionState写入全局的sessionStates中,而非servletContext，防止拖慢运行速度
+                    sessionStates.put(sid, sessionState);
+                    VSLog.d(TAG, "put session <" + sid + "," + sessionState + ">");
+                } else {
+                    // 确实是客户端忘了带sid，拿request的sid
+                    VSLog.d(TAG, "old session" + sid + ";" + sessionState);
+                }
             } else {
-                // 确实是客户端忘了带sid，拿request的sid
+                sessionState = sessionStates.get(sid);
                 VSLog.d(TAG, "old session" + sid + ";" + sessionState);
             }
-        } else {
-            sessionState = sessionStates.get(sid);
-            VSLog.d(TAG, "old session" + sid + ";" + sessionState);
-        }
 
-        // 客户端给的sid不对
-        if (sessionState == null) {
-            VSLog.e(TAG, "session of sid " + sid + " no found, get sid from request");
-            sid = request.getSession().getId();
-//            sid = VMath.hashLong(request);
-            // 再检查一发它是否存在
-            sessionState = sessionStates.get(sid);
+            // 客户端给的sid不对
             if (sessionState == null) {
-                // 当做新请求
-                sessionState = new SessionState();
-                sessionState.setSessionId(sid);
-                sessionStates.put(sid, sessionState);
-            } else {
-                // 居然存在，偷拿别人的sid，打回原型
-                VSLog.d(TAG, "old session" + sid + ";" + sessionState);
+                VSLog.e(TAG, "session of sid " + sid + " no found, get sid from request");
+                sid = request.getSession().getId();
+//            sid = VMath.hashLong(request);
+                // 再检查一发它是否存在
+                sessionState = sessionStates.get(sid);
+                if (sessionState == null) {
+                    // 当做新请求
+                    sessionState = new SessionState();
+                    sessionState.setSessionId(sid);
+                    sessionStates.put(sid, sessionState);
+                } else {
+                    // 居然存在，偷拿别人的sid，打回原型
+                    VSLog.d(TAG, "old session" + sid + ";" + sessionState);
+                }
             }
+            return sessionState;
         }
-        return sessionState;
     }
 
     public SessionState getSessionState(String sid) {
         return sessionStates.get(sid);
-    }
-
-    public SessionState getSessionState(String sid, ServletContext context) {
-        SessionState sessionState;
-        if (sid == null) {
-            return null;
-        } else {
-            sessionState = (SessionState) context.getAttribute(sid);
-        }
-
-        // 客户端给的sid不对
-        if (sessionState == null) {
-            return null;
-        }
-        return sessionState;
     }
 
     public void sessionClean(SessionState sessionState) {
@@ -108,7 +92,9 @@ public class SessionManager {
         for (RealPlayState realPlayState : sessionState.getRealPlayStates()) {
             realPlayClean(realPlayState, sessionState.getSessionId());
         }
-        sessionStates.remove(sessionState.getSessionId());
+        synchronized (sessionStates) {
+            sessionStates.remove(sessionState.getSessionId());
+        }
     }
 
     public void playBackClean(final PlaybackState playbackState, String sid) {
@@ -139,13 +125,13 @@ public class SessionManager {
 
     // 由内存控制cache列表，保证原子性
     // <path,RequestState>
-    private static final HashMap<String, RequestState> mp4Maps = new HashMap<String, RequestState>();
+    private static final HashMap<String, RequestState> videoMaps = new HashMap<String, RequestState>();
 
 
     public RequestState isCached(String requestPath) {
-        if (mp4Maps.containsKey(requestPath)) {
+        if (videoMaps.containsKey(requestPath)) {
 //            VSLog.d(TAG, "contain key: " + requestPath);
-            return mp4Maps.get(requestPath);
+            return videoMaps.get(requestPath);
         } else {
 //            VSLog.d(TAG, "no cached " + requestPath);
             return null;
@@ -164,11 +150,12 @@ public class SessionManager {
         void onEmpty();
     }
 
-    public void requestPlayBack(String videoPath, SessionState sessionState, CacheCallback cacheCallback) {
+    public void requestVideo(String videoPath, SessionState sessionState, CacheCallback cacheCallback) {
         String sid = sessionState.getSessionId();
         VSLog.d(TAG, "session:" + sessionState.toString() + " playback size:" + sessionState.getPlaybackStates().size());
-        synchronized (mp4Maps) {
-            RequestState requestState = mp4Maps.get(videoPath);
+        synchronized (videoMaps) {
+            VSLog.d(TAG, "synchronized begin");
+            RequestState requestState = videoMaps.get(videoPath);
             if (requestState != null) {
                 if (!requestState.contain(sid)) {
 //                    VSLog.d(TAG, "has cache "+videoPath +" no contain " + sid);
@@ -183,15 +170,20 @@ public class SessionManager {
             } else {
 //                VSLog.d(TAG, "add sid " + sid);
                 requestState = cacheCallback.onNew();
-                requestState.addSession(sid);
-                cacheCallback.addTo(sessionState, requestState);
-                mp4Maps.put(videoPath, requestState);
+                if(requestState != null) {
+                    requestState.addSession(sid);
+                    cacheCallback.addTo(sessionState, requestState);
+                    videoMaps.put(videoPath, requestState);
+                } else {
+                    VSLog.e(TAG, "generate requestState failed, do nothing");
+                }
             }
         }
+            VSLog.d(TAG, "synchronized end");
     }
 
     public void requestDestroy(String videoPath, String sid, DestroyCallback destroyCallback) {
-        synchronized (mp4Maps) {
+        synchronized (videoMaps) {
             RequestState requestState = isCached(videoPath);
             if (requestState.isAttached()) {
                 if (requestState.contain(sid)) {
@@ -202,7 +194,7 @@ public class SessionManager {
                         destroyCallback.onEmpty();
                         // videoClean(videoPath);
                         VSLog.d(TAG, "clean " + videoPath);
-                        mp4Maps.remove(videoPath);
+                        videoMaps.remove(videoPath);
                     }
                 } else {
                     VSLog.e(TAG, "video cached, but required session not found");
