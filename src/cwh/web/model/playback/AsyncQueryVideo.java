@@ -86,7 +86,7 @@ public class AsyncQueryVideo implements Runnable {
                     return null;
                 }
                 VSLog.d(TAG, "after convert");
-                PlaybackState playbackState = new PlaybackState(sessionState.getSessionId(), playBackPath[0]);
+                PlaybackState playbackState = new PlaybackState(playBackPath[0]);
                 PlaybackHelper.responseString(context.getResponse(), playbackState.toJson(sessionState.getSessionId()));
                 context.complete();
                 VSLog.d(TAG, "on Complete");

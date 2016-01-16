@@ -12,14 +12,12 @@ import java.io.IOException;
  * Created by cwh on 16-1-7
  */
 public class RealPlayState extends RequestState{
-    private String sessionId;
     private String realPlayPath;
     private Process convertProcess;
     private boolean[] stopClean;
     public static String TAG = "RealPlayState";
 
-    public RealPlayState(String sessionId, String realPlayPath, Process convertProcess, boolean[] stopClean) {
-        this.sessionId = sessionId;
+    public RealPlayState(String realPlayPath, Process convertProcess, boolean[] stopClean) {
         this.realPlayPath = realPlayPath;
         this.convertProcess = convertProcess;
         this.stopClean = stopClean;
@@ -28,10 +26,6 @@ public class RealPlayState extends RequestState{
 
     public boolean[] getStopClean() {
         return stopClean;
-    }
-
-    public String getSessionId() {
-        return sessionId;
     }
 
     public String getRealPlayPath() {
@@ -46,16 +40,6 @@ public class RealPlayState extends RequestState{
 //        return getRealPlayPath() + "/" + CommonDefine.REAL_PLAY_PATH + CommonDefine.M3U8;
 //    }
 
-    @Deprecated
-    public String toJson() {
-        return "{" +
-                "\"sid\":\"" + getSessionId() +
-                "\"," +
-                "\"rpp\":\"" + getRealPlayPath().replace(CommonDefine.DATA_PATH + "/", "") +
-                "\"," +
-                "\"svrt\":\"" + NvrService.getInstance().getDevTime() +
-                "\"}";
-    }
 
     public String toJson(String sid) {
         return "{" +
@@ -79,7 +63,7 @@ public class RealPlayState extends RequestState{
 
     public static void main(String[] args) {
         try {
-            VSLog.d(TAG, new RealPlayState("11", "/home/cwh", Runtime.getRuntime().exec("ls"), new boolean[1]).toJson("")
+            VSLog.d(TAG, new RealPlayState("/home/cwh", Runtime.getRuntime().exec("ls"), new boolean[1]).toJson("")
             );
         } catch (IOException e) {
             e.printStackTrace();

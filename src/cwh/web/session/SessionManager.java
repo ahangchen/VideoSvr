@@ -170,7 +170,7 @@ public class SessionManager {
             } else {
 //                VSLog.d(TAG, "add sid " + sid);
                 requestState = cacheCallback.onNew();
-                if(requestState != null) {
+                if (requestState != null) {
                     requestState.addSession(sid);
                     cacheCallback.addTo(sessionState, requestState);
                     videoMaps.put(videoPath, requestState);
@@ -179,7 +179,7 @@ public class SessionManager {
                 }
             }
         }
-            VSLog.d(TAG, "synchronized end");
+        VSLog.d(TAG, "synchronized end");
     }
 
     public void requestDestroy(String videoPath, String sid, DestroyCallback destroyCallback) {

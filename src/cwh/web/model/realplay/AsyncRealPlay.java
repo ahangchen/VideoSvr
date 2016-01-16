@@ -57,7 +57,7 @@ public class AsyncRealPlay implements Runnable {
                 // 在这里发起转换，然后把进程交给Session，等待前端传回终止信息或超时以终止这个进程
                 // 长期持有这两个final不知道会不会有东西泄露
                 Process convert = sysRealPlay(ip, port, channel, realPlayVideoPath);
-                RealPlayState realPlayState = new RealPlayState(sessionState.getSessionId(), realPlayVideoPath, convert, stopClean);
+                RealPlayState realPlayState = new RealPlayState(realPlayVideoPath, convert, stopClean);
                 // 等m3u8生成
                 boolean m3u8Ret = M3U8Mng.waitForM3U8(realPlayVideoPath);
                 if (m3u8Ret && FileUtils.isExist(realPlayVideoPath)) {
@@ -66,6 +66,8 @@ public class AsyncRealPlay implements Runnable {
                     return realPlayState;
                 } else {
                     PlaybackHelper.responseString(context.getResponse(), "generate m3u8 time out");
+                    convert.destroy();
+                    FileUtils.rmDir(M3U8Mng.realPlayDir2Path(realPlayVideoPath));
                     context.complete();
                     return null;
                 }

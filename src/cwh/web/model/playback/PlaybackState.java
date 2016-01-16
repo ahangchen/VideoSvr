@@ -6,20 +6,10 @@ import cwh.web.model.RequestState;
  * Created by cwh on 16-1-7
  */
 public class PlaybackState extends RequestState {
-    private String sessionId;
     private String playFilePath;
 
-    public PlaybackState(String sessionId, String playFilePath) {
-        this.sessionId = sessionId;
+    public PlaybackState(String playFilePath) {
         this.playFilePath = playFilePath;
-    }
-
-    public String getSessionId() {
-        return sessionId;
-    }
-
-    public void setSessionId(String sessionId) {
-        this.sessionId = sessionId;
     }
 
     public String getPlayFilePath() {
@@ -30,14 +20,6 @@ public class PlaybackState extends RequestState {
         this.playFilePath = playFilePath;
     }
 
-    @Deprecated
-    public String toJson() {
-        return "{" +
-                "\"sid\":\"" + getSessionId() +
-                "\"," +
-                "\"rpp\":\"" + getPlayFilePath() +
-                "\"}";
-    }
 
     public String toJson(String sid) {
         return "{" +
