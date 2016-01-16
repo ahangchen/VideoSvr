@@ -163,7 +163,7 @@ public class SessionManager {
                     cacheCallback.addTo(sessionState, requestState);
 //                    VSLog.d(TAG, "add sid " + sid);
                 } else { // same sesion request for the file again
-//                    VSLog.d(TAG, "contain " + sid);
+                    VSLog.d(TAG, "Session " + sid + " cached");
                 }
                 cacheCallback.onOld(requestState);
 
