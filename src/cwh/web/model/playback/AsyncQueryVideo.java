@@ -10,7 +10,6 @@ import cwh.web.model.RequestState;
 import cwh.web.servlet.playback.PlaybackHelper;
 import cwh.web.session.SessionManager;
 import cwh.web.session.SessionState;
-import cwh.web.utils.StringUtils;
 
 import javax.servlet.AsyncContext;
 import javax.servlet.http.HttpServletRequest;
@@ -30,37 +29,37 @@ public class AsyncQueryVideo implements Runnable {
     public void run() {
         VSLog.d(TAG, "run");
         final HttpServletRequest request = (HttpServletRequest) context.getRequest();
-        final VideoQueryParam videoQueryParam = StringUtils.DateTime2Param(
+        final PlayBackParam playBackParam = new PlayBackParam(
+                request.getParameter(CommonDefine.IP),
+                request.getParameter(CommonDefine.PORT),
                 request.getParameter(CommonDefine.CHANNEL),
                 request.getParameter(CommonDefine.START),
                 request.getParameter(CommonDefine.END));
         final SessionState sessionState = SessionManager.getInstance().getSessionState(request);
-        String videoPath = VideoQueryParam.formatPath(videoQueryParam);
+        String videoPath = PlayBackParam.formatPath(playBackParam);
         SessionManager.getInstance().requestVideo(videoPath, sessionState, new SessionManager.CacheCallback() {
-            @Override
-            public void addTo(SessionState sessionState, RequestState requestState) {
-                sessionState.addPlayback((PlaybackState) requestState);
-            }
-
             @Override
             public void onOld(RequestState playbackState) {
                 VSLog.d(TAG, "cached");
-                PlaybackHelper.responseString(context.getResponse(), ((PlaybackState) playbackState).toJson(sessionState.getSessionId()));
+                PlaybackHelper.responseString(context.getResponse(), ((PlayBackRes) playbackState.getRes()).toJson(sessionState.getSessionId()));
                 context.complete();
                 VSLog.d(TAG, "on Complete");
             }
 
             @Override
-            public RequestState onNew() {
+            public boolean onNew(RequestState requestState) {
                 // 数组实现执向引用的常引用
                 final String[] playBackPath = new String[1];
                 final boolean[] waitEnd = new boolean[1];
                 waitEnd[0] = false;
-                NvrService.getInstance().time2VideoPath(videoQueryParam.getChannel(),
-                        videoQueryParam.getStartYear(), videoQueryParam.getStartMon(), videoQueryParam.getStartDay(),
-                        videoQueryParam.getStartHour(), videoQueryParam.getStartMin(), videoQueryParam.getStartSec(),
-                        videoQueryParam.getEndYear(), videoQueryParam.getEndMon(), videoQueryParam.getEndDay(),
-                        videoQueryParam.getEndHour(), videoQueryParam.getEndMin(), videoQueryParam.getEndSec(),
+                NvrService.getInstance().time2VideoPath(
+                        playBackParam.getIp()[0], playBackParam.getIp()[1],
+                        playBackParam.getIp()[2], playBackParam.getIp()[3],
+                        playBackParam.getPort(), playBackParam.getChannel(),
+                        playBackParam.getStartYear(), playBackParam.getStartMon(), playBackParam.getStartDay(),
+                        playBackParam.getStartHour(), playBackParam.getStartMin(), playBackParam.getStartSec(),
+                        playBackParam.getEndYear(), playBackParam.getEndMon(), playBackParam.getEndDay(),
+                        playBackParam.getEndHour(), playBackParam.getEndMin(), playBackParam.getEndSec(),
                         new PlayCallback() {
                             @Override
                             public void onComplete(String filePath) {
@@ -78,19 +77,21 @@ public class AsyncQueryVideo implements Runnable {
                 if (!waitEnd[0] || !FileUtils.isExist(CommonDefine.PLAY_BACK_DIR_PATH + "/" + playBackPath[0])) {
                     if (waitEnd[0]) {
                         VSLog.e(TAG, "generate required file failed");
+                        PlaybackHelper.responseString(context.getResponse(), "generate required file failed");
                     } else {
                         VSLog.e(TAG, "wait for playback over 50 seconds");
                         PlaybackHelper.responseString(context.getResponse(), "wait for playback over 50 seconds");
                     }
                     context.complete();
-                    return null;
+                    return false;
                 }
                 VSLog.d(TAG, "after convert");
-                PlaybackState playbackState = new PlaybackState(playBackPath[0]);
-                PlaybackHelper.responseString(context.getResponse(), playbackState.toJson(sessionState.getSessionId()));
+                PlayBackRes playBackRes = new PlayBackRes(playBackPath[0]);
+                PlaybackHelper.responseString(context.getResponse(), playBackRes.toJson(sessionState.getSessionId()));
+                requestState.setRes(playBackRes);
                 context.complete();
                 VSLog.d(TAG, "on Complete");
-                return playbackState;
+                return true;
             }
         });
 

@@ -1,27 +1,31 @@
 package cwh.web.model.realplay;
 
 import cwh.NVR.NvrService;
-import cwh.utils.date.DateUtils;
 import cwh.utils.log.VSLog;
 import cwh.web.model.CommonDefine;
-import cwh.web.model.RequestState;
+import cwh.web.model.NvrInfo;
 
 import java.io.IOException;
 
 /**
  * Created by cwh on 16-1-7
  */
-public class RealPlayState extends RequestState{
-    private String realPlayPath;
+public class RealPlayRes {
+    private NvrInfo nvrInfo;
+    private String videoPath;
     private Process convertProcess;
     private boolean[] stopClean;
     public static String TAG = "RealPlayState";
 
-    public RealPlayState(String realPlayPath, Process convertProcess, boolean[] stopClean) {
-        this.realPlayPath = realPlayPath;
+    public RealPlayRes(String ip, String port, String videoPath, Process convertProcess, boolean[] stopClean) {
+        nvrInfo = new NvrInfo(ip, port);
+        this.videoPath = videoPath;
         this.convertProcess = convertProcess;
         this.stopClean = stopClean;
+    }
 
+    public NvrInfo getNvrInfo() {
+        return nvrInfo;
     }
 
     public boolean[] getStopClean() {
@@ -29,7 +33,7 @@ public class RealPlayState extends RequestState{
     }
 
     public String getRealPlayPath() {
-        return realPlayPath;
+        return videoPath;
     }
 
     public Process getConvertProcess() {
@@ -47,26 +51,20 @@ public class RealPlayState extends RequestState{
                 "\"," +
                 "\"rpp\":\"" + getRealPlayPath().replace(CommonDefine.DATA_PATH + "/", "") +
                 "\"," +
-                "\"svrt\":\"" + NvrService.getInstance().getDevTime() +
+                "\"svrt\":\"" + NvrService.getInstance().getDevTime(getNvrInfo().getIp(), getNvrInfo().getPort()) +
                 "\"}";
     }
 
-    public static String cacheJson(String sid, String realPlayDirPath) {
+    public static String cacheJson(String sid, String realPlayDirPath, String nvrIP, String nvrPort) {
         return "{" +
                 "\"sid\":\"" + sid +
                 "\"," +
                 "\"rpp\":\"" + realPlayDirPath.replace(CommonDefine.DATA_PATH + "/", "") +
                 "\"," +
-                "\"svrt\":\"" + NvrService.getInstance().getDevTime() +
+                "\"svrt\":\"" + NvrService.getInstance().getDevTime(nvrIP, nvrPort) +
                 "\"}";
     }
 
     public static void main(String[] args) {
-        try {
-            VSLog.d(TAG, new RealPlayState("/home/cwh", Runtime.getRuntime().exec("ls"), new boolean[1]).toJson("")
-            );
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 }

@@ -28,6 +28,16 @@ public class StringUtils {
         return str == null || str.length() == 0;
     }
 
+    public static int[] str2Ips(String sIp) {
+        int[] iIps = new int[4];
+        String[] ips = sIp.split("\\.");
+        iIps[0] = Integer.parseInt(ips[0]);
+        iIps[1] = Integer.parseInt(ips[1]);
+        iIps[2] = Integer.parseInt(ips[2]);
+        iIps[3] = Integer.parseInt(ips[3]);
+        return iIps;
+    }
+
     public static void main(String[]args) {
         VSLog.d(TAG, isMatch("125.216.2.122", REGX_IP)+"");
     }

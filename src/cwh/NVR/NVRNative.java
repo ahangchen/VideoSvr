@@ -38,10 +38,10 @@ public class NVRNative {
     public static native ArrayList<LogItem> getLogs(int type,
                                                     int startYear, int startMon, int startDay, int startHour, int startMin, int startSec,
                                                     int endYear, int endMon, int endDay, int endHour, int endMin, int endSec);
-    public static native void time2VideoPath (int channel ,
+    public static native void time2VideoPath (int ip0, int ip1, int ip2, int ip3, int port, int channel ,
                                               int startYear, int startMon, int startDay, int startHour, int startMin, int startSec,
                                               int endYear, int endMon, int endDay, int endHour, int endMin, int endSec,
                                               PlayCallback playCallback);
 
-    public static native String getDevTime();
+    public static native String getDevTime(int ip0, int ip1, int ip2, int ip3, int port);
 }

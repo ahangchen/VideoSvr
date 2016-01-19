@@ -1,17 +1,17 @@
 package cwh.web.session;
 
-import cwh.web.model.playback.PlaybackState;
-import cwh.web.model.realplay.RealPlayState;
+import cwh.web.model.RequestState;
 
 import java.util.LinkedList;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Created by cwh on 16-1-7
  */
 public class SessionState {
     private String sessionId;
-    private LinkedList<PlaybackState> playbackStates = new LinkedList<PlaybackState>();
-    private LinkedList<RealPlayState> realPlayStates = new LinkedList<RealPlayState>();
+    private LinkedList<RequestState> requestStates = new LinkedList<RequestState>();
 
     public String getSessionId() {
         return sessionId;
@@ -21,19 +21,25 @@ public class SessionState {
         this.sessionId = sessionId;
     }
 
-    public LinkedList<PlaybackState> getPlaybackStates() {
-        return playbackStates;
+    public LinkedList<RequestState> getRequestStates() {
+        return requestStates;
     }
 
-
-    public LinkedList<RealPlayState> getRealPlayStates() {
-        return realPlayStates;
+    public void addRequest(RequestState requestState) {
+        this.requestStates.add(requestState);
     }
 
-    public void addPlayback(PlaybackState playbackState) {
-        playbackStates.add(playbackState);
+    public void removeRequest(RequestState requestState) {
+        requestStates.remove(requestState);
     }
-    public void addRealPlay(RealPlayState realPlayState) {
-        realPlayStates.add(realPlayState);
+
+    private Lock lock = new ReentrantLock();
+
+    public void lock() {
+        lock.lock();
+    }
+
+    public void unLock() {
+        lock.unlock();
     }
 }

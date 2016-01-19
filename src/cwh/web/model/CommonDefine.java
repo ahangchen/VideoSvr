@@ -29,6 +29,8 @@ public class CommonDefine {
     // query
     public static String IP = "ip";
     public static String PORT = "port";
+    public static String NVR_IP = "nip";
+    public static String NVR_PORT = "nport";
     public static String SID = "sid";
     public static String CHANNEL = "channel";
     public static String START = "start";

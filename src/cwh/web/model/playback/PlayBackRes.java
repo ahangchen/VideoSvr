@@ -1,23 +1,20 @@
 package cwh.web.model.playback;
 
-import cwh.web.model.RequestState;
-
 /**
  * Created by cwh on 16-1-7
  */
-public class PlaybackState extends RequestState {
+public class PlayBackRes {
     private String playFilePath;
-
-    public PlaybackState(String playFilePath) {
+    public PlayBackRes(String playFilePath) {
         this.playFilePath = playFilePath;
     }
 
-    public String getPlayFilePath() {
+    public String getPlaybackPath() {
         return playFilePath;
     }
 
-    public void setPlayFilePath(String playFilePath) {
-        this.playFilePath = playFilePath;
+    public void setPlaybackPath(String videoPath) {
+        this.playFilePath = videoPath;
     }
 
 
@@ -25,7 +22,7 @@ public class PlaybackState extends RequestState {
         return "{" +
                 "\"sid\":\"" + sid +
                 "\"," +
-                "\"rpp\":\"" + getPlayFilePath() +
+                "\"rpp\":\"" + getPlaybackPath() +
                 "\"}";
     }
 

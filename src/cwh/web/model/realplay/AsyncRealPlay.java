@@ -26,10 +26,12 @@ public class AsyncRealPlay implements Runnable {
 
     @Override
     public void run() {
-        ServletRequest request = context.getRequest();
+        final ServletRequest request = context.getRequest();
         final String ip = request.getParameter(CommonDefine.IP);
         final String port = request.getParameter(CommonDefine.PORT);
         final String channel = request.getParameter(CommonDefine.CHANNEL);
+        final String nvrIP = request.getParameter(CommonDefine.NVR_IP);
+        final String nvrPort = request.getParameter(CommonDefine.NVR_PORT);
 
         final SessionState sessionState = SessionManager.getInstance().getSessionState((HttpServletRequest) request);
         // ffmpeg -i rtsp://admin:admin@192.168.1.108:554/cam/realmonitor\?channel=1\&subtype=0 -vcodec copy -f hls out.m3u8
@@ -39,37 +41,32 @@ public class AsyncRealPlay implements Runnable {
         // 整个调用与回调都是同步阻塞进行的，需要等它们都执行完才会起clean。之所以用回调写是为了隐藏session管理细节，并且与playback兼容
         SessionManager.getInstance().requestVideo(realPlayVideoPath, sessionState, new SessionManager.CacheCallback() {
             @Override
-            public void addTo(SessionState sessionState, RequestState requestState) {
-                // sessionManager会在除了同一个session重复访问同一个资源之外的情况下执行addTo
-                sessionState.addRealPlay((RealPlayState)requestState);
-            }
-
-            @Override
             public void onOld(RequestState requestState) {
                 VSLog.d(TAG, "cached");
-                RealPlayState realPlayState = (RealPlayState) requestState;
-                PlaybackHelper.responseString(context.getResponse(), realPlayState.toJson(sessionState.getSessionId()));
+                RealPlayRes realPlayRes = (RealPlayRes) requestState.getRes();
+                PlaybackHelper.responseString(context.getResponse(), realPlayRes.toJson(sessionState.getSessionId()));
                 context.complete();
             }
 
             @Override
-            public RequestState onNew() {
+            public boolean onNew(RequestState requestState) {
                 // 在这里发起转换，然后把进程交给Session，等待前端传回终止信息或超时以终止这个进程
                 // 长期持有这两个final不知道会不会有东西泄露
                 Process convert = sysRealPlay(ip, port, channel, realPlayVideoPath);
-                RealPlayState realPlayState = new RealPlayState(realPlayVideoPath, convert, stopClean);
+                RealPlayRes realPlayRes = new RealPlayRes(nvrIP, nvrPort, realPlayVideoPath, convert, stopClean);
                 // 等m3u8生成
                 boolean m3u8Ret = M3U8Mng.waitForM3U8(realPlayVideoPath);
                 if (m3u8Ret && FileUtils.isExist(realPlayVideoPath)) {
-                    PlaybackHelper.responseString(context.getResponse(), realPlayState.toJson(sessionState.getSessionId()));
+                    PlaybackHelper.responseString(context.getResponse(), realPlayRes.toJson(sessionState.getSessionId()));
                     context.complete();
-                    return realPlayState;
+                    requestState.setRes(realPlayRes);
+                    return true;
                 } else {
                     PlaybackHelper.responseString(context.getResponse(), "generate m3u8 time out");
                     convert.destroy();
                     FileUtils.rmDir(M3U8Mng.realPlayDir2Path(realPlayVideoPath));
                     context.complete();
-                    return null;
+                    return false;
                 }
             }
         });

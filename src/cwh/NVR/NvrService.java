@@ -5,6 +5,7 @@ package cwh.NVR;
  */
 
 import cwh.NVR.play.PlayCallback;
+import cwh.utils.StringUtils;
 import cwh.utils.log.VSLog;
 
 /**
@@ -49,13 +50,13 @@ public class NvrService {
         cleanUp();
     }
 
-    public void time2VideoPath(int channel,
+    public void time2VideoPath(int ip0, int ip1, int ip2, int ip3, int port, int channel,
                                int startYear, int startMon, int startDay,
                                int startHour, int startMin, int startSec,
                                int endYear, int endMon, int endDay,
                                int endHour, int endMin, int endSec,
                                PlayCallback playCallback) {
-        NVRNative.time2VideoPath(channel,
+        NVRNative.time2VideoPath(ip0, ip1,ip2, ip3, port, channel,
                 startYear, startMon, startDay,
                 startHour, startMin, startSec,
                 endYear, endMon, endDay,
@@ -63,11 +64,14 @@ public class NvrService {
                 playCallback);
     }
 
-    public String getDevTime() {
-        return NVRNative.getDevTime() + ".000";
+    public String getDevTime(String ip, String port) {
+
+        int[] iIps = StringUtils.str2Ips(ip);
+        int iPort = Integer.parseInt(port);
+        return NVRNative.getDevTime(iIps[0],iIps[1], iIps[2], iIps[3], iPort) + ".000";
     }
 
     public static void main(String[] args) {
-        VSLog.d(TAG, NvrService.getInstance().getDevTime());
+        VSLog.d(TAG, NvrService.getInstance().getDevTime("125.216.231.168", "37777"));
     }
 }
