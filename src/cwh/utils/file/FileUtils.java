@@ -9,6 +9,7 @@ import java.io.*;
  */
 public class FileUtils {
     public static String TAG = "FileUtils";
+
     public interface Travel {
         public void onFile(File file);
     }
@@ -22,10 +23,8 @@ public class FileUtils {
             return;
         }
         for (File f : listFiles) {
-            if (f.isFile()) {
 //                VSLog.d(TAG, "isFile");
-                onTravel.onFile(f);
-            }
+            onTravel.onFile(f);
         }
     }
 

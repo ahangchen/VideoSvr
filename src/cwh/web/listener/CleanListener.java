@@ -5,6 +5,7 @@ package cwh.web.listener; /**
 import cwh.utils.concurrent.ThreadUtils;
 import cwh.utils.log.VSLog;
 import cwh.web.model.CommonDefine;
+import cwh.web.model.realplay.M3U8Mng;
 import cwh.web.session.SessionManager;
 import cwh.web.session.SessionState;
 
@@ -37,6 +38,13 @@ public class CleanListener implements ServletContextListener,
          initialized(when the Web application is deployed). 
          You can initialize servlet context related data here.
       */
+        M3U8Mng.cleanToggle[0] = false;
+        ThreadUtils.runInBackGround(new Runnable() {
+            @Override
+            public void run() {
+                M3U8Mng.globalTimelyClean(CommonDefine.DATA_PATH + "/" + CommonDefine.REAL_PLAY_DIR_PATH, M3U8Mng.cleanToggle);
+            }
+        });
         VSLog.d(TAG, "context initial");
     }
 
@@ -45,6 +53,7 @@ public class CleanListener implements ServletContextListener,
          (the Web application) is undeployed or 
          Application Server shuts down.
       */
+        M3U8Mng.cleanToggle[0] = true;
         ThreadUtils.shutdown();
         VSLog.d(TAG, "context destroy");
     }

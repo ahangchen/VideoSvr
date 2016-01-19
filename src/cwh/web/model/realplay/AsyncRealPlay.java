@@ -71,7 +71,7 @@ public class AsyncRealPlay implements Runnable {
             }
         });
         // 清理,可以用不开线程的方式来做，前面已经response了
-        M3U8Mng.timelyClean(M3U8Mng.realPlayPath2Dir(realPlayVideoPath), stopClean);
+//        M3U8Mng.timelyClean(M3U8Mng.realPlayPath2Dir(realPlayVideoPath), stopClean);
     }
 
     public static String waitRealPlay(String ip, String port, String channel) {

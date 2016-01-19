@@ -73,6 +73,8 @@ public class M3U8Mng {
         return false;
     }
 
+    public static boolean[] cleanToggle = new boolean[1];
+
     public static void timelyClean(String curPath, boolean[] stopClean) {
         ThreadUtils.sleep(5000);//一开始还不用工作，先睡会
         while (!stopClean[0] && FileUtils.isExist(curPath)
@@ -81,6 +83,29 @@ public class M3U8Mng {
             ThreadUtils.sleep(2000);//不要清理太快, 省点cpu
         }
         VSLog.d(TAG, "stop timelyClean");
+    }
+
+    public static void globalTimelyClean(String globalPath, final boolean[] stopClean) {
+        ThreadUtils.sleep(10000);
+        while (!stopClean[0]) {
+            VSLog.d(TAG, globalPath);
+            FileUtils.flatTravel(globalPath, new FileUtils.Travel() {
+                        @Override
+                        public void onFile(File file) {
+                            // 对realPlay目录下每个目录，做dueClean
+                            if (file.isDirectory()) {
+                                VSLog.d(TAG, file.getAbsolutePath());
+                                if (!stopClean[0] && FileUtils.isExist(file.getAbsolutePath())
+                                        && FileUtils.isExist(M3U8Mng.realPlayDir2Path(file.getAbsolutePath()))) {
+                                    dueClean(file.getAbsolutePath(), curTSNum(file.getAbsolutePath()));
+                                }
+                            }
+                        }
+                    }
+            );
+            ThreadUtils.sleep(2000);
+            VSLog.d(TAG, "STOP CLEAN");
+        }
     }
 
 
