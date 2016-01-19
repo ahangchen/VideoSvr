@@ -260,7 +260,7 @@ public class SessionManager {
                     if (!requestState.isAttached()) {
                         // 这里虽然是在大锁中用小锁，但是这里用的小锁一定是已经成功生成了的文件，
                         // 而小锁中用大锁的情况只发生在，生成文件失败时，是不同的小锁
-                        VSLog.d(TAG, "this video " + videoPath + " has not been attached by any session");
+                        VSLog.d(TAG, "this video " + videoPath + " has been detached from related sessions");
                         if (requestState.isResExist()) {
                             VSLog.d(TAG, "clean " + videoPath);
                             requestState.lock();

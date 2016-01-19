@@ -1,6 +1,7 @@
 package cwh.web.servlet.playback;
 
 import cwh.utils.StringUtils;
+import cwh.utils.concurrent.ThreadUtils;
 import cwh.utils.log.VSLog;
 import cwh.web.model.CommonDefine;
 import cwh.web.model.playback.AsyncQueryVideo;
@@ -19,8 +20,8 @@ import java.util.concurrent.ThreadPoolExecutor;
  */
 public class PlaybackHelper {
     public static String TAG = "PlayBackHelper";
-    public static String regxPlaybackDateTime = "^\\d{4}-(\\d{2}|\\d{1})-(\\d{2}|\\d{1})-(\\d{1}|\\d{2})-(\\d{1}|\\d{2})-(\\d{1}|\\d{2})$";
-    public static String regxSid = "^[A-Za-z0-9]+$";
+    public static String REGX_PLAYBACK_DATE_TIME = "^\\d{4}-(\\d{2}|\\d{1})-(\\d{2}|\\d{1})-(\\d{1}|\\d{2})-(\\d{1}|\\d{2})-(\\d{1}|\\d{2})$";
+    public static String REGX_SID = "^[A-Za-z0-9]+$";
     public static void responseString(ServletResponse response, String stringResponse) {
         VSLog.d(TAG, stringResponse);
         PrintWriter out = null;
@@ -41,8 +42,7 @@ public class PlaybackHelper {
         AsyncContext asyncContext = request.startAsync();
         asyncContext.setTimeout(60 * 1000);
         asyncContext.addListener(asyncListener);
-        ThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(10);
-        executor.execute(new AsyncQueryVideo(asyncContext));
+        ThreadUtils.runInBackGround(new AsyncQueryVideo(asyncContext));
     }
 
     public static boolean isParamOk(HttpServletRequest request) {
@@ -51,7 +51,7 @@ public class PlaybackHelper {
         if (StringUtils.isEmpty(start)) {
             return false;
         }
-        if(!StringUtils.isMatch(start, regxPlaybackDateTime)) {
+        if(!StringUtils.isMatch(start, REGX_PLAYBACK_DATE_TIME)) {
             VSLog.e(TAG, "start time illegal :" + request.getQueryString());
             return false;
         }
@@ -59,13 +59,13 @@ public class PlaybackHelper {
         if (StringUtils.isEmpty(end)) {
             return false;
         }
-        if(!StringUtils.isMatch(end, regxPlaybackDateTime)) {
+        if(!StringUtils.isMatch(end, REGX_PLAYBACK_DATE_TIME)) {
             VSLog.e(TAG, "start time illegal :" + request.getQueryString());
             return false;
         }
         String sid = request.getParameter(CommonDefine.SID);
         if (!StringUtils.isEmpty(sid)) {
-            if (!StringUtils.isMatch(sid, regxSid)){
+            if (!StringUtils.isMatch(sid, REGX_SID)){
                 VSLog.e(TAG, "sid illegal :" + request.getQueryString());
                 return false;
             }

@@ -1,7 +1,7 @@
 package cwh.web.servlet.playback;
 
 import cwh.utils.log.VSLog;
-import cwh.web.model.QueryVideoListerner;
+import cwh.web.model.QueryVideoListener;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -26,7 +26,7 @@ public class PlayBack extends HttpServlet{
     protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
         VSLog.d(TAG, "Playback param:" + request.getQueryString());
         if (PlaybackHelper.isParamOk(request)) {
-            PlaybackHelper.asyncResponse(request, new QueryVideoListerner());
+            PlaybackHelper.asyncResponse(request, new QueryVideoListener());
         }
     }
 }

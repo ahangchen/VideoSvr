@@ -1,5 +1,6 @@
 package cwh.web.servlet;
 
+import cwh.utils.concurrent.ThreadUtils;
 import cwh.utils.log.VSLog;
 import cwh.web.model.CommonDefine;
 import cwh.web.servlet.playback.PlaybackHelper;
@@ -31,6 +32,7 @@ public class Test extends HttpServlet {
 //            getServletContext().setAttribute(sid, obj);
 //        }
 //        VSLog.d(obj.toString());
+        ThreadUtils.sleep(1000);
         PlaybackHelper.responseString(response, request.getSession().toString());
         VSLog.d(TAG, request.getSession().toString());
         VSLog.d(TAG, request.getServletContext().toString());

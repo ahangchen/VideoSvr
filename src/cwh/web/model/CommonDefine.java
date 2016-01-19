@@ -5,6 +5,8 @@ package cwh.web.model;
  */
 public class CommonDefine {
     // file
+    public static String TEST_DATA_PATH = "/home/cwh/tomcat/webapps/VideoSvr/videos";
+
     public static String DATA_PATH = "/home/cwh/tomcat/webapps/VideoSvr/videos";
     public static String REAL_PLAY_DIR_PATH = "realplay";
     public static String PLAY_BACK_DIR_PATH = DATA_PATH + "/playback";

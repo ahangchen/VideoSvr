@@ -1,7 +1,7 @@
 package cwh.web.servlet.realplay;
 
 import cwh.utils.log.VSLog;
-import cwh.web.model.QueryVideoListerner;
+import cwh.web.model.QueryVideoListener;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -26,7 +26,7 @@ public class RealPlay extends HttpServlet {
 //        getServletContext().setAttribute("");
         VSLog.d(TAG, "RealPlay param:" + request.getQueryString());
         if (RealPlayHelper.isParamOk(request)) {
-            RealPlayHelper.asyncResponse(request, new QueryVideoListerner());
+            RealPlayHelper.asyncResponse(request, new QueryVideoListener());
         }
     }
 }

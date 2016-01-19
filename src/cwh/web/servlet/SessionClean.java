@@ -35,7 +35,7 @@ public class SessionClean extends HttpServlet {
             return;
         }
 
-        if (!StringUtils.isMatch(sid, PlaybackHelper.regxSid)) {
+        if (!StringUtils.isMatch(sid, PlaybackHelper.REGX_SID)) {
             VSLog.e(TAG, "illegal sid:" + sid);
             PlaybackHelper.responseString(response, "illegal sid:" + sid);
             return;

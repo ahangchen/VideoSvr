@@ -2,6 +2,7 @@ package cwh.web.listener; /**
  * Created by cwh on 16-1-7
  */
 
+import cwh.utils.concurrent.ThreadUtils;
 import cwh.utils.log.VSLog;
 import cwh.web.model.CommonDefine;
 import cwh.web.session.SessionManager;
@@ -44,6 +45,7 @@ public class CleanListener implements ServletContextListener,
          (the Web application) is undeployed or 
          Application Server shuts down.
       */
+        ThreadUtils.shutdown();
         VSLog.d(TAG, "context destroy");
     }
 

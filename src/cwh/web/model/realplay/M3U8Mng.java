@@ -92,7 +92,7 @@ public class M3U8Mng {
                 int tsNum = getTsNum(file);
                 if (curRcd == -1 || tsNum == -1) return;
                 if (curRcd - 20 > tsNum) { // 宽松的删除条件，保留当前的ts之前的20个
-                    VSLog.d(TAG, "to delete");
+//                    VSLog.d(TAG, "to delete");
                     file.delete();
                 }
             }

@@ -1,6 +1,7 @@
 package cwh.web.servlet.realplay;
 
 import cwh.utils.StringUtils;
+import cwh.utils.concurrent.ThreadUtils;
 import cwh.utils.log.VSLog;
 import cwh.web.model.CommonDefine;
 import cwh.web.model.realplay.AsyncRealPlay;
@@ -22,8 +23,7 @@ public class RealPlayHelper {
         AsyncContext asyncContext = request.startAsync();
         asyncContext.setTimeout(60 * 1000);
         asyncContext.addListener(asyncListener);
-        ThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(10);
-        executor.execute(new AsyncRealPlay(asyncContext));
+        ThreadUtils.runInBackGround(new AsyncRealPlay(asyncContext));
     }
 
     public static boolean isParamOk(HttpServletRequest request) {
@@ -47,7 +47,7 @@ public class RealPlayHelper {
         }
         String sid = request.getParameter(CommonDefine.SID);
         if (!StringUtils.isEmpty(sid)) {
-            if (!StringUtils.isMatch(sid, PlaybackHelper.regxSid)) {
+            if (!StringUtils.isMatch(sid, PlaybackHelper.REGX_SID)) {
                 VSLog.e(TAG, "sid illegal :" + request.getQueryString());
                 return false;
             }
