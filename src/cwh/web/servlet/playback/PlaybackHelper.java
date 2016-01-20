@@ -70,6 +70,25 @@ public class PlaybackHelper {
                 return false;
             }
         }
+
+        String ip = request.getParameter(CommonDefine.IP);
+        if (!StringUtils.isEmpty(ip)) {
+            if (!StringUtils.isMatch(ip, StringUtils.REGX_IP)) {
+                VSLog.e(TAG, "IP illegal :" + request.getQueryString());
+                return false;
+            }
+        }
+
+        String port = request.getParameter(CommonDefine.PORT);
+        if (StringUtils.isEmpty(port)) {
+            return false;
+        }
+        if (StringUtils.isMatch(port, StringUtils.REGX_POS_INT)) {
+            int intPort = Integer.parseInt(port);
+            if (intPort > 65535 || intPort < 1) {
+                return false;
+            }
+        }
         return true;
     }
 

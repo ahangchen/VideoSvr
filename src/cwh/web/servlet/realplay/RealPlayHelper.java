@@ -28,6 +28,7 @@ public class RealPlayHelper {
 
     public static boolean isParamOk(HttpServletRequest request) {
         // ip=192.168.199.108&port=554&channel=1&sid=12121212
+
         String ip = request.getParameter(CommonDefine.IP);
         if (StringUtils.isEmpty(ip)) {
             return false;
@@ -35,6 +36,7 @@ public class RealPlayHelper {
         if (!StringUtils.isMatch(ip, StringUtils.REGX_IP)) {
             return false;
         }
+
         String port = request.getParameter(CommonDefine.PORT);
         if (StringUtils.isEmpty(port)) {
             return false;
@@ -45,6 +47,26 @@ public class RealPlayHelper {
                 return false;
             }
         }
+
+        String nvrIp = request.getParameter(CommonDefine.NVR_IP);
+        if (StringUtils.isEmpty(nvrIp)) {
+            return false;
+        }
+        if (!StringUtils.isMatch(nvrIp, StringUtils.REGX_IP)) {
+            return false;
+        }
+
+        String nvrPort = request.getParameter(CommonDefine.PORT);
+        if (StringUtils.isEmpty(nvrPort)) {
+            return false;
+        }
+        if (StringUtils.isMatch(nvrPort, StringUtils.REGX_POS_INT)) {
+            int intPort = Integer.parseInt(nvrPort);
+            if (intPort > 65535 || intPort < 1) {
+                return false;
+            }
+        }
+
         String sid = request.getParameter(CommonDefine.SID);
         if (!StringUtils.isEmpty(sid)) {
             if (!StringUtils.isMatch(sid, PlaybackHelper.REGX_SID)) {

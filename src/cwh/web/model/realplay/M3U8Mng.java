@@ -1,12 +1,14 @@
 package cwh.web.model.realplay;
 
 import cwh.utils.concurrent.ThreadUtils;
-import cwh.utils.date.DateUtils;
 import cwh.utils.file.FileUtils;
 import cwh.utils.log.VSLog;
 import cwh.web.model.CommonDefine;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 
 /**
  * Created by cwh on 16-1-6
@@ -88,13 +90,11 @@ public class M3U8Mng {
     public static void globalTimelyClean(String globalPath, final boolean[] stopClean) {
         ThreadUtils.sleep(10000);
         while (!stopClean[0]) {
-            VSLog.d(TAG, globalPath);
             FileUtils.flatTravel(globalPath, new FileUtils.Travel() {
                         @Override
                         public void onFile(File file) {
                             // 对realPlay目录下每个目录，做dueClean
                             if (file.isDirectory()) {
-                                VSLog.d(TAG, file.getAbsolutePath());
                                 if (!stopClean[0] && FileUtils.isExist(file.getAbsolutePath())
                                         && FileUtils.isExist(M3U8Mng.realPlayDir2Path(file.getAbsolutePath()))) {
                                     dueClean(file.getAbsolutePath(), curTSNum(file.getAbsolutePath()));
@@ -104,8 +104,8 @@ public class M3U8Mng {
                     }
             );
             ThreadUtils.sleep(2000);
-            VSLog.d(TAG, "STOP CLEAN");
         }
+        VSLog.d(TAG, "STOP CLEAN");
     }
 
 

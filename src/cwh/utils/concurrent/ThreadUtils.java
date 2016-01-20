@@ -1,10 +1,8 @@
 package cwh.utils.concurrent;
 
-import com.sun.jmx.snmp.tasks.ThreadService;
 import cwh.utils.log.VSLog;
 
 import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 

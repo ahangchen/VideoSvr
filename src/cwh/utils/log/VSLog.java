@@ -2,6 +2,7 @@ package cwh.utils.log;
 
 import cwh.utils.concurrent.ThreadUtils;
 import cwh.utils.date.DateUtils;
+import cwh.web.model.CommonDefine;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -11,7 +12,9 @@ import java.util.Calendar;
  * Created by cwh on 16-1-2
  */
 public class VSLog {
-    public static String logPath = "/media/Software/lab/data/";
+    public static String DEBUG_LOG_PATH = "/media/Software/lab/data/";
+    public static String POWERFUL_LOG_PATH = "/home/cwh/software/tomcat/webapps/VideoSvr/log/";
+    public static String logPath = CommonDefine.DEBUG ? DEBUG_LOG_PATH : POWERFUL_LOG_PATH;
     public static String EXT = ".log";
     public static String DEBUG = "[D]";
     public static String ERROR = "[E]";

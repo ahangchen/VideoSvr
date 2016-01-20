@@ -6,6 +6,7 @@ package cwh.NVR;
 
 import cwh.NVR.Log.LogItem;
 import cwh.NVR.play.PlayCallback;
+import cwh.web.model.CommonDefine;
 
 import java.util.ArrayList;
 
@@ -26,8 +27,9 @@ import java.util.ArrayList;
  *      javap -s -p cwh.NVR.Log.LogItem
  */
 public class NVRNative {
+
     static {
-        System.load("/home/cwh/coding/VideoSvr/lib/libnvr.so");
+        System.load(CommonDefine.LIB_PATH);
     }
 
     public static native void login();

@@ -4,10 +4,19 @@ package cwh.web.model;
  * Created by cwh on 16-1-5
  */
 public class CommonDefine {
-    // file
-    public static String TEST_DATA_PATH = "/home/cwh/tomcat/webapps/VideoSvr/videos";
 
-    public static String DATA_PATH = "/home/cwh/tomcat/webapps/VideoSvr/videos";
+    // deploy
+    public static boolean DEBUG = false;
+
+    // file
+    public static String DEBUG_DATA_PATH = "/home/cwh/tomcat/webapps/VideoSvr/videos";
+    public static String POWER_DATA_PATH = "/home/cwh/software/tomcat/webapps/VideoSvr/videos";
+
+    public static String DEBUG_LIB_PATH = "/home/cwh/coding/VideoSvr/lib/libnvr.so";
+    public static String POWER_LIB_PATH = "/home/cwh/software/tomcat/webapps/VideoSvr/lib/libnvr.so";
+    public static String LIB_PATH = CommonDefine.DEBUG ? DEBUG_LIB_PATH : POWER_LIB_PATH;
+
+    public static String DATA_PATH = DEBUG ? DEBUG_DATA_PATH : POWER_DATA_PATH;
     public static String REAL_PLAY_DIR_PATH = "realplay";
     public static String PLAY_BACK_DIR_PATH = DATA_PATH + "/playback";
     public static String REAL_PLAY_PATH = "t";

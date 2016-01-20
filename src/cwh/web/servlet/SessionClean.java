@@ -22,6 +22,7 @@ public class SessionClean extends HttpServlet {
     // http://localhost:8888/VideoSvr/SessionClean?sid=12121212
     // return 木有
     public static String TAG = "SessionClean";
+
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         doGet(request, response);
     }
@@ -31,8 +32,8 @@ public class SessionClean extends HttpServlet {
         String sid = request.getParameter(CommonDefine.SID);
         if (sid == null) {
             VSLog.e(TAG, "clean but not sid");
-            PlaybackHelper.responseString(response, "clean but not sid");
-            return;
+            VSLog.d(TAG, "try get sid from request");
+            sid = request.getSession().getId();
         }
 
         if (!StringUtils.isMatch(sid, PlaybackHelper.REGX_SID)) {
@@ -42,7 +43,7 @@ public class SessionClean extends HttpServlet {
         }
         SessionState sessionState = SessionManager.getInstance().getSessionState(sid);
         if (sessionState == null) {
-            VSLog.e(TAG, "required session not found");
+            VSLog.e(TAG, "required session " + sid + " not found");
             PlaybackHelper.responseString(response, "required session not found");
             return;
         }

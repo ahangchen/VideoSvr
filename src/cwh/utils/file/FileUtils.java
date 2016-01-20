@@ -19,7 +19,7 @@ public class FileUtils {
         File dir = new File(dirStr);
         File[] listFiles = dir.listFiles();
         if (listFiles == null) {
-            VSLog.d(TAG, "listFiles null");
+//            VSLog.d(TAG, "listFiles null");
             return;
         }
         for (File f : listFiles) {

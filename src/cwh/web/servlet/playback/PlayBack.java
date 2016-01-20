@@ -27,6 +27,8 @@ public class PlayBack extends HttpServlet{
         VSLog.d(TAG, "Playback param:" + request.getQueryString());
         if (PlaybackHelper.isParamOk(request)) {
             PlaybackHelper.asyncResponse(request, new QueryVideoListener());
+        } else {
+            PlaybackHelper.responseString(response, "param illegal " + request.getQueryString());
         }
     }
 }
