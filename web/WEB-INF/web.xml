@@ -38,6 +38,15 @@
     </servlet>
 
     <servlet-mapping>
+        <servlet-name>Login</servlet-name>
+        <url-pattern>/login</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>Login</servlet-name>
+        <servlet-class>cwh.web.servlet.Login</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
         <servlet-name>Download</servlet-name>
         <url-pattern>/Download</url-pattern>
     </servlet-mapping>
