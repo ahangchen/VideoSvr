@@ -93,6 +93,10 @@ public class SessionManager {
         try {
             VSLog.d(TAG, "request count:" + sessionState.getRequestStates().size());
             for (RequestState playBackState : sessionState.getRequestStates()) {
+                if (playBackState == null) {
+                    VSLog.e(TAG, "Strange, playbackState is null, sid: " + sessionState.getSessionId());
+                    continue;
+                }
                 if (playBackState.getRes() instanceof PlayBackRes) {
                     playBackClean((PlayBackRes) playBackState.getRes(), sessionState.getSessionId());
                 } else {
