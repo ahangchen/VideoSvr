@@ -14,7 +14,13 @@ import java.util.Calendar;
 public class VSLog {
     public static String DEBUG_LOG_PATH = "/media/Software/lab/data/";
     public static String POWERFUL_LOG_PATH = "/home/cwh/software/tomcat/webapps/VideoSvr/log/";
-    public static String logPath = CommonDefine.DEBUG ? DEBUG_LOG_PATH : POWERFUL_LOG_PATH;
+    public static String HADOOP_LOG_PATH = "/home/hadoop/software/tomcat/webapps/VideoSvr/log";
+    public static String logPath =
+            CommonDefine.DEBUG
+                    ? DEBUG_LOG_PATH
+                    : (CommonDefine.POWER
+                    ? POWERFUL_LOG_PATH
+                    : HADOOP_LOG_PATH);
     public static String EXT = ".log";
     public static String DEBUG = "[D]";
     public static String ERROR = "[E]";
@@ -60,7 +66,7 @@ public class VSLog {
     }
 
     private static String format(String log, String type) {
-        return "          "+DateUtils.formatCurTime() + " "
+        return "          " + DateUtils.formatCurTime() + " "
                 + type
                 + " : " + log + "\n";
     }

@@ -60,7 +60,7 @@ public class CmdExecutor {
             VSLog.d(TAG, command);
             proc = runtime.exec(command);
 
-            if (CommonDefine.DEBUG) {
+            if (CommonDefine.DEBUG || CommonDefine.POWER) {
                 InputStream err = proc.getErrorStream();
                 InputStreamReader isr = new InputStreamReader(err);
                 final BufferedReader br = new BufferedReader(isr);

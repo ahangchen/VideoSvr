@@ -6,17 +6,30 @@ package cwh.web.model;
 public class CommonDefine {
 
     // deploy
-    public static boolean DEBUG = false;
+    public static boolean DEBUG = true;
+    public static boolean POWER = false;
 
     // file
     public static String DEBUG_DATA_PATH = "/home/cwh/tomcat/webapps/VideoSvr/videos";
     public static String POWER_DATA_PATH = "/home/cwh/software/tomcat/webapps/VideoSvr/videos";
+    public static String HADOOP_DATA_PATH = "/home/hadoop/software/tomcat/webapps/VideoSvr/videos";
 
     public static String DEBUG_LIB_PATH = "/home/cwh/coding/VideoSvr/lib/libnvr.so";
     public static String POWER_LIB_PATH = "/home/cwh/software/tomcat/webapps/VideoSvr/lib/libnvr.so";
-    public static String LIB_PATH = CommonDefine.DEBUG ? DEBUG_LIB_PATH : POWER_LIB_PATH;
+    public static String HADOOP_LIB_PATH = "/home/hadoop/software/tomcat/webapps/VideoSvr/lib/libnvr.so";
+    public static String LIB_PATH =
+            CommonDefine.DEBUG
+                    ? DEBUG_LIB_PATH
+                    : (CommonDefine.POWER
+                    ? POWER_LIB_PATH
+                    : HADOOP_LIB_PATH);
 
-    public static String DATA_PATH = DEBUG ? DEBUG_DATA_PATH : POWER_DATA_PATH;
+    public static String DATA_PATH =
+            CommonDefine.DEBUG
+                    ? DEBUG_DATA_PATH
+                    : (CommonDefine.POWER
+                    ? POWER_DATA_PATH
+                    : HADOOP_DATA_PATH);
     public static String REAL_PLAY_DIR_PATH = "realplay";
     public static String PLAY_BACK_DIR_PATH = DATA_PATH + "/playback";
     public static String REAL_PLAY_PATH = "t";
@@ -34,8 +47,7 @@ public class CommonDefine {
             + "@%s:%s"
             + "/cam/realmonitor?"
             + "channel=%s&subtype=0 "
-            + "-vcodec copy -f hls %s -rtsp_transport tcp"
-            ;
+            + "-vcodec copy -f hls %s -rtsp_transport tcp";
 
     // query
     public static String IP = "ip";
