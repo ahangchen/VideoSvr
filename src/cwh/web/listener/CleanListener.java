@@ -3,6 +3,7 @@ package cwh.web.listener; /**
  */
 
 import cwh.utils.concurrent.ThreadUtils;
+import cwh.utils.file.FileUtils;
 import cwh.utils.log.VSLog;
 import cwh.web.model.CommonDefine;
 import cwh.web.model.realplay.M3U8Mng;
@@ -18,6 +19,7 @@ import javax.servlet.http.HttpSessionAttributeListener;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 import javax.servlet.http.HttpSessionBindingEvent;
+import java.io.File;
 
 @WebListener()
 public class CleanListener implements ServletContextListener,
@@ -38,6 +40,10 @@ public class CleanListener implements ServletContextListener,
          initialized(when the Web application is deployed). 
          You can initialize servlet context related data here.
       */
+        FileUtils.rmDir(CommonDefine.DATA_PATH + "/" + CommonDefine.REAL_PLAY_DIR_PATH);
+        FileUtils.rmDir(CommonDefine.PLAY_BACK_DIR_PATH);
+        FileUtils.mkdir(CommonDefine.DATA_PATH + "/" + CommonDefine.REAL_PLAY_DIR_PATH);
+        FileUtils.mkdir(CommonDefine.PLAY_BACK_DIR_PATH);
         M3U8Mng.cleanToggle[0] = false;
         ThreadUtils.runInBackGround(new Runnable() {
             @Override

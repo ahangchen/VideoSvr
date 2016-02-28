@@ -1,6 +1,7 @@
 package cwh.utils.file;
 
 import cwh.utils.log.VSLog;
+import cwh.web.model.CommonDefine;
 
 import java.io.*;
 
@@ -119,6 +120,10 @@ public class FileUtils {
         return new File(filePath).exists();
     }
 
+    public static boolean mkdir(String path) {
+        return new File(path).mkdir();
+    }
+
     public static void main(String[] args) {
 //        FileUtils.flatTravel("/media/Software/lab/data/videoweb/realplay/192-168-199-108-554-1-2016-0-9", new Travel() {
 //            @Override
@@ -126,6 +131,10 @@ public class FileUtils {
 //                VSLog.d(file.getName());
 //            }
 //        });
-        rmDir("/media/Software/lab/data/videoweb/realplay/192-168-199-108-554-1-2016-0-9");
+//        rmDir("/media/Software/lab/data/videoweb/realplay/192-168-199-108-554-1-2016-0-9");
+        FileUtils.rmDir(CommonDefine.DATA_PATH + "/" + CommonDefine.REAL_PLAY_DIR_PATH);
+        FileUtils.rmDir(CommonDefine.PLAY_BACK_DIR_PATH);
+        FileUtils.mkdir(CommonDefine.DATA_PATH + "/" + CommonDefine.REAL_PLAY_DIR_PATH);
+        FileUtils.mkdir(CommonDefine.PLAY_BACK_DIR_PATH);
     }
 }

@@ -24,6 +24,9 @@ public class M3U8Mng {
         return Holder.instance;
     }
 
+    public static void startClean() {
+
+    }
 
     public static int curTSNum(String curDir) {
         // 也可以考虑通过读取文件，排序来做
