@@ -73,6 +73,7 @@ public class CleanListener implements ServletContextListener,
         SessionState sessionState = SessionManager.getInstance().getSessionState(sid);
         if (sessionState == null) {
             VSLog.d(TAG, "no such session:" + sid);
+            return;
         }
         SessionManager.getInstance().sessionClean(sessionState);
         VSLog.d(TAG, "session" + sid + " destroyed");

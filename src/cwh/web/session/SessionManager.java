@@ -149,7 +149,7 @@ public class SessionManager {
 //            VSLog.d(TAG, "contain key: " + requestPath);
             return videoMaps.get(requestPath);
         } else {
-//            VSLog.d(TAG, "no cached " + requestPath);
+            VSLog.d(TAG, "no cached " + requestPath);
             return null;
         }
     }
@@ -181,7 +181,7 @@ public class SessionManager {
                     requestState.addSession(sid);
                     sessionState.addRequest(requestState);
 //                    VSLog.d(TAG, "add sid " + sid);
-                } else { // same sesion request for the file again
+                } else { // same session request for the file again
                     VSLog.d(TAG, "Session " + sid + " cached");
                 }
                 isCached = true;
@@ -252,6 +252,7 @@ public class SessionManager {
         synchronized (videoMaps) {
             VSLog.d(TAG, "Big lock get");
             RequestState requestState = isCached(videoPath);
+            if(requestState == null) return;
             if (requestState.isAttached()) {
                 if (requestState.contain(sid)) {
                     // 因为对request里是否有session的操作都有大锁，所以不用加小锁
