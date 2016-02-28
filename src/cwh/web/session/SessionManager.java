@@ -179,7 +179,12 @@ public class SessionManager {
                 if (!requestState.contain(sid)) {
 //                    VSLog.d(TAG, "has cache "+videoPath +" no contain " + sid);
                     requestState.addSession(sid);
-                    sessionState.addRequest(requestState);
+                    sessionState.lock();
+                    try {
+                        sessionState.addRequest(requestState);
+                    } finally {
+                        sessionState.unLock();
+                    }
 //                    VSLog.d(TAG, "add sid " + sid);
                 } else { // same session request for the file again
                     VSLog.d(TAG, "Session " + sid + " cached");
@@ -190,7 +195,12 @@ public class SessionManager {
                 isCached = false;
                 requestState = new RequestState(videoPath);
                 requestState.addSession(sid);
-                sessionState.addRequest(requestState);
+                sessionState.lock();
+                try {
+                    sessionState.addRequest(requestState);
+                } finally {
+                    sessionState.unLock();
+                }
                 videoMaps.put(videoPath, requestState);
             }
         }
