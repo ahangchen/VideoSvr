@@ -92,15 +92,11 @@ public class SessionManager {
         sessionState.lock();
         try {
             VSLog.d(TAG, "request count:" + sessionState.getRequestStates().size());
-            for (RequestState playBackState : sessionState.getRequestStates()) {
-                if (playBackState == null) {
-                    VSLog.e(TAG, "Strange, playbackState is null, sid: " + sessionState.getSessionId());
-                    continue;
-                }
-                if (playBackState.getRes() instanceof PlayBackRes) {
-                    playBackClean((PlayBackRes) playBackState.getRes(), sessionState.getSessionId());
+            for (RequestState requestState : sessionState.getRequestStates()) {
+                if (requestState.getRes() instanceof PlayBackRes) {
+                    playBackClean((PlayBackRes) requestState.getRes(), sessionState.getSessionId());
                 } else {
-                    realPlayClean((RealPlayRes) playBackState.getRes(), sessionState.getSessionId());
+                    realPlayClean((RealPlayRes) requestState.getRes(), sessionState.getSessionId());
                 }
             }
         } finally {
@@ -128,6 +124,11 @@ public class SessionManager {
     }
 
     public void realPlayClean(final RealPlayRes realPlayRes, String sid) {
+        if (realPlayRes == null) {
+            // 在资源申请失败时应当删除sessionState里的这个res
+            VSLog.e(TAG, "a null res in sessionState, there may be some errors when applying resource for this session: " + sid);
+            return;
+        }
         requestDestroy(realPlayRes.getRealPlayPath(), sid, new DestroyCallback() {
             @Override
             public void onEmpty() {
