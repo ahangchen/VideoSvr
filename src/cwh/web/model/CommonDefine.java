@@ -7,7 +7,7 @@ public class CommonDefine {
 
     // deploy
     public static boolean DEBUG = true;
-    public static boolean POWER = false;
+    public static boolean POWER = !DEBUG;
 
     // file
     public static String DEBUG_DATA_PATH = "/home/cwh/tomcat/webapps/VideoSvr/videos";

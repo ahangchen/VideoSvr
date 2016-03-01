@@ -60,6 +60,9 @@ public class SessionManager {
                 }
             } else {
                 sessionState = sessionStates.get(sid);
+                if (sessionState == null) {
+                    VSLog.d(TAG, "param sid NOT null, but get session failed, sid: " + sid);
+                }
                 VSLog.d(TAG, "old session" + sid + ";" + sessionState);
             }
 
@@ -88,21 +91,26 @@ public class SessionManager {
         return sessionStates.get(sid);
     }
 
-    public void sessionClean(SessionState sessionState) {
-        sessionState.lock();
-        try {
-            VSLog.d(TAG, "request count:" + sessionState.getRequestStates().size());
-            for (RequestState requestState : sessionState.getRequestStates()) {
-                if (requestState.getRes() instanceof PlayBackRes) {
-                    playBackClean((PlayBackRes) requestState.getRes(), sessionState.getSessionId());
-                } else {
-                    realPlayClean((RealPlayRes) requestState.getRes(), sessionState.getSessionId());
-                }
-            }
-        } finally {
-            sessionState.unLock();
-        }
+    public void sessionClean(String sid) {
         synchronized (sessionStates) {
+            SessionState sessionState = getSessionState(sid);
+            if (sessionState == null) {
+                VSLog.d(TAG, "no such session:" + sid);
+                return;
+            }
+            sessionState.lock();
+            try {
+                VSLog.d(TAG, "request count:" + sessionState.getRequestStates().size());
+                for (RequestState requestState : sessionState.getRequestStates()) {
+                    if (requestState.getRes() instanceof PlayBackRes) {
+                        playBackClean((PlayBackRes) requestState.getRes(), sessionState.getSessionId());
+                    } else {
+                        realPlayClean((RealPlayRes) requestState.getRes(), sessionState.getSessionId());
+                    }
+                }
+            } finally {
+                sessionState.unLock();
+            }
             sessionStates.remove(sessionState.getSessionId());
         }
     }
@@ -267,7 +275,7 @@ public class SessionManager {
         synchronized (videoMaps) {
             VSLog.d(TAG, "Big lock get");
             RequestState requestState = isCached(videoPath);
-            if(requestState == null) return;
+            if (requestState == null) return;
             if (requestState.isAttached()) {
                 if (requestState.contain(sid)) {
                     // 因为对request里是否有session的操作都有大锁，所以不用加小锁

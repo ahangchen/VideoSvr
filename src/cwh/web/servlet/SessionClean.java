@@ -41,13 +41,7 @@ public class SessionClean extends HttpServlet {
             PlaybackHelper.responseString(response, "illegal sid:" + sid);
             return;
         }
-        SessionState sessionState = SessionManager.getInstance().getSessionState(sid);
-        if (sessionState == null) {
-            VSLog.e(TAG, "required session " + sid + " not found");
-            PlaybackHelper.responseString(response, "required session not found");
-            return;
-        }
-        SessionManager.getInstance().sessionClean(sessionState);
+        SessionManager.getInstance().sessionClean(sid);
         PlaybackHelper.responseString(response, "Session " + sid + "cleaned");
     }
 }
