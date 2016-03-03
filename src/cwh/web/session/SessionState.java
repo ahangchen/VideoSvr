@@ -1,8 +1,11 @@
 package cwh.web.session;
 
+import cwh.utils.log.VSLog;
+import cwh.web.model.CommonDefine;
 import cwh.web.model.RequestState;
 
 import javax.servlet.http.HttpSession;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -11,8 +14,8 @@ import java.util.concurrent.locks.ReentrantLock;
  * Created by cwh on 16-1-7
  */
 public class SessionState {
-    private String sessionId;
     private HttpSession session;
+    private long lastTouchTime;
 
     public HttpSession getSession() {
         return session;
@@ -20,16 +23,24 @@ public class SessionState {
 
     public void setSession(HttpSession session) {
         this.session = session;
+        lastTouchTime = new Date().getTime();
+    }
+
+    public void touch() {
+        long cur = new Date().getTime();
+        if(cur - lastTouchTime > CommonDefine.TOUCH_INTERVAL) {
+            lastTouchTime = cur;
+            session.setMaxInactiveInterval(session.getMaxInactiveInterval() + CommonDefine.DELAY);
+            VSLog.d("Touch", "touch session: " + session.getId());
+        } else {
+            VSLog.d("Touch", "touch too frequently: " + session.getId());
+        }
     }
 
     private LinkedList<RequestState> requestStates = new LinkedList<RequestState>();
 
     public String getSessionId() {
-        return sessionId;
-    }
-
-    public void setSessionId(String sessionId) {
-        this.sessionId = sessionId;
+        return session.getId();
     }
 
     public LinkedList<RequestState> getRequestStates() {

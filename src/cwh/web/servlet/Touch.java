@@ -1,5 +1,6 @@
 package cwh.web.servlet;
 
+import cwh.utils.log.VSLog;
 import cwh.web.servlet.playback.PlaybackHelper;
 import cwh.web.session.SessionManager;
 
@@ -16,6 +17,7 @@ import java.io.IOException;
  */
 @WebServlet(name = "Touch")
 public class Touch extends HttpServlet {
+    public static String TAG = "Touch";
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         doGet(req, resp);
     }

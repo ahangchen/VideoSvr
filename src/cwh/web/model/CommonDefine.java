@@ -58,4 +58,9 @@ public class CommonDefine {
     public static String CHANNEL = "channel";
     public static String START = "start";
     public static String END = "end";
+
+    //session
+    public static int SESSION_INVALID_INTERVAL = 30; // min
+    public static int DELAY = SESSION_INVALID_INTERVAL * 60;// s
+    public static int TOUCH_INTERVAL = 20 * 60 * 1000; // ms
 }

@@ -12,6 +12,7 @@ import cwh.web.model.realplay.RealPlayRes;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.File;
+import java.util.Date;
 import java.util.HashMap;
 
 /**
@@ -49,7 +50,6 @@ public class SessionManager {
 //            sid = VMath.hashLong(request);
                     sessionState = new SessionState();
                     sessionState.setSession(request.getSession());
-                    sessionState.setSessionId(sid);
                     // 将这个session的sid写入session对象中,用于超时清理
                     request.getSession().setAttribute(CommonDefine.SID, sid);
                     VSLog.d(TAG, "after set sid");
@@ -78,7 +78,7 @@ public class SessionManager {
                 if (sessionState == null) {
                     // 当做新请求
                     sessionState = new SessionState();
-                    sessionState.setSessionId(sid);
+                    sessionState.setSession(request.getSession());
                     sessionStates.put(sid, sessionState);
                 } else {
                     // 居然存在，偷拿别人的sid，打回原型
@@ -321,13 +321,13 @@ public class SessionManager {
 
     public boolean touch(String sid) {
         synchronized (sessionStates) {
-            HttpSession session = sessionStates.get(sid).getSession();
-            if (session == null) {
+            SessionState sessionState = sessionStates.get(sid);
+            if (sessionState == null) {
                 VSLog.e(TAG, "touch invalid session: " + sid);
                 return false;
             } else {
                 VSLog.d(TAG, "touch session: " + sid);
-                session.setMaxInactiveInterval(session.getMaxInactiveInterval() + 3 * 60);
+                sessionState.touch();
                 return true;
             }
         }
