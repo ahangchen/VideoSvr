@@ -19,7 +19,7 @@ import java.util.concurrent.ThreadPoolExecutor;
  * Created by cwh on 15-12-13
  */
 public class PlaybackHelper {
-    public static String TAG = "PlayBackHelper";
+    public static String TAG = "ServletHelper";
     public static String REGX_PLAYBACK_DATE_TIME = "^\\d{4}-(\\d{2}|\\d{1})-(\\d{2}|\\d{1})-(\\d{1}|\\d{2})-(\\d{1}|\\d{2})-(\\d{1}|\\d{2})$";
     public static String REGX_SID = "^[A-Za-z0-9]+$";
     public static void responseString(ServletResponse response, String stringResponse) {

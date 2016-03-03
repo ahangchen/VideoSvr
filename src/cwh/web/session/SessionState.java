@@ -2,6 +2,7 @@ package cwh.web.session;
 
 import cwh.web.model.RequestState;
 
+import javax.servlet.http.HttpSession;
 import java.util.LinkedList;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -11,6 +12,16 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class SessionState {
     private String sessionId;
+    private HttpSession session;
+
+    public HttpSession getSession() {
+        return session;
+    }
+
+    public void setSession(HttpSession session) {
+        this.session = session;
+    }
+
     private LinkedList<RequestState> requestStates = new LinkedList<RequestState>();
 
     public String getSessionId() {

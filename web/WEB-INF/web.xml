@@ -38,6 +38,15 @@
     </servlet>
 
     <servlet-mapping>
+        <servlet-name>Touch</servlet-name>
+        <url-pattern>/Touch</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>Touch</servlet-name>
+        <servlet-class>cwh.web.servlet.Touch</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
         <servlet-name>Login</servlet-name>
         <url-pattern>/login</url-pattern>
     </servlet-mapping>
@@ -59,7 +68,7 @@
         <listener-class>cwh.web.listener.CleanListener</listener-class>
     </listener>
     <session-config>
-        <session-timeout>30</session-timeout>
+        <session-timeout>1</session-timeout>
     </session-config>
 
 </web-app>

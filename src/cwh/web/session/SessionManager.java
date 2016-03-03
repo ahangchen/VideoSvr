@@ -10,6 +10,7 @@ import cwh.web.model.realplay.M3U8Mng;
 import cwh.web.model.realplay.RealPlayRes;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.util.HashMap;
 
@@ -47,6 +48,7 @@ public class SessionManager {
                 if (sessionState == null) {
 //            sid = VMath.hashLong(request);
                     sessionState = new SessionState();
+                    sessionState.setSession(request.getSession());
                     sessionState.setSessionId(sid);
                     // 将这个session的sid写入session对象中,用于超时清理
                     request.getSession().setAttribute(CommonDefine.SID, sid);
@@ -317,4 +319,17 @@ public class SessionManager {
         VSLog.d(TAG, "Big lock release");
     }
 
+    public boolean touch(String sid) {
+        synchronized (sessionStates) {
+            HttpSession session = sessionStates.get(sid).getSession();
+            if (session == null) {
+                VSLog.e(TAG, "touch invalid session: " + sid);
+                return false;
+            } else {
+                VSLog.d(TAG, "touch session: " + sid);
+                session.setMaxInactiveInterval(session.getMaxInactiveInterval() + 3 * 60);
+                return true;
+            }
+        }
+    }
 }
