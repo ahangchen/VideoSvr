@@ -1,5 +1,6 @@
 package cwh.utils.file;
 
+import cwh.utils.concurrent.ThreadUtils;
 import cwh.utils.log.VSLog;
 import cwh.web.model.CommonDefine;
 
@@ -124,6 +125,7 @@ public class FileUtils {
         return new File(path).mkdir();
     }
 
+
     public static void main(String[] args) {
 //        FileUtils.flatTravel("/media/Software/lab/data/videoweb/realplay/192-168-199-108-554-1-2016-0-9", new Travel() {
 //            @Override
@@ -132,9 +134,12 @@ public class FileUtils {
 //            }
 //        });
 //        rmDir("/media/Software/lab/data/videoweb/realplay/192-168-199-108-554-1-2016-0-9");
-        FileUtils.rmDir(CommonDefine.DATA_PATH + "/" + CommonDefine.REAL_PLAY_DIR_PATH);
-        FileUtils.rmDir(CommonDefine.PLAY_BACK_DIR_PATH);
-        FileUtils.mkdir(CommonDefine.DATA_PATH + "/" + CommonDefine.REAL_PLAY_DIR_PATH);
-        FileUtils.mkdir(CommonDefine.PLAY_BACK_DIR_PATH);
+//        FileUtils.rmDir(CommonDefine.DATA_PATH + "/" + CommonDefine.REAL_PLAY_DIR_PATH);
+//        FileUtils.rmDir(CommonDefine.PLAY_BACK_DIR_PATH);
+//        FileUtils.mkdir(CommonDefine.DATA_PATH + "/" + CommonDefine.REAL_PLAY_DIR_PATH);
+//        FileUtils.mkdir(CommonDefine.PLAY_BACK_DIR_PATH);
+//        writing();
     }
+
+
 }

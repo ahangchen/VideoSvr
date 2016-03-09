@@ -6,7 +6,10 @@ import cwh.web.model.realplay.AsyncRealPlay;
  * Created by cwh on 15-11-28
  * 第一次在tomcat的首页中，用manager的deploy部署，
  * 之后run， build artifact rebuild
+ * 测试环境
  * cp /home/cwh/Mission/coding/VideoSvr/out/artifacts/VideoSvr_war_exploded/. -r /home/cwh/tomcat/webapps/VideoSvr
+ * 正式环境
+ *  cp out/artifacts/VideoSvr_war_exploded/. -r powerful/VideoSvr & tar cvf powerful.tar.gz powerful & scp -r powerful.tar.gz cwh@222.201.145.237:/home/cwh
  */
 public class Master {
 

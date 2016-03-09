@@ -1,5 +1,6 @@
 package cwh.web.model.realplay;
 
+import cwh.utils.concurrent.ThreadUtils;
 import cwh.utils.console.ConsoleUtils;
 import cwh.utils.file.FileUtils;
 import cwh.utils.log.VSLog;
@@ -97,5 +98,17 @@ public class AsyncRealPlay implements Runnable {
         return CmdExecutor.run(String.format(CommonDefine.FFMPEG_CONVERT, ip, port, channel, realPlayVideoPath));
     }
 
-
+    public static void main(String[]args) {
+        Process proc = sysRealPlay("222.201.137.81", "35557", "1");
+//        proc.destroy();
+        int i = 20;
+        while (i-- > 0) {
+            ThreadUtils.sleep(500);
+            try {
+                VSLog.d(TAG, proc.exitValue() + "");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }
