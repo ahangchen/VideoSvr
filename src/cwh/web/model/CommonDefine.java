@@ -39,6 +39,7 @@ public class CommonDefine {
     public static String PWD = "admin";
 
     // media
+    public static String TMP_SUFF = "-tmp.dav";
     public static String M3U8 = ".m3u8";
     public static String MP4 = ".mp4";
 

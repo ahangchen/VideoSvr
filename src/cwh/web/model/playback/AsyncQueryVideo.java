@@ -5,6 +5,7 @@ import cwh.NVR.play.PlayCallback;
 import cwh.utils.concurrent.ThreadUtils;
 import cwh.utils.file.FileUtils;
 import cwh.utils.log.VSLog;
+import cwh.utils.process.CmdExecutor;
 import cwh.web.model.CommonDefine;
 import cwh.web.model.RequestState;
 import cwh.web.servlet.playback.PlaybackHelper;
@@ -63,7 +64,11 @@ public class AsyncQueryVideo implements Runnable {
                         new PlayCallback() {
                             @Override
                             public void onComplete(String filePath) {
-                                playBackPath[0] = filePath;
+                                CmdExecutor.wait(String.format("ffmpeg -i %s/%s -vcodec libx264 -s 640x360 %s/%s",
+                                        CommonDefine.PLAY_BACK_DIR_PATH, filePath, CommonDefine.PLAY_BACK_DIR_PATH,
+                                        filePath.replace(CommonDefine.TMP_SUFF, CommonDefine.MP4)));
+                                playBackPath[0] = filePath.replace(CommonDefine.TMP_SUFF, CommonDefine.MP4);
+                                FileUtils.rm(filePath);
                                 waitEnd[0] = true;
                             }
                         });
