@@ -11,6 +11,16 @@
         <servlet-name>Playback</servlet-name>
         <servlet-class>cwh.web.servlet.playback.PlayBack</servlet-class>
     </servlet>
+
+    <servlet-mapping>
+        <servlet-name>LongTime</servlet-name>
+        <url-pattern>/LongTime</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>LongTime</servlet-name>
+        <servlet-class>cwh.web.servlet.longtime.LongTime</servlet-class>
+    </servlet>
+
     <servlet-mapping>
         <servlet-name>SessionClean</servlet-name>
         <url-pattern>/SessionClean</url-pattern>

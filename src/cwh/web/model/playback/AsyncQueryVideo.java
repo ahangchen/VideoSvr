@@ -14,6 +14,7 @@ import cwh.web.session.SessionState;
 
 import javax.servlet.AsyncContext;
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 
 /**
  * Created by cwh on 15-12-13
@@ -61,13 +62,14 @@ public class AsyncQueryVideo implements Runnable {
                         playBackParam.getStartHour(), playBackParam.getStartMin(), playBackParam.getStartSec(),
                         playBackParam.getEndYear(), playBackParam.getEndMon(), playBackParam.getEndDay(),
                         playBackParam.getEndHour(), playBackParam.getEndMin(), playBackParam.getEndSec(),
+                        CommonDefine.PLAY_BACK_DIR_PATH + File.separator + playBackParam.toString() + CommonDefine.TMP_SUFF,
                         new PlayCallback() {
                             @Override
                             public void onComplete(String filePath) {
-                                CmdExecutor.wait(String.format("ffmpeg -i %s/%s -vcodec libx264 -s 640x360 %s/%s",
-                                        CommonDefine.PLAY_BACK_DIR_PATH, filePath, CommonDefine.PLAY_BACK_DIR_PATH,
-                                        filePath.replace(CommonDefine.TMP_SUFF, CommonDefine.MP4)));
+                                CmdExecutor.wait(String.format("ffmpeg -i %s -vcodec libx264 -s 640x360 %s",
+                                        filePath, filePath.replace(CommonDefine.TMP_SUFF, CommonDefine.MP4)));
                                 playBackPath[0] = filePath.replace(CommonDefine.TMP_SUFF, CommonDefine.MP4);
+//                                        .replace(CommonDefine.PLAY_BACK_DIR_PATH + File.separator, "");
                                 FileUtils.rm(filePath);
                                 waitEnd[0] = true;
                             }
@@ -79,9 +81,9 @@ public class AsyncQueryVideo implements Runnable {
                     i--;
                 }
                 VSLog.d(TAG, "convert time :" + i);
-                if (!waitEnd[0] || !FileUtils.isExist(CommonDefine.PLAY_BACK_DIR_PATH + "/" + playBackPath[0])) {
+                if (!waitEnd[0] || !FileUtils.isExist(playBackPath[0])) {
                     if (waitEnd[0]) {
-                        VSLog.e(TAG, "generate required file failed");
+                        VSLog.e(TAG, "generate required file failed" + playBackPath[0]);
                         PlaybackHelper.responseString(context.getResponse(), "generate required file failed");
                     } else {
                         VSLog.e(TAG, "wait for playback over 50 seconds");
@@ -91,7 +93,7 @@ public class AsyncQueryVideo implements Runnable {
                     return false;
                 }
                 VSLog.d(TAG, "after convert");
-                PlayBackRes playBackRes = new PlayBackRes(playBackPath[0]);
+                PlayBackRes playBackRes = new PlayBackRes(playBackPath[0].replace(CommonDefine.PLAY_BACK_DIR_PATH + File.separator, ""));
                 PlaybackHelper.responseString(context.getResponse(), playBackRes.toJson(sessionState.getSessionId()));
                 requestState.setRes(playBackRes);
                 context.complete();

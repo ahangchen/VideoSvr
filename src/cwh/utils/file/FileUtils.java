@@ -31,19 +31,22 @@ public class FileUtils {
     }
 
     public interface ReadLine {
-        void onLine(String string);
+        void onLine(String string, int lineIndex);
     }
 
     public static void readLine(String fileName, ReadLine readLine) {
         File file = new File(fileName);
         BufferedReader reader = null;
+        int lineIndex = 0;
         try {
             reader = new BufferedReader(new FileReader(file));
             String tempString = null;
             //一次读一行，读入null时文件结束
+
             while ((tempString = reader.readLine()) != null) {
                 //把当前行号显示出来
-                readLine.onLine(tempString);
+                readLine.onLine(tempString, lineIndex);
+                lineIndex ++;
             }
             reader.close();
         } catch (IOException e) {
@@ -56,6 +59,68 @@ public class FileUtils {
                     e1.printStackTrace();
                 }
             }
+        }
+    }
+
+    /**
+     * 追加文件：使用FileWriter
+     *
+     * @param fileName
+     * @param content
+     */
+    public static void append2File(String fileName, String content) {
+        if (!new File(fileName).exists()) {
+            createFile(fileName);
+        }
+        FileWriter writer = null;
+        try {
+            // 打开一个写文件器，构造函数中的第二个参数true表示以追加形式写文件
+            writer = new FileWriter(fileName, true);
+            writer.write(content);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if(writer != null){
+                    writer.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static boolean createFile(String destFileName) {
+        File file = new File(destFileName);
+        if (file.exists()) {
+            System.out.println("创建单个文件" + destFileName + "失败，目标文件已存在！");
+            return false;
+        }
+        if (destFileName.endsWith(File.separator)) {
+            System.out.println("创建单个文件" + destFileName + "失败，目标文件不能为目录！");
+            return false;
+        }
+        //判断目标文件所在的目录是否存在
+        if (!file.getParentFile().exists()) {
+            //如果目标文件所在的目录不存在，则创建父目录
+            if (!file.getParentFile().mkdirs()) {
+                System.out.println("创建目标文件所在目录失败！");
+                return false;
+            }
+        }
+        //创建目标文件
+        try {
+            if (file.createNewFile()) {
+                System.out.println("创建单个文件" + destFileName + "成功！");
+                return true;
+            } else {
+                System.out.println("创建单个文件" + destFileName + "失败！");
+                return false;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("创建单个文件" + destFileName + "失败！" + e.getMessage());
+            return false;
         }
     }
 

@@ -40,8 +40,11 @@ public class CommonDefine {
 
     // media
     public static String TMP_SUFF = "-tmp.dav";
+    public static String TMP_DAV = "tmp.dav";
     public static String M3U8 = ".m3u8";
     public static String MP4 = ".mp4";
+    public static String LONG_TIME = "-l";
+    public static String LONG_TIME_M3U8 = "play.m3u8";
 
     // ffmpeg
     public static String FFMPEG_CONVERT = "ffmpeg -i rtsp://" + CommonDefine.USER + ":" + CommonDefine.PWD
@@ -64,4 +67,7 @@ public class CommonDefine {
     public static int SESSION_INVALID_INTERVAL = 30; // min
     public static int DELAY = SESSION_INVALID_INTERVAL * 60;// s
     public static int TOUCH_INTERVAL = 20 * 60 * 1000; // ms
+
+    // long time param
+    public static int INTERVAL = 10 * 1000;
 }

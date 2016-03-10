@@ -50,10 +50,10 @@ JNIEXPORT jobject JNICALL Java_cwh_NVR_NVRNative_getLogs
 /*
  * Class:     cwh_NVR_NVRNative
  * Method:    time2VideoPath
- * Signature: (IIIIIIIIIIIIIIIIIILcwh/NVR/play/PlayCallback;)V
+ * Signature: (IIIIIIIIIIIIIIIIIILjava/lang/String;Lcwh/NVR/play/PlayCallback;)V
  */
 JNIEXPORT void JNICALL Java_cwh_NVR_NVRNative_time2VideoPath
-  (JNIEnv *, jclass, jint, jint, jint, jint, jint, jint, jint, jint, jint, jint, jint, jint, jint, jint, jint, jint, jint, jint, jobject);
+  (JNIEnv *, jclass, jint, jint, jint, jint, jint, jint, jint, jint, jint, jint, jint, jint, jint, jint, jint, jint, jint, jint, jstring, jobject);
 
 /*
  * Class:     cwh_NVR_NVRNative

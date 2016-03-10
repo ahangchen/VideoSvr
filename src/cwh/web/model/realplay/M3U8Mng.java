@@ -66,12 +66,14 @@ public class M3U8Mng {
     }
 
     public static boolean waitForM3U8(String m3u8Path) {
+        VSLog.d(TAG, m3u8Path);
         int i = 50; // counter
         while (i > 0) {
             // 存在即结束，不存在就sleep
             if (FileUtils.isExist(m3u8Path)) {
                 return true;
             }
+            VSLog.d(TAG, "NO EXIST");
             ThreadUtils.sleep(1000);
             i--;
         }

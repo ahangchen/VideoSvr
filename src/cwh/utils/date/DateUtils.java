@@ -1,6 +1,7 @@
 package cwh.utils.date;
 
 import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Created by cwh on 16-1-5
@@ -21,5 +22,11 @@ public class DateUtils {
 
     public static String formatCurDateTime() {
         return formatCurDate() + "-" + formatCurTime();
+    }
+
+    public static Calendar genTime(int startYear, int startMonth, int startDay, int startHour, int startMin, int startSec) {
+        Calendar c = Calendar.getInstance();
+        c.set(startYear, startMonth, startDay, startHour, startMin, startSec);
+        return c;
     }
 }
