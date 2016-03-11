@@ -66,7 +66,7 @@ public class AsyncQueryVideo implements Runnable {
                         new PlayCallback() {
                             @Override
                             public void onComplete(String filePath) {
-                                CmdExecutor.wait(String.format("ffmpeg -i %s -vcodec libx264 -s 640x360 %s",
+                                CmdExecutor.wait(String.format("ffmpeg -n -i %s -vcodec libx264 -s 640x360 %s",
                                         filePath, filePath.replace(CommonDefine.TMP_SUFF, CommonDefine.MP4)));
                                 playBackPath[0] = filePath.replace(CommonDefine.TMP_SUFF, CommonDefine.MP4);
 //                                        .replace(CommonDefine.PLAY_BACK_DIR_PATH + File.separator, "");

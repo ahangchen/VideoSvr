@@ -1,7 +1,7 @@
 package cwh.web.model.longtime;
 
 /**
- * Created by cwh on 16-3-10.
+ * Created by cwh on 16-3-10
  */
 public class LongTimeRes {
     public LongTimeRes(String longTimeDir) {

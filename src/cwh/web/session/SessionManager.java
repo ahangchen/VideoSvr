@@ -5,14 +5,13 @@ import cwh.utils.file.FileUtils;
 import cwh.utils.log.VSLog;
 import cwh.web.model.CommonDefine;
 import cwh.web.model.RequestState;
+import cwh.web.model.longtime.LongTimeRes;
 import cwh.web.model.playback.PlayBackRes;
 import cwh.web.model.realplay.M3U8Mng;
 import cwh.web.model.realplay.RealPlayRes;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.io.File;
-import java.util.Date;
 import java.util.HashMap;
 
 /**
@@ -106,8 +105,10 @@ public class SessionManager {
                 for (RequestState requestState : sessionState.getRequestStates()) {
                     if (requestState.getRes() instanceof PlayBackRes) {
                         playBackClean((PlayBackRes) requestState.getRes(), sessionState.getSessionId());
-                    } else {
+                    } else if (requestState.getRes() instanceof  RealPlayRes){
                         realPlayClean((RealPlayRes) requestState.getRes(), sessionState.getSessionId());
+                    } else if (requestState.getRes() instanceof  LongTimeRes) {
+                        longTimeClean((LongTimeRes) requestState.getRes(), sessionState.getSessionId());
                     }
                 }
             } finally {
@@ -148,6 +149,22 @@ public class SessionManager {
                 // 等ffmepg进程结束再删，否则m3u8文件会删不掉
                 ThreadUtils.sleep(2000);
                 boolean ret = FileUtils.rmDir(M3U8Mng.realPlayPath2Dir(realPlayRes.getRealPlayPath()));
+                VSLog.d(TAG, "delete ret: " + ret);
+            }
+        });
+    }
+
+    public void longTimeClean(final LongTimeRes longTimeRes, String sid) {
+        if (longTimeRes == null) {
+            // 在资源申请失败时应当删除sessionState里的这个res
+            VSLog.e(TAG, "a null res in sessionState, there may be some errors when applying resource for this session: " + sid);
+            return;
+        }
+        requestDestroy(longTimeRes.getLongTimeDir(), sid, new DestroyCallback() {
+            @Override
+            public void onEmpty() {
+                boolean ret = FileUtils.rmDir(CommonDefine.DATA_PATH + File.separator +
+                        longTimeRes.getLongTimeDir().replace(File.separator + CommonDefine.LONG_TIME_M3U8, ""));
                 VSLog.d(TAG, "delete ret: " + ret);
             }
         });

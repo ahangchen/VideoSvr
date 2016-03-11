@@ -10,7 +10,6 @@ import cwh.utils.process.CmdExecutor;
 import cwh.web.model.CommonDefine;
 import cwh.web.model.RequestState;
 import cwh.web.model.playback.PlayBackParam;
-import cwh.web.model.playback.PlayBackRes;
 import cwh.web.servlet.longtime.LongTimeHelper;
 import cwh.web.servlet.playback.PlaybackHelper;
 import cwh.web.session.SessionManager;
@@ -18,7 +17,7 @@ import cwh.web.session.SessionState;
 
 import javax.servlet.AsyncContext;
 import javax.servlet.http.HttpServletRequest;
-import java.io.*;
+import java.io.File;
 
 /**
  * Created by cwh on 16-3-9
@@ -42,19 +41,19 @@ public class AsyncLongTimePlay implements Runnable {
                 request.getParameter(CommonDefine.START),
                 request.getParameter(CommonDefine.END));
         final SessionState sessionState = SessionManager.getInstance().getSessionState(request);
-        String videoPath = PlayBackParam.formatPath(playBackParam);
-        SessionManager.getInstance().requestVideo(videoPath, sessionState, new SessionManager.CacheCallback() {
+        final String tsDir = CommonDefine.PLAY_BACK_DIR_PATH + File.separator + playBackParam.toString() + CommonDefine.LONG_TIME;
+        SessionManager.getInstance().requestVideo(tsDir.replace(CommonDefine.DATA_PATH + File.separator, "") + File.separator + CommonDefine.LONG_TIME_M3U8,
+                sessionState, new SessionManager.CacheCallback() {
             @Override
-            public void onOld(RequestState playbackState) {
+            public void onOld(RequestState longTimeState) {
                 VSLog.d(TAG, "cached");
-                PlaybackHelper.responseString(context.getResponse(), ((PlayBackRes) playbackState.getRes()).toJson(sessionState.getSessionId()));
+                PlaybackHelper.responseString(context.getResponse(), ((LongTimeRes) longTimeState.getRes()).toJson(sessionState.getSessionId()));
                 context.complete();
                 VSLog.d(TAG, "on Complete");
             }
 
             @Override
             public boolean onNew(RequestState requestState) {
-                final String tsDir = CommonDefine.PLAY_BACK_DIR_PATH + File.separator + playBackParam.toString() + CommonDefine.LONG_TIME;
                 FileUtils.mkdir(tsDir);
                 final String longTimeM3U8Path = tsDir + File.separator + CommonDefine.LONG_TIME_M3U8;
                 FileUtils.createFile(longTimeM3U8Path);
@@ -106,9 +105,9 @@ public class AsyncLongTimePlay implements Runnable {
                     return false;
                 }
                 VSLog.d(TAG, "after convert");
-                LongTimeRes playBackRes = new LongTimeRes(playBackPath[0]);
-                PlaybackHelper.responseString(context.getResponse(), playBackRes.toJson(sessionState.getSessionId()));
-                requestState.setRes(playBackRes);
+                LongTimeRes longTimeRes = new LongTimeRes(playBackPath[0].replace(CommonDefine.DATA_PATH + File.separator, ""));
+                PlaybackHelper.responseString(context.getResponse(), longTimeRes.toJson(sessionState.getSessionId()));
+                requestState.setRes(longTimeRes);
                 context.complete();
                 VSLog.d(TAG, "on Complete");
                 ThreadUtils.runInBackGround(new Runnable() {
@@ -125,7 +124,7 @@ public class AsyncLongTimePlay implements Runnable {
 
     }
 
-    public static void addM3U8(int index, final int[]tsIndex, PlayBackParam playBackParam, int[][][] timeIntervals, final String tsDir, final String longTimeM3U8Path) {
+    public static void addM3U8(int index, final int[] tsIndex, PlayBackParam playBackParam, int[][][] timeIntervals, final String tsDir, final String longTimeM3U8Path) {
         final int[] curIndex = new int[1];
         curIndex[0] = index;
         NvrService.getInstance().time2VideoPath(
@@ -148,13 +147,13 @@ public class AsyncLongTimePlay implements Runnable {
     }
 
     public static String sysSingleMp42TS(String tmpFilePath, int index, String tsDir) {
-        CmdExecutor.wait("ffmpeg -y -i " + tmpFilePath + " -f ssegment -segment_format mpegts -segment_list "
+        CmdExecutor.wait("ffmpeg -n -i " + tmpFilePath + " -s 640x360 -f ssegment -segment_format mpegts -segment_list "
                 + tsDir + "/play" + index + ".m3u8 -vcodec libx264 " + tsDir + "/out" + index + "%03d.ts\n");
 //        -segment_time 2
         return tsDir + "/play" + index + ".m3u8";
     }
 
-    public static StringBuilder appendM3U8Line(StringBuilder buf, String lineContent, int[]curIndex, String tsDir) {
+    public static StringBuilder appendM3U8Line(StringBuilder buf, String lineContent, int[] curIndex, String tsDir) {
         if (!lineContent.equals("#EXT-X-ENDLIST")) {
             if (lineContent.startsWith("#")) {
                 buf.append(lineContent);
@@ -182,7 +181,7 @@ public class AsyncLongTimePlay implements Runnable {
                     if (lineContent.startsWith("#EXT-X-TARGETDURATION:")) {
                         // fix for ts longer than 10 seconds
                         buf.append("#EXT-X-TARGETDURATION:");
-                        buf.append(CommonDefine.LONG_SPLIT_INTERVAL/1000 + 2);
+                        buf.append(CommonDefine.LONG_SPLIT_INTERVAL / 1000 + 2);
                         buf.append("\n");
                     } else {
                         buf.append(lineContent);
@@ -198,7 +197,7 @@ public class AsyncLongTimePlay implements Runnable {
         return tsIndex[0];
     }
 
-    public static int appendM3U8(final String partPath, String wholePath, final int[]curIndex, final String tsDir) {
+    public static int appendM3U8(final String partPath, String wholePath, final int[] curIndex, final String tsDir) {
         final StringBuilder buf = new StringBuilder();
         FileUtils.readLine(partPath, new FileUtils.ReadLine() {
             @Override
