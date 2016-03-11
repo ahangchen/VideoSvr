@@ -190,6 +190,10 @@ public class FileUtils {
         return new File(path).mkdir();
     }
 
+    public static boolean rename(String src, String dst) {
+        return new File(src).renameTo(new File(dst));
+    }
+
 
     public static void main(String[] args) {
 //        FileUtils.flatTravel("/media/Software/lab/data/videoweb/realplay/192-168-199-108-554-1-2016-0-9", new Travel() {

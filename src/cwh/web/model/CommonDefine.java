@@ -69,5 +69,5 @@ public class CommonDefine {
     public static int TOUCH_INTERVAL = 20 * 60 * 1000; // ms
 
     // long time param
-    public static int INTERVAL = 10 * 1000;
+    public static int LONG_SPLIT_INTERVAL = 10 * 1000;
 }

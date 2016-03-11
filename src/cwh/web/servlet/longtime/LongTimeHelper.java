@@ -30,8 +30,8 @@ public class LongTimeHelper {
         Calendar startDate = DateUtils.genTime(startYear, startMonth, startDay, startHour, startMin, startSec);
         Calendar endDate = DateUtils.genTime(endYear, endMonth, endDay, endHour, endMin, endSec);
         long duration = endDate.getTimeInMillis() - startDate.getTimeInMillis();
-        long mod = duration % CommonDefine.INTERVAL;
-        long cnt = duration / CommonDefine.INTERVAL;
+        long mod = duration % CommonDefine.LONG_SPLIT_INTERVAL;
+        long cnt = duration / CommonDefine.LONG_SPLIT_INTERVAL;
         int len = (int) cnt + (mod == 0 ? 0 : 1);
         int[][][] sps = new int[len][2][6];
         for (int i = 0; i < cnt; i++) {
@@ -41,7 +41,7 @@ public class LongTimeHelper {
             sps[i][0][3] = startDate.get(Calendar.HOUR_OF_DAY);
             sps[i][0][4] = startDate.get(Calendar.MINUTE);
             sps[i][0][5] = startDate.get(Calendar.SECOND);
-            startDate.setTimeInMillis(startDate.getTimeInMillis() + CommonDefine.INTERVAL);
+            startDate.setTimeInMillis(startDate.getTimeInMillis() + CommonDefine.LONG_SPLIT_INTERVAL);
             sps[i][1][0] = startDate.get(Calendar.YEAR);
             sps[i][1][1] = startDate.get(Calendar.MONTH);
             sps[i][1][2] = startDate.get(Calendar.DAY_OF_MONTH);

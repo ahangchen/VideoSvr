@@ -67,6 +67,7 @@ public class AsyncLongTimePlay implements Runnable {
                 final String[] playBackPath = new String[1];
                 final boolean[] waitEnd = new boolean[1];
                 waitEnd[0] = false;
+                final int[] tsIndex = new int[1];
                 NvrService.getInstance().time2VideoPath(
                         playBackParam.getIp()[0], playBackParam.getIp()[1],
                         playBackParam.getIp()[2], playBackParam.getIp()[3],
@@ -80,7 +81,7 @@ public class AsyncLongTimePlay implements Runnable {
                             @Override
                             public void onComplete(String filePath) {
                                 String firstM3U8 = sysSingleMp42TS(filePath, 0, tsDir);
-                                firstM3U8(firstM3U8, longTimeM3U8Path);
+                                tsIndex[0] = firstM3U8(firstM3U8, longTimeM3U8Path, tsDir);
                                 playBackPath[0] = longTimeM3U8Path;
                                 FileUtils.rm(filePath);
                                 waitEnd[0] = true;
@@ -110,19 +111,23 @@ public class AsyncLongTimePlay implements Runnable {
                 requestState.setRes(playBackRes);
                 context.complete();
                 VSLog.d(TAG, "on Complete");
-//                ThreadUtils.runInBackGround(new Runnable() {
-//                    @Override
-//                    public void run() {
-//
-//                    }
-//                });
+                ThreadUtils.runInBackGround(new Runnable() {
+                    @Override
+                    public void run() {
+                        for (int i = 1; i < timeIntervals.length; i++) {
+                            addM3U8(i, tsIndex, playBackParam, timeIntervals, tsDir, longTimeM3U8Path);
+                        }
+                    }
+                });
                 return true;
             }
         });
 
     }
 
-    public static void addM3U8(final int index, PlayBackParam playBackParam, int[][][] timeIntervals, final String tsDir, final String longTimeM3U8Path) {
+    public static void addM3U8(int index, final int[]tsIndex, PlayBackParam playBackParam, int[][][] timeIntervals, final String tsDir, final String longTimeM3U8Path) {
+        final int[] curIndex = new int[1];
+        curIndex[0] = index;
         NvrService.getInstance().time2VideoPath(
                 playBackParam.getIp()[0], playBackParam.getIp()[1],
                 playBackParam.getIp()[2], playBackParam.getIp()[3],
@@ -135,8 +140,8 @@ public class AsyncLongTimePlay implements Runnable {
                 new PlayCallback() {
                     @Override
                     public void onComplete(String filePath) {
-                        String firstM3U8 = sysSingleMp42TS(filePath, 0, tsDir);
-                        appendM3U8(firstM3U8, longTimeM3U8Path, index);
+                        String curM3U8 = sysSingleMp42TS(filePath, curIndex[0], tsDir);
+                        appendM3U8(curM3U8, longTimeM3U8Path, tsIndex, tsDir);
                         FileUtils.rm(filePath);
                     }
                 });
@@ -144,11 +149,29 @@ public class AsyncLongTimePlay implements Runnable {
 
     public static String sysSingleMp42TS(String tmpFilePath, int index, String tsDir) {
         CmdExecutor.wait("ffmpeg -y -i " + tmpFilePath + " -f ssegment -segment_format mpegts -segment_list "
-                + tsDir + "/play" + index + ".m3u8 -segment_time 2 -vcodec libx264 " + tsDir + "/out%" + index + "3d.ts\n");
+                + tsDir + "/play" + index + ".m3u8 -vcodec libx264 " + tsDir + "/out" + index + "%03d.ts\n");
+//        -segment_time 2
         return tsDir + "/play" + index + ".m3u8";
     }
 
-    public static int firstM3U8(String partPath, String wholePath) {
+    public static StringBuilder appendM3U8Line(StringBuilder buf, String lineContent, int[]curIndex, String tsDir) {
+        if (!lineContent.equals("#EXT-X-ENDLIST")) {
+            if (lineContent.startsWith("#")) {
+                buf.append(lineContent);
+                buf.append("\n");
+            } else if (lineContent.startsWith("out")) {
+                buf.append("out");
+                buf.append(curIndex[0]);
+                buf.append(".ts");
+                buf.append("\n");
+                FileUtils.rename(tsDir + File.separator + lineContent, tsDir + File.separator + "out" + curIndex[0] + ".ts");
+                curIndex[0]++;
+            }
+        }
+        return buf;
+    }
+
+    public static int firstM3U8(String partPath, String wholePath, final String tsDir) {
         final int[] tsIndex = new int[1];
         tsIndex[0] = 0;
         final StringBuilder buf = new StringBuilder();
@@ -156,50 +179,38 @@ public class AsyncLongTimePlay implements Runnable {
             @Override
             public void onLine(String lineContent, int lineIndex) {
                 if (lineIndex < 5) {
-                    buf.append(lineContent);
-                    buf.append("\n");
-                } else if (!lineContent.equals("#EXT-X-ENDLIST")) {
-                    if (lineContent.startsWith("#")) {
+                    if (lineContent.startsWith("#EXT-X-TARGETDURATION:")) {
+                        // fix for ts longer than 10 seconds
+                        buf.append("#EXT-X-TARGETDURATION:");
+                        buf.append(CommonDefine.LONG_SPLIT_INTERVAL/1000 + 2);
+                        buf.append("\n");
+                    } else {
                         buf.append(lineContent);
                         buf.append("\n");
-                    } else if (lineContent.startsWith("out")) {
-                        buf.append("out");
-                        buf.append(tsIndex[0]);
-                        buf.append(".ts");
-                        buf.append("\n");
-                        tsIndex[0]++;
                     }
+                } else {
+                    appendM3U8Line(buf, lineContent, tsIndex, tsDir);
                 }
             }
         });
         FileUtils.append2File(wholePath, buf.toString());
+        FileUtils.rm(partPath);
         return tsIndex[0];
     }
 
-    public static int appendM3U8(String partPath, String wholePath, final int curIndex) {
+    public static int appendM3U8(final String partPath, String wholePath, final int[]curIndex, final String tsDir) {
         final StringBuilder buf = new StringBuilder();
-        final int[] p2CurIndex = new int[1];
-        p2CurIndex[0] = curIndex;
         FileUtils.readLine(partPath, new FileUtils.ReadLine() {
             @Override
             public void onLine(String lineContent, int lineIndex) {
                 if (lineIndex >= 5) {
-                    if (!lineContent.equals("#EXT-X-ENDLIST")) {
-                        if (lineContent.startsWith("#")) {
-                            buf.append(lineContent);
-                        } else if (lineContent.startsWith("out")) {
-                            buf.append("out");
-                            buf.append(p2CurIndex[0]);
-                            buf.append(".ts");
-                            buf.append("\n");
-                            p2CurIndex[0]++;
-                        }
-                    }
+                    appendM3U8Line(buf, lineContent, curIndex, tsDir);
                 }
             }
         });
         FileUtils.append2File(wholePath, buf.toString());
-        return p2CurIndex[0];
+        FileUtils.rm(partPath);
+        return curIndex[0];
     }
 
     public static void main(String[] args) {
