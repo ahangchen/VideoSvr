@@ -9,7 +9,7 @@ import cwh.web.model.realplay.AsyncRealPlay;
  * 测试环境
  * cp /home/cwh/Mission/coding/VideoSvr/out/artifacts/VideoSvr_war_exploded/. -r /home/cwh/tomcat/webapps/VideoSvr
  * 正式环境
- *  cp out/artifacts/VideoSvr_war_exploded/. -r powerful/VideoSvr & tar cvf powerful.tar.gz powerful & scp -r powerful.tar.gz cwh@222.201.145.237:/home/cwh
+ *  rmdir -rf powerful & mkdir powerful & cp lib/libnvr.so powerful/libnvr.so & cp out/artifacts/VideoSvr_war_exploded/. -r powerful/VideoSvr & tar cvf powerful.tar.gz powerful & scp -r powerful.tar.gz cwh@222.201.145.237:/home/cwh & rm -rf powerful
  */
 public class Master {
 
