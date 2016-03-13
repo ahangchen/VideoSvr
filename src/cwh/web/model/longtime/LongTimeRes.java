@@ -18,6 +18,16 @@ public class LongTimeRes {
         this.longTimeDir = longTimeDir;
     }
 
+    public boolean stop = false;
+
+    public boolean isStop() {
+        return stop;
+    }
+
+    public void setStop(boolean stop) {
+        this.stop = stop;
+    }
+
     public String toJson(String sid) {
         return "{" +
                 "\"sid\":\"" + sid +

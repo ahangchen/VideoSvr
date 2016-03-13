@@ -118,6 +118,8 @@ public class SessionManager {
         }
     }
 
+    // clean系列有点耗时
+
     public void playBackClean(final PlayBackRes playBackRes, String sid) {
         if (playBackRes == null) {
             // 在资源申请失败时应当删除sessionState里的这个res
@@ -163,6 +165,8 @@ public class SessionManager {
         requestDestroy(longTimeRes.getLongTimeDir(), sid, new DestroyCallback() {
             @Override
             public void onEmpty() {
+                longTimeRes.setStop(true);
+                ThreadUtils.sleep(1000);
                 boolean ret = FileUtils.rmDir(CommonDefine.DATA_PATH + File.separator +
                         longTimeRes.getLongTimeDir().replace(File.separator + CommonDefine.LONG_TIME_M3U8, ""));
                 VSLog.d(TAG, "delete ret: " + ret);

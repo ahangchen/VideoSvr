@@ -1,10 +1,12 @@
 package cwh.web.servlet.longtime;
 
+import cwh.utils.StringUtils;
 import cwh.utils.concurrent.ThreadUtils;
 import cwh.utils.date.DateUtils;
 import cwh.utils.log.VSLog;
 import cwh.web.model.CommonDefine;
 import cwh.web.model.longtime.AsyncLongTimePlay;
+import cwh.web.servlet.playback.PlaybackHelper;
 
 import javax.servlet.AsyncContext;
 import javax.servlet.AsyncListener;
@@ -67,6 +69,20 @@ public class LongTimeHelper {
         return sps;
     }
 
+    public static int[] endTime(int startYear, int startMonth, int startDay, int startHour, int startMin, int startSec) {
+        Calendar startDate = DateUtils.genTime(startYear, startMonth, startDay, startHour, startMin, startSec);
+        long endTime = startDate.getTimeInMillis() + CommonDefine.LONG_SPLIT_INTERVAL;
+        startDate.setTimeInMillis(endTime);
+        int[] ends = new int[6];
+        ends[0] = startDate.get(Calendar.YEAR);
+        ends[1] = startDate.get(Calendar.MONTH);
+        ends[2] = startDate.get(Calendar.DAY_OF_MONTH);
+        ends[3] = startDate.get(Calendar.HOUR_OF_DAY);
+        ends[4] = startDate.get(Calendar.MINUTE);
+        ends[5] = startDate.get(Calendar.SECOND);
+        return ends;
+    }
+
     public static void main(String[] args) {
         int[][][] timeIntervals = splitTime(2016, 3, 5, 0, 0, 0, 2016, 3, 5, 0, 1, 5);
         for (int[][] timeInterval : timeIntervals) {
@@ -77,5 +93,43 @@ public class LongTimeHelper {
         }
     }
 
+    public static boolean isParamOk(HttpServletRequest request) {
+        // start=2015-12-11-0-0-0&end=2015-12-11-0-0-3&channel=0&sid=131212121
+        String start = request.getParameter(CommonDefine.START);
+        if (StringUtils.isEmpty(start)) {
+            return false;
+        }
+        if(!StringUtils.isMatch(start, PlaybackHelper.REGX_PLAYBACK_DATE_TIME)) {
+            VSLog.e(TAG, "start time illegal :" + request.getQueryString());
+            return false;
+        }
+        String sid = request.getParameter(CommonDefine.SID);
+        if (!StringUtils.isEmpty(sid)) {
+            if (!StringUtils.isMatch(sid, PlaybackHelper.REGX_SID)){
+                VSLog.e(TAG, "sid illegal :" + request.getQueryString());
+                return false;
+            }
+        }
+
+        String ip = request.getParameter(CommonDefine.IP);
+        if (!StringUtils.isEmpty(ip)) {
+            if (!StringUtils.isMatch(ip, StringUtils.REGX_IP)) {
+                VSLog.e(TAG, "IP illegal :" + request.getQueryString());
+                return false;
+            }
+        }
+
+        String port = request.getParameter(CommonDefine.PORT);
+        if (StringUtils.isEmpty(port)) {
+            return false;
+        }
+        if (StringUtils.isMatch(port, StringUtils.REGX_POS_INT)) {
+            int intPort = Integer.parseInt(port);
+            if (intPort > 65535 || intPort < 1) {
+                return false;
+            }
+        }
+        return true;
+    }
 
 }

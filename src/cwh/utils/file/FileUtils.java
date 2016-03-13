@@ -90,6 +90,34 @@ public class FileUtils {
         }
     }
 
+    /**
+     * 追加文件：使用FileWriter
+     *
+     * @param fileName
+     * @param content
+     */
+    public static void overWriteFile(String fileName, String content) {
+        if (!new File(fileName).exists()) {
+            createFile(fileName);
+        }
+        FileWriter writer = null;
+        try {
+            // 打开一个写文件器，构造函数中的第二个参数true表示以追加形式写文件
+            writer = new FileWriter(fileName, false);
+            writer.write(content);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if(writer != null){
+                    writer.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public static boolean createFile(String destFileName) {
         File file = new File(destFileName);
         if (file.exists()) {
@@ -101,7 +129,7 @@ public class FileUtils {
             return false;
         }
         //判断目标文件所在的目录是否存在
-        if (!file.getParentFile().exists()) {
+        if (file.getParentFile() != null && !file.getParentFile().exists()) {
             //如果目标文件所在的目录不存在，则创建父目录
             if (!file.getParentFile().mkdirs()) {
                 System.out.println("创建目标文件所在目录失败！");
@@ -208,6 +236,10 @@ public class FileUtils {
 //        FileUtils.mkdir(CommonDefine.DATA_PATH + "/" + CommonDefine.REAL_PLAY_DIR_PATH);
 //        FileUtils.mkdir(CommonDefine.PLAY_BACK_DIR_PATH);
 //        writing();
+        FileUtils.overWriteFile("test.txt", "nothing\n" +
+                " \n" +
+                " \n" +
+                " \n");
     }
 
 

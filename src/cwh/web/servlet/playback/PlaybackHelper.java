@@ -5,6 +5,7 @@ import cwh.utils.concurrent.ThreadUtils;
 import cwh.utils.log.VSLog;
 import cwh.web.model.CommonDefine;
 import cwh.web.model.playback.AsyncQueryVideo;
+import cwh.web.servlet.longtime.LongTimeHelper;
 
 import javax.servlet.AsyncContext;
 import javax.servlet.AsyncListener;
@@ -22,6 +23,7 @@ public class PlaybackHelper {
     public static String TAG = "ServletHelper";
     public static String REGX_PLAYBACK_DATE_TIME = "^\\d{4}-(\\d{2}|\\d{1})-(\\d{2}|\\d{1})-(\\d{1}|\\d{2})-(\\d{1}|\\d{2})-(\\d{1}|\\d{2})$";
     public static String REGX_SID = "^[A-Za-z0-9]+$";
+
     public static void responseString(ServletResponse response, String stringResponse) {
         VSLog.d(TAG, stringResponse);
         PrintWriter out = null;
@@ -47,53 +49,22 @@ public class PlaybackHelper {
 
     public static boolean isParamOk(HttpServletRequest request) {
         // start=2015-12-11-0-0-0&end=2015-12-11-0-0-3&channel=0&sid=131212121
-        String start = request.getParameter(CommonDefine.START);
-        if (StringUtils.isEmpty(start)) {
-            return false;
-        }
-        if(!StringUtils.isMatch(start, REGX_PLAYBACK_DATE_TIME)) {
-            VSLog.e(TAG, "start time illegal :" + request.getQueryString());
+        if (LongTimeHelper.isParamOk(request)) {
             return false;
         }
         String end = request.getParameter(CommonDefine.END);
         if (StringUtils.isEmpty(end)) {
             return false;
         }
-        if(!StringUtils.isMatch(end, REGX_PLAYBACK_DATE_TIME)) {
+        if (!StringUtils.isMatch(end, REGX_PLAYBACK_DATE_TIME)) {
             VSLog.e(TAG, "start time illegal :" + request.getQueryString());
             return false;
-        }
-        String sid = request.getParameter(CommonDefine.SID);
-        if (!StringUtils.isEmpty(sid)) {
-            if (!StringUtils.isMatch(sid, REGX_SID)){
-                VSLog.e(TAG, "sid illegal :" + request.getQueryString());
-                return false;
-            }
-        }
-
-        String ip = request.getParameter(CommonDefine.IP);
-        if (!StringUtils.isEmpty(ip)) {
-            if (!StringUtils.isMatch(ip, StringUtils.REGX_IP)) {
-                VSLog.e(TAG, "IP illegal :" + request.getQueryString());
-                return false;
-            }
-        }
-
-        String port = request.getParameter(CommonDefine.PORT);
-        if (StringUtils.isEmpty(port)) {
-            return false;
-        }
-        if (StringUtils.isMatch(port, StringUtils.REGX_POS_INT)) {
-            int intPort = Integer.parseInt(port);
-            if (intPort > 65535 || intPort < 1) {
-                return false;
-            }
         }
         return true;
     }
 
-    public static void main(String[]args) {
+    public static void main(String[] args) {
         String playbackDateTime = "^\\d{4}-(\\d{2}|\\d{1})-(\\d{2}|\\d{1})-(\\d{1}|\\d{2})-(\\d{1}|\\d{2})-(\\d{1}|\\d{2})$";
-        VSLog.d(TAG, StringUtils.isMatch("2015-12-11-0-01-0", playbackDateTime)+"");
+        VSLog.d(TAG, StringUtils.isMatch("2015-12-11-0-01-0", playbackDateTime) + "");
     }
 }

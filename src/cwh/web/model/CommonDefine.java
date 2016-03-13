@@ -6,7 +6,7 @@ package cwh.web.model;
 public class CommonDefine {
 
     // deploy
-    public static boolean DEBUG = true;
+    public static boolean DEBUG = false;
     public static boolean POWER = !DEBUG;
 
     // file
@@ -69,5 +69,5 @@ public class CommonDefine {
     public static int TOUCH_INTERVAL = 20 * 60 * 1000; // ms
 
     // long time param
-    public static int LONG_SPLIT_INTERVAL = 10 * 1000;
+    public static int LONG_SPLIT_INTERVAL = 8 * 1000;
 }

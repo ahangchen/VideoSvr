@@ -26,7 +26,7 @@ public class LongTime extends HttpServlet{
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         VSLog.d(TAG, "Playback param:" + request.getQueryString());
-        if (PlaybackHelper.isParamOk(request)) {
+        if (LongTimeHelper.isParamOk(request)) {
             LongTimeHelper.asyncResponse(request, new QueryVideoListener());
         } else {
             PlaybackHelper.responseString(response, "param illegal " + request.getQueryString());
