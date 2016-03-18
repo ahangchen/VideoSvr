@@ -154,6 +154,7 @@ public class AsyncLongTimePlay implements Runnable {
     public static StringBuilder appendM3U8Line(StringBuilder buf, String lineContent, int[] curIndex, String tsDir) {
         if (!lineContent.equals("#EXT-X-ENDLIST")) {
             if (lineContent.startsWith("#")) {
+                buf.append("#EXT-X-DISCONTINUITY\n");
                 buf.append(lineContent);
                 buf.append("\n");
             } else if (lineContent.startsWith("play")) {
