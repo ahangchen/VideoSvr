@@ -41,7 +41,10 @@ public class SessionClean extends HttpServlet {
             PlaybackHelper.responseString(response, "illegal sid:" + sid);
             return;
         }
-        SessionManager.getInstance().sessionClean(sid);
-        PlaybackHelper.responseString(response, "Session " + sid + "cleaned");
+        if (SessionManager.getInstance().sessionClean(sid)) {
+            PlaybackHelper.responseString(response, "Session " + sid + "cleaned");
+        } else {
+            PlaybackHelper.responseString(response, "no such session:" + sid);
+        }
     }
 }

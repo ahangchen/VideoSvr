@@ -49,7 +49,7 @@ public class PlaybackHelper {
 
     public static boolean isParamOk(HttpServletRequest request) {
         // start=2015-12-11-0-0-0&end=2015-12-11-0-0-3&channel=0&sid=131212121
-        if (LongTimeHelper.isParamOk(request)) {
+        if (!LongTimeHelper.isParamOk(request)) {
             return false;
         }
         String end = request.getParameter(CommonDefine.END);

@@ -92,12 +92,12 @@ public class SessionManager {
         return sessionStates.get(sid);
     }
 
-    public void sessionClean(String sid) {
+    public boolean sessionClean(String sid) {
         synchronized (sessionStates) {
             SessionState sessionState = getSessionState(sid);
             if (sessionState == null) {
                 VSLog.d(TAG, "no such session:" + sid);
-                return;
+                return false;
             }
             sessionState.lock();
             try {
@@ -114,7 +114,8 @@ public class SessionManager {
             } finally {
                 sessionState.unLock();
             }
-            sessionStates.remove(sessionState.getSessionId());
+            sessionStates.remove(sid);
+            return true;
         }
     }
 
