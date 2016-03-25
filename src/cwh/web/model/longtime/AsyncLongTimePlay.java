@@ -121,7 +121,7 @@ public class AsyncLongTimePlay implements Runnable {
 
     }
 
-    public static void addM3U8(int index, final int[] tsIndex, LongTimeParam playBackParam, int[] curStart, final String tsDir, final String longTimeM3U8Path) {
+    public static void addM3U8(int index, final int[] tsIndex, final LongTimeParam playBackParam, int[] curStart, final String tsDir, final String longTimeM3U8Path) {
         final int[] curIndex = new int[1];
         curIndex[0] = index;
         int[] curEnd = LongTimeHelper.endTime(curStart[0], curStart[1], curStart[2], curStart[3], curStart[4], curStart[5]);
@@ -135,9 +135,16 @@ public class AsyncLongTimePlay implements Runnable {
                 new PlayCallback() {
                     @Override
                     public void onComplete(String filePath) {
-                        String curM3U8 = sysSingleMp42TS(filePath, curIndex[0], tsDir);
-                        appendM3U8(curM3U8, longTimeM3U8Path, tsIndex, tsDir);
-                        FileUtils.rm(filePath);
+                        if (FileUtils.isExist(filePath)) {
+                            String curM3U8 = sysSingleMp42TS(filePath, curIndex[0], tsDir);
+                            appendM3U8(curM3U8, longTimeM3U8Path, tsIndex, tsDir);
+                            FileUtils.rm(filePath);
+                        } else {
+                            // 可能接下来是一串的失败，放慢这种失败的速度
+                            VSLog.e(TAG, "PLAYBACK FILE NOT EXIST:" + filePath);
+                            VSLog.d(TAG, playBackParam.toString());
+                            ThreadUtils.sleep(1000);
+                        }
                     }
                 });
         System.arraycopy(curEnd, 0, curStart, 0, curStart.length);

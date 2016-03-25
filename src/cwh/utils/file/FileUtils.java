@@ -236,10 +236,10 @@ public class FileUtils {
 //        FileUtils.mkdir(CommonDefine.DATA_PATH + "/" + CommonDefine.REAL_PLAY_DIR_PATH);
 //        FileUtils.mkdir(CommonDefine.PLAY_BACK_DIR_PATH);
 //        writing();
-        FileUtils.overWriteFile("test.txt", "nothing\n" +
-                " \n" +
-                " \n" +
-                " \n");
+//        FileUtils.overWriteFile("test.txt", "nothing\n" +
+//                " \n" +
+//                " \n" +
+//                " \n");
     }
 
 
