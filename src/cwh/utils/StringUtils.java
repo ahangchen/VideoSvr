@@ -10,16 +10,18 @@ import java.util.regex.Pattern;
  */
 public class StringUtils {
     public static String TAG = "StringUtils";
-    public static String REGX_IP = "(\\d{3}|\\d{2}|\\d{1}).(\\d{3}|\\d{2}|\\d{1}).(\\d{3}|\\d{2}|\\d{1}).(\\d{3}|\\d{2}|\\d{1})";
+    public static String REGX_IP = "^(\\d{3}|\\d{2}|\\d{1})\\.(\\d{3}|\\d{2}|\\d{1})\\.(\\d{3}|\\d{2}|\\d{1})\\.(\\d{3}|\\d{2}|\\d{1})$";
     public static String REGX_POS_INT = "[0-9]*[1-9][0-9]*";
 
     public static boolean isMatch(String dstStr, String strReg) {
         Pattern pattern = Pattern.compile(strReg);
         Matcher matcher = pattern.matcher(dstStr);
         boolean find = matcher.find();
-        while (matcher.find()) {
-            System.out.println("start(): " + matcher.start());
-            System.out.println("end(): " + matcher.end());
+        if (find) {
+            do {
+                System.out.println("start(): " + matcher.start());
+                System.out.println("end(): " + matcher.end());
+            } while (matcher.find());
         }
         return find;
     }
@@ -39,6 +41,6 @@ public class StringUtils {
     }
 
     public static void main(String[]args) {
-        VSLog.d(TAG, isMatch("125.216.2.122", REGX_IP)+"");
+        VSLog.d(TAG, isMatch("125.216.2.4", REGX_IP)? "true" : "false");
     }
 }
