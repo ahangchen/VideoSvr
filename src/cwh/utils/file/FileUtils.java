@@ -46,7 +46,7 @@ public class FileUtils {
             while ((tempString = reader.readLine()) != null) {
                 //把当前行号显示出来
                 readLine.onLine(tempString, lineIndex);
-                lineIndex ++;
+                lineIndex++;
             }
             reader.close();
         } catch (IOException e) {
@@ -60,6 +60,18 @@ public class FileUtils {
                 }
             }
         }
+    }
+
+    public static int lineCount(String filePath) {
+        final int[] lineCount = new int[1];
+        lineCount[0] = 0;
+        readLine(filePath, new ReadLine() {
+            @Override
+            public void onLine(String string, int lineIndex) {
+                lineCount[0] = lineIndex;
+            }
+        });
+        return lineCount[0];
     }
 
     /**
@@ -81,7 +93,7 @@ public class FileUtils {
             e.printStackTrace();
         } finally {
             try {
-                if(writer != null){
+                if (writer != null) {
                     writer.close();
                 }
             } catch (IOException e) {
@@ -109,7 +121,7 @@ public class FileUtils {
             e.printStackTrace();
         } finally {
             try {
-                if(writer != null){
+                if (writer != null) {
                     writer.close();
                 }
             } catch (IOException e) {
@@ -240,6 +252,7 @@ public class FileUtils {
 //                " \n" +
 //                " \n" +
 //                " \n");
+        VSLog.d(TAG, lineCount("/home/cwh/Mission/coding/VideoSvr/src/cwh/Master.java")+"");
     }
 
 

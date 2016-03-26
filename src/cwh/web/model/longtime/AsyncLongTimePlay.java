@@ -75,9 +75,11 @@ public class AsyncLongTimePlay implements Runnable {
                                     @Override
                                     public void onComplete(String filePath) {
                                         String firstM3U8 = sysSingleMp42TS(filePath, 0, tsDir);
-                                        tsIndex[0] = firstM3U8(firstM3U8, longTimeM3U8Path, tsDir);
-                                        playBackPath[0] = longTimeM3U8Path;
-                                        FileUtils.rm(filePath);
+                                        if (FileUtils.isExist(firstM3U8)) {
+                                            tsIndex[0] = firstM3U8(firstM3U8, longTimeM3U8Path, tsDir);
+                                            playBackPath[0] = longTimeM3U8Path;
+                                            FileUtils.rm(filePath);
+                                        }
                                         waitEnd[0] = true;
                                     }
                                 });
@@ -88,7 +90,7 @@ public class AsyncLongTimePlay implements Runnable {
                             i--;
                         }
                         VSLog.d(TAG, "convert time :" + i);
-                        if (!waitEnd[0] || !FileUtils.isExist(playBackPath[0])) {
+                        if (!waitEnd[0] || !FileUtils.isExist(playBackPath[0]) || FileUtils.lineCount(playBackPath[0]) <= 5) {
                             if (waitEnd[0]) {
                                 VSLog.e(TAG, "generate required file failed" + playBackPath[0]);
                                 PlaybackHelper.responseString(context.getResponse(), "generate required file failed");
