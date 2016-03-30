@@ -11,6 +11,7 @@ import java.io.*;
  */
 public class CmdExecutor {
     public static String TAG = "CmdExecutor";
+    public static boolean LOG_TOGGLE = false;
 
     public static String exec(String cmd) {
         try {
@@ -54,13 +55,14 @@ public class CmdExecutor {
     }
 
     public static Process run(String command) {
+        VSLog.d(TAG, command);
         Process proc = null;
         try {
             Runtime runtime = Runtime.getRuntime();
             VSLog.d(TAG, command);
             proc = runtime.exec(command);
 
-            if (CommonDefine.DEBUG || CommonDefine.POWER) {
+            if (LOG_TOGGLE) {
                 InputStream err = proc.getErrorStream();
                 InputStreamReader isr = new InputStreamReader(err);
                 final BufferedReader br = new BufferedReader(isr);
