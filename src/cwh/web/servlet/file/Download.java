@@ -2,8 +2,7 @@ package cwh.web.servlet.file;
 
 import cwh.utils.file.FileUtils;
 import cwh.web.model.CommonDefine;
-import cwh.web.servlet.playback.PlaybackHelper;
-import sun.misc.IOUtils;
+import cwh.web.servlet.ServletHelper;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -32,7 +31,7 @@ public class Download extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String filePath = CommonDefine.DATA_PATH + "/" + request.getQueryString();
         if(filePath.contains("..")) {
-            PlaybackHelper.responseString(response, "Illegal path");
+            ServletHelper.responseString(response, ServletHelper.genErrCode(2, "Illegal path"));
         } else {
             if (FileUtils.isExist(filePath)) {
                 FileInputStream fis = new FileInputStream(filePath);
@@ -42,7 +41,7 @@ public class Download extends HttpServlet {
                     response.getOutputStream().flush();
                 }
             } else {
-                PlaybackHelper.responseString(response, "file not found");
+                ServletHelper.responseString(response, ServletHelper.genErrCode(1, "file not found"));
             }
         }
     }

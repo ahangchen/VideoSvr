@@ -17,7 +17,8 @@
 
 ```json
     {
-    sid: "59807274C7563E5F68BEE01BE128AD4C"
+    "err": "0",
+    "sid": "59807274C7563E5F68BEE01BE128AD4C"
     }
 ```
 - 返回参数：当前请求对应的sessionID
@@ -38,12 +39,18 @@ sid：Login请求到的sessionId
 
 ####响应：
 1.延迟超时成功
-```
-    Delay session clean for session: 59807274C7563E5F68BEE01BE128AD4C
+```json
+    {
+      "err": "0",
+      "msg": "Delay session clean for session: 958B59EE3ADBF9A25581811C506AAD79"
+    }
 ```
 2.延迟超时失败
-```
-    Touch Session: 59807274C7563E5F68BEE01BE128AD4C failed
+```json
+    {
+      "err": "5",
+      "msg": "Touch Session: 59807274C7563E5F68BEE01BE128AD4C failed"
+    }
 ```
 
 
@@ -63,16 +70,25 @@ sid：Login请求到的sessionId
 ####响应：
 
 1.清理成功
-```
-    Session 59807274C7563E5F68BEE01BE128AD4Ccleaned
+```json
+    {
+        "err": "0",
+        "msg": "Session 958B59EE3ADBF9A25581811C506AAD79cleaned"
+    }
 ```
 2.给定的sid格式非法（sid字符必须都是字母或数字）
-```
-    illegal sid: 59807274C7563E5F68BEE01BE128AD4.
+```json
+   {
+       "err": "0",
+       "msg": "illegal sid:958B59EE3ADBF9A25581811C506AAD7~"
+   }
 ```
 3.给定的sid没有对应的session，清理失败
-```
-    no such session:59807274C7563E5F68BEE01BE128AD4
+```json
+    {
+        "err": "3",
+        "msg": "no such session:958B59EE3ADBF9A25581811C506AAD"
+    }
 ```
 
 ##视频请求
@@ -98,18 +114,33 @@ sid：Login请求到的sessionId
 ####响应
 
 1.参数无效，打印出参数
-```
-    param illegal start=2016-3-23-0-0-0
+```json
+    {
+        "err": "1",
+        "msg": "param illegal start=2016-3-23-0-0-0"
+    }
 ```
 2.参数合法，但是请求不到对应的视频（通常是由于NVR没有启动或者摄像头没有录制到对应的有效视频导致）
+```json
+    {
+        "err": "2",
+        "msg": "generate required file failed"
+    }
 ```
-    generate required file failed
+3.参数合法，但是生成视频超时（通常是由于NVR没有启动或者摄像头没有录制到对应的有效视频导致）
+```json
+    {
+        "err": "3",
+        "msg": "wait for playback over 50 seconds"
+    }
 ```
-3.生成成功
-```
+
+4.生成成功
+```json
    {
-    sid: "6C0A9AF34FD40BD63D12EE5F761AF910",
-    rpp: "125-216-231-164-37777-3-2016-3-22-0-0-0-2016-3-22-0-0-3.mp4"
+        "err": "0",
+        "sid": "6C0A9AF34FD40BD63D12EE5F761AF910",
+        "rpp": "125-216-231-164-37777-3-2016-3-22-0-0-0-2016-3-22-0-0-3.mp4"
    }
 ```
 - 参数解释
@@ -137,19 +168,26 @@ sid：Login请求到的sessionId
 ####响应
 
 1.参数无效，打印出参数
-```
-    param illegal start=2016-3-23-0-0-0
+```json
+    {
+        "err": "1",
+        "msg": "param illegal start=2016-3-23-0-0-0"
+    }
 ```
 2.参数合法，但是请求不到对应的视频（通常是由于摄像头或摄像头网络连接故障）
-```
-    generate m3u8 time out
+```json
+    {
+        "err": "2",
+        "msg": "generate m3u8 time out"
+    }
 ```
 3.生成成功
-```
+```json
    {
-       sid: "C00A022EE8F6743C8A80660E26D3B439",
-       rpp: "realplay/125-216-231-164-35556-1/t.m3u8",
-       svrt: "2016-03-26 14:50:28.000"
+       "err": "0",
+       "sid": "C00A022EE8F6743C8A80660E26D3B439",
+       "rpp": "realplay/125-216-231-164-35556-1/t.m3u8",
+       "svrt": "2016-03-26 14:50:28.000"
    }
 ```
 - 参数解释
@@ -178,22 +216,32 @@ sid：Login请求到的sessionId
 ####响应
 
 1.参数无效，打印出参数
-```
-    param illegal start=2016-3-23-0-0-0
+```json
+    {
+        "err": "1",
+        "msg": "param illegal start=2016-3-23-0-0-0"
+    }
 ```
 2.参数合法，但是请求不到对应的视频（通常是由于摄像头或摄像头网络连接故障）
-```
-    generate required file failed
+```json
+    {
+        "err": "2",
+        "msg": "generate required file failed"
+    }
 ```
 3.生成视频时间太长，生成失败
-```
-    wait for longtime over 50 seconds
+```json
+    {
+        "err": "3",
+        "msg": "wait for longtime over 50 seconds"
+    }
 ```
 3.生成成功
-```
+```json
    {
-        sid: "210A9E70246BABE79214FF409842B1AA",
-        rpp: "playback/125-216-231-164-37777-1-2016-3-26-9-0-0-l/play.m3u8"
+        "err": "0",
+        "sid": "210A9E70246BABE79214FF409842B1AA",
+        "rpp": "playback/125-216-231-164-37777-1-2016-3-26-9-0-0-l/play.m3u8"
    }
 ```
 - 参数解释

@@ -30,6 +30,7 @@ public class LongTimeRes {
 
     public String toJson(String sid) {
         return "{" +
+                "\"err\":\"0\"," +
                 "\"sid\":\"" + sid +
                 "\"," +
                 "\"rpp\":\"" + getLongTimeDir() +

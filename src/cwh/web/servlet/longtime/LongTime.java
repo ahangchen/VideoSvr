@@ -2,7 +2,7 @@ package cwh.web.servlet.longtime;
 
 import cwh.utils.log.VSLog;
 import cwh.web.model.QueryVideoListener;
-import cwh.web.servlet.playback.PlaybackHelper;
+import cwh.web.servlet.ServletHelper;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -29,7 +29,7 @@ public class LongTime extends HttpServlet{
         if (LongTimeHelper.isParamOk(request)) {
             LongTimeHelper.asyncResponse(request, new QueryVideoListener());
         } else {
-            PlaybackHelper.responseString(response, "param illegal " + request.getQueryString());
+            ServletHelper.responseString(response, ServletHelper.genErrCode(1, "param illegal " + request.getQueryString()));
         }
     }
 }

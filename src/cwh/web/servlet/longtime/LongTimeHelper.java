@@ -6,7 +6,7 @@ import cwh.utils.date.DateUtils;
 import cwh.utils.log.VSLog;
 import cwh.web.model.CommonDefine;
 import cwh.web.model.longtime.AsyncLongTimePlay;
-import cwh.web.servlet.playback.PlaybackHelper;
+import cwh.web.servlet.ServletHelper;
 
 import javax.servlet.AsyncContext;
 import javax.servlet.AsyncListener;
@@ -99,13 +99,13 @@ public class LongTimeHelper {
         if (StringUtils.isEmpty(start)) {
             return false;
         }
-        if(!StringUtils.isMatch(start, PlaybackHelper.REGX_PLAYBACK_DATE_TIME)) {
+        if(!StringUtils.isMatch(start, ServletHelper.REGX_PLAYBACK_DATE_TIME)) {
             VSLog.e(TAG, "start time illegal :" + request.getQueryString());
             return false;
         }
         String sid = request.getParameter(CommonDefine.SID);
         if (!StringUtils.isEmpty(sid)) {
-            if (!StringUtils.isMatch(sid, PlaybackHelper.REGX_SID)){
+            if (!StringUtils.isMatch(sid, ServletHelper.REGX_SID)){
                 VSLog.e(TAG, "sid illegal :" + request.getQueryString());
                 return false;
             }

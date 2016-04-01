@@ -16,14 +16,7 @@ public class StringUtils {
     public static boolean isMatch(String dstStr, String strReg) {
         Pattern pattern = Pattern.compile(strReg);
         Matcher matcher = pattern.matcher(dstStr);
-        boolean find = matcher.find();
-        if (find) {
-            do {
-                System.out.println("start(): " + matcher.start());
-                System.out.println("end(): " + matcher.end());
-            } while (matcher.find());
-        }
-        return find;
+        return matcher.find();
     }
 
     public static boolean isEmpty(String str) {

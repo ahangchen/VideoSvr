@@ -3,9 +3,7 @@ package cwh.web.servlet;
 import cwh.utils.StringUtils;
 import cwh.utils.log.VSLog;
 import cwh.web.model.CommonDefine;
-import cwh.web.servlet.playback.PlaybackHelper;
 import cwh.web.session.SessionManager;
-import cwh.web.session.SessionState;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -36,15 +34,15 @@ public class SessionClean extends HttpServlet {
             sid = request.getSession().getId();
         }
 
-        if (!StringUtils.isMatch(sid, PlaybackHelper.REGX_SID)) {
+        if (!StringUtils.isMatch(sid, ServletHelper.REGX_SID)) {
             VSLog.e(TAG, "illegal sid:" + sid);
-            PlaybackHelper.responseString(response, "illegal sid:" + sid);
+            ServletHelper.responseString(response, ServletHelper.genErrCode(1, "illegal sid:" + sid));
             return;
         }
         if (SessionManager.getInstance().sessionClean(sid)) {
-            PlaybackHelper.responseString(response, "Session " + sid + "cleaned");
+            ServletHelper.responseString(response, ServletHelper.genErrCode(0, "Session " + sid + "cleaned"));
         } else {
-            PlaybackHelper.responseString(response, "no such session:" + sid);
+            ServletHelper.responseString(response, ServletHelper.genErrCode(4, "no such session:" + sid));
         }
     }
 }

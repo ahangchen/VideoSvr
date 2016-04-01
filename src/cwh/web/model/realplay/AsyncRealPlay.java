@@ -7,7 +7,7 @@ import cwh.utils.log.VSLog;
 import cwh.utils.process.CmdExecutor;
 import cwh.web.model.CommonDefine;
 import cwh.web.model.RequestState;
-import cwh.web.servlet.playback.PlaybackHelper;
+import cwh.web.servlet.ServletHelper;
 import cwh.web.session.SessionManager;
 import cwh.web.session.SessionState;
 
@@ -45,7 +45,9 @@ public class AsyncRealPlay implements Runnable {
             public void onOld(RequestState requestState) {
                 VSLog.d(TAG, "cached");
                 RealPlayRes realPlayRes = (RealPlayRes) requestState.getRes();
-                PlaybackHelper.responseString(context.getResponse(), realPlayRes.toJson(sessionState.getSessionId()));
+                VSLog.d(TAG, "touch session " + sessionState.getSessionId() + " when read video");
+                SessionManager.getInstance().touch(sessionState.getSessionId());
+                ServletHelper.responseString(context.getResponse(), realPlayRes.toJson(sessionState.getSessionId()));
                 context.complete();
             }
 
@@ -58,12 +60,14 @@ public class AsyncRealPlay implements Runnable {
                 // 等m3u8生成
                 boolean m3u8Ret = M3U8Mng.waitForM3U8(realPlayVideoPath);
                 if (m3u8Ret && FileUtils.isExist(realPlayVideoPath)) {
-                    PlaybackHelper.responseString(context.getResponse(), realPlayRes.toJson(sessionState.getSessionId()));
+                    VSLog.d(TAG, "touch session " + sessionState.getSessionId() + " when read video");
+                    SessionManager.getInstance().touch(sessionState.getSessionId());
+                    ServletHelper.responseString(context.getResponse(), realPlayRes.toJson(sessionState.getSessionId()));
                     context.complete();
                     requestState.setRes(realPlayRes);
                     return true;
                 } else {
-                    PlaybackHelper.responseString(context.getResponse(), "generate m3u8 time out");
+                    ServletHelper.responseString(context.getResponse(), ServletHelper.genErrCode(2, "generate m3u8 time out"));
                     convert.destroy();
                     FileUtils.rmDir(M3U8Mng.realPlayDir2Path(realPlayVideoPath));
                     context.complete();

@@ -8,7 +8,7 @@ import cwh.utils.log.VSLog;
 import cwh.utils.process.CmdExecutor;
 import cwh.web.model.CommonDefine;
 import cwh.web.model.RequestState;
-import cwh.web.servlet.playback.PlaybackHelper;
+import cwh.web.servlet.ServletHelper;
 import cwh.web.session.SessionManager;
 import cwh.web.session.SessionState;
 
@@ -43,7 +43,9 @@ public class AsyncQueryVideo implements Runnable {
             @Override
             public void onOld(RequestState playbackState) {
                 VSLog.d(TAG, "cached");
-                PlaybackHelper.responseString(context.getResponse(), ((PlayBackRes) playbackState.getRes()).toJson(sessionState.getSessionId()));
+                VSLog.d(TAG, "touch session " + sessionState.getSessionId() + " when read video");
+                SessionManager.getInstance().touch(sessionState.getSessionId());
+                ServletHelper.responseString(context.getResponse(), ((PlayBackRes) playbackState.getRes()).toJson(sessionState.getSessionId()));
                 context.complete();
                 VSLog.d(TAG, "on Complete");
             }
@@ -84,17 +86,19 @@ public class AsyncQueryVideo implements Runnable {
                 if (!waitEnd[0] || !FileUtils.isExist(playBackPath[0])) {
                     if (waitEnd[0]) {
                         VSLog.e(TAG, "generate required file failed" + playBackPath[0]);
-                        PlaybackHelper.responseString(context.getResponse(), "generate required file failed");
+                        ServletHelper.responseString(context.getResponse(), ServletHelper.genErrCode(2, "generate required file failed"));
                     } else {
                         VSLog.e(TAG, "wait for playback over 50 seconds");
-                        PlaybackHelper.responseString(context.getResponse(), "wait for playback over 50 seconds");
+                        ServletHelper.responseString(context.getResponse(), ServletHelper.genErrCode(3, "wait for playback over 50 seconds"));
                     }
                     context.complete();
                     return false;
                 }
                 VSLog.d(TAG, "after convert");
                 PlayBackRes playBackRes = new PlayBackRes(playBackPath[0].replace(CommonDefine.PLAY_BACK_DIR_PATH + File.separator, ""));
-                PlaybackHelper.responseString(context.getResponse(), playBackRes.toJson(sessionState.getSessionId()));
+                VSLog.d(TAG, "touch session " + sessionState.getSessionId() + " when read video");
+                SessionManager.getInstance().touch(sessionState.getSessionId());
+                ServletHelper.responseString(context.getResponse(), playBackRes.toJson(sessionState.getSessionId()));
                 requestState.setRes(playBackRes);
                 context.complete();
                 VSLog.d(TAG, "on Complete");

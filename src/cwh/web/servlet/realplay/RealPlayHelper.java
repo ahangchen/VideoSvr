@@ -5,13 +5,11 @@ import cwh.utils.concurrent.ThreadUtils;
 import cwh.utils.log.VSLog;
 import cwh.web.model.CommonDefine;
 import cwh.web.model.realplay.AsyncRealPlay;
-import cwh.web.servlet.playback.PlaybackHelper;
+import cwh.web.servlet.ServletHelper;
 
 import javax.servlet.AsyncContext;
 import javax.servlet.AsyncListener;
 import javax.servlet.http.HttpServletRequest;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * Created by cwh on 16-1-2
@@ -69,7 +67,7 @@ public class RealPlayHelper {
 
         String sid = request.getParameter(CommonDefine.SID);
         if (!StringUtils.isEmpty(sid)) {
-            if (!StringUtils.isMatch(sid, PlaybackHelper.REGX_SID)) {
+            if (!StringUtils.isMatch(sid, ServletHelper.REGX_SID)) {
                 VSLog.e(TAG, "sid illegal :" + request.getQueryString());
                 return false;
             }
