@@ -61,7 +61,7 @@ public class CmdExecutor {
             Runtime runtime = Runtime.getRuntime();
             VSLog.d(TAG, command);
             proc = runtime.exec(command);
-
+            VSLog.d(TAG, "command: " + command + "complete");
             if (LOG_TOGGLE) {
                 InputStream err = proc.getErrorStream();
                 InputStreamReader isr = new InputStreamReader(err);
