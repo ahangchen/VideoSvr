@@ -37,6 +37,28 @@ public class CmdExecutor {
         Process proc = null;
         try {
             Runtime runtime = Runtime.getRuntime();
+            VSLog.d(TAG, command);
+            proc = runtime.exec(command);
+            InputStream err = proc.getErrorStream();
+            InputStreamReader isr = new InputStreamReader(err);
+            BufferedReader br = new BufferedReader(isr);
+            String line = null;
+
+//            VSLog.d(TAG, proc.toString());
+            while ((line = br.readLine()) != null && LOG_TOGGLE) {
+                VSLog.d(TAG, line);
+            }
+            int exitVal = proc.waitFor();
+            VSLog.d(TAG, "Process exitValue: " + exitVal);
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
+    }
+
+    public static void waitForPrint(String command, OnLine onLine) {
+        Process proc = null;
+        try {
+            Runtime runtime = Runtime.getRuntime();
             proc = runtime.exec(command);
             InputStream err = proc.getErrorStream();
             InputStreamReader isr = new InputStreamReader(err);
@@ -45,7 +67,10 @@ public class CmdExecutor {
 
 //            VSLog.d(TAG, proc.toString());
             while ((line = br.readLine()) != null) {
-                VSLog.d(TAG, line);
+                if (LOG_TOGGLE) {
+                    VSLog.d(TAG, line);
+                }
+                onLine.onLine(line);
             }
             int exitVal = proc.waitFor();
             VSLog.d(TAG, "Process exitValue: " + exitVal);

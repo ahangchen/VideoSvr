@@ -5,11 +5,11 @@ package cwh.NVR;
  */
 
 import cwh.NVR.play.PlayCallback;
-import cwh.utils.StringUtils;
+import cwh.utils.concurrent.ThreadUtils;
 import cwh.utils.log.VSLog;
+import cwh.utils.process.CmdExecutor;
+import cwh.utils.socket.SocketServer;
 import cwh.web.model.CommonDefine;
-
-import java.io.File;
 
 /**
  * Nvr相关操作都放在这里调用
@@ -59,22 +59,43 @@ public class NvrService {
                                int endYear, int endMon, int endDay,
                                int endHour, int endMin, int endSec,
                                String videoPath, PlayCallback playCallback) {
-        NVRNative.time2VideoPath(ip0, ip1,ip2, ip3, port, channel,
-                startYear, startMon, startDay,
-                startHour, startMin, startSec,
-                endYear, endMon, endDay,
-                endHour, endMin, endSec, videoPath,
-                playCallback);
+        CmdExecutor.wait(String.format("%s %d.%d.%d.%d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %s",
+                CommonDefine.NVR_MNG_PATH,
+                ip0, ip1, ip2, ip3, port, channel, startYear, startMon, startDay, startHour, startMin, startSec,
+                endYear, endMon, endDay, endHour, endMin, endSec, videoPath));
+        playCallback.onComplete(videoPath);
     }
 
-    public String getDevTime(String ip, String port) {
-
-        int[] iIps = StringUtils.str2Ips(ip);
-        int iPort = Integer.parseInt(port);
-        return NVRNative.getDevTime(iIps[0],iIps[1], iIps[2], iIps[3], iPort) + ".000";
+    public synchronized String getDevTime(String ip, String port) {
+//
+//        int[] iIps = StringUtils.str2Ips(ip);
+//        int iPort = Integer.parseInt(port);
+//        return NVRNative.getDevTime(iIps[0], iIps[1], iIps[2], iIps[3], iPort) + ".000";
+        final String[] nativeResult = new String[1];
+        ThreadUtils.runInBackGround(new Runnable() {
+            @Override
+            public void run() {
+                nativeResult[0] = SocketServer.listenPort(CommonDefine.NATIVE_PORT);
+            }
+        });
+        CmdExecutor.wait(String.format("%s %s %s", CommonDefine.NVR_MNG_PATH, ip, port));
+        VSLog.d(TAG, "device time: " + nativeResult[0]);
+        return nativeResult[0];
     }
 
     public static void main(String[] args) {
-        VSLog.d(TAG, NvrService.getInstance().getDevTime("125.216.231.168", "37777"));
+//        VSLog.d(TAG, NvrService.getInstance().getDevTime("125.216.231.164", "37777"));
+        ThreadUtils.runInBackGround(new Runnable() {
+            @Override
+            public void run() {
+                VSLog.d(TAG, "233");
+            }
+        });
+//        NvrService.getInstance().time2VideoPath(125, 216, 231, 164, 37777, 3, 2016, 4, 25, 9, 0, 0, 2016, 4, 25, 9, 0, 5, "/home/cwh/test.dav", new PlayCallback() {
+//            @Override
+//            public void onComplete(String filePath) {
+//                VSLog.d(TAG, "TEST");
+//            }
+//        });
     }
 }

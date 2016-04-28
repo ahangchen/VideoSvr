@@ -40,6 +40,10 @@ public class RealPlayRes {
         return convertProcess;
     }
 
+    public void setConvertProcess(Process newReal) {
+        convertProcess = newReal;
+    }
+
 //    public String getRealPlayFilePath() {
 //        return getRealPlayPath() + "/" + CommonDefine.REAL_PLAY_PATH + CommonDefine.M3U8;
 //    }

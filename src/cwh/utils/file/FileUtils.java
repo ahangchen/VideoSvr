@@ -33,6 +33,11 @@ public class FileUtils {
     public interface ReadLine {
         void onLine(String string, int lineIndex);
     }
+    public static String parentDirName(String path) {
+        String parentDir = new File(path).getParentFile().getParent();
+        return path.replace(parentDir + "/", "").replace("/t.m3u8", "");
+    }
+
 
     public static void readLine(String fileName, ReadLine readLine) {
         File file = new File(fileName);

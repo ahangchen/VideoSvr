@@ -5,8 +5,7 @@ TomcatId=$(ps -ef|grep tomcat|grep -v grep|grep -v ffmpeg|awk '{print $2}')
 StartTomcat=/home/cwh/software/tomcat/bin/startup.sh  
   
 # 日志输出  
-GetPageInfo=/dev/null  
-TomcatMonitorLog=/home/cwh/software/tomcat/logs/TomcatMonitor.log  
+TomcatMonitorLog=/home/cwh/software/tomcat/logs/TomcatMonitor.log
   
 Monitor()  
 {  

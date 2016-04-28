@@ -17,12 +17,21 @@ public class CommonDefine {
     public static String DEBUG_LIB_PATH = "/home/cwh/coding/VideoSvr/lib/libnvr.so";
     public static String POWER_LIB_PATH = "/home/cwh/software/tomcat/webapps/VideoSvr/lib/libnvr.so";
     public static String HADOOP_LIB_PATH = "/home/hadoop/software/tomcat/webapps/VideoSvr/lib/libnvr.so";
+
+    public static String DEBUG_NVR_MNG_PATH = "/home/cwh/coding/VideoSvr/lib/nvrmng";
+    public static String POWER_NVR_MNG_PATH = "/home/cwh/software/tomcat/webapps/VideoSvr/lib/nvrmng";
+
     public static String LIB_PATH =
             CommonDefine.DEBUG
                     ? DEBUG_LIB_PATH
                     : (CommonDefine.POWER
                     ? POWER_LIB_PATH
                     : HADOOP_LIB_PATH);
+
+    public static String NVR_MNG_PATH =
+            CommonDefine.DEBUG
+                    ? DEBUG_NVR_MNG_PATH
+                    : POWER_NVR_MNG_PATH;
 
     public static String DATA_PATH =
             CommonDefine.DEBUG
@@ -33,6 +42,9 @@ public class CommonDefine {
     public static String REAL_PLAY_DIR_PATH = "realplay";
     public static String PLAY_BACK_DIR_PATH = DATA_PATH + "/playback";
     public static String REAL_PLAY_PATH = "t";
+
+    //nvrmng 通信端口
+    public static int NATIVE_PORT = 8887;
 
     // device
     public static String USER = "admin";

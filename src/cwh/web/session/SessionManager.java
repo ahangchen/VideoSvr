@@ -7,6 +7,7 @@ import cwh.web.model.CommonDefine;
 import cwh.web.model.RequestState;
 import cwh.web.model.longtime.LongTimeRes;
 import cwh.web.model.playback.PlayBackRes;
+import cwh.web.model.realplay.AsyncRealPlay;
 import cwh.web.model.realplay.M3U8Mng;
 import cwh.web.model.realplay.RealPlayRes;
 
@@ -105,9 +106,9 @@ public class SessionManager {
                 for (RequestState requestState : sessionState.getRequestStates()) {
                     if (requestState.getRes() instanceof PlayBackRes) {
                         playBackClean((PlayBackRes) requestState.getRes(), sessionState.getSessionId());
-                    } else if (requestState.getRes() instanceof  RealPlayRes){
+                    } else if (requestState.getRes() instanceof RealPlayRes) {
                         realPlayClean((RealPlayRes) requestState.getRes(), sessionState.getSessionId());
-                    } else if (requestState.getRes() instanceof  LongTimeRes) {
+                    } else if (requestState.getRes() instanceof LongTimeRes) {
                         longTimeClean((LongTimeRes) requestState.getRes(), sessionState.getSessionId());
                     }
                 }
@@ -354,4 +355,5 @@ public class SessionManager {
             }
         }
     }
+
 }

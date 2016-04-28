@@ -39,10 +39,11 @@ public class SessionClean extends HttpServlet {
             ServletHelper.responseString(response, ServletHelper.genErrCode(1, "illegal sid:" + sid));
             return;
         }
+        ServletHelper.responseString(response, ServletHelper.genErrCode(0, "quick close"));
         if (SessionManager.getInstance().sessionClean(sid)) {
-            ServletHelper.responseString(response, ServletHelper.genErrCode(0, "Session " + sid + "cleaned"));
+            VSLog.d(TAG, ServletHelper.genErrCode(0, "Session " + sid + "cleaned"));
         } else {
-            ServletHelper.responseString(response, ServletHelper.genErrCode(4, "no such session:" + sid));
+            VSLog.d(TAG, ServletHelper.genErrCode(4, "no such session:" + sid));
         }
     }
 }
