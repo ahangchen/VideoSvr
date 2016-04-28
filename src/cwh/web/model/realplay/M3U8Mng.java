@@ -4,6 +4,8 @@ import cwh.utils.concurrent.ThreadUtils;
 import cwh.utils.file.FileUtils;
 import cwh.utils.log.VSLog;
 import cwh.web.model.CommonDefine;
+import cwh.web.model.RequestState;
+import cwh.web.session.SessionManager;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -63,6 +65,47 @@ public class M3U8Mng {
         }
         //读不到非#开头的行，-1代表全部保留
         return -1;
+    }
+
+    public static void validateM3U8(String m3u8Dir, Runnable onError, boolean[] stopValidate) {
+        int lastNum = 0;
+        int curNum;
+        int invalidCount = 0;
+        while (!stopValidate[0]) {
+            curNum = curTSNum(m3u8Dir);
+            if (lastNum == curNum) {
+                invalidCount++;
+            }
+            lastNum = curNum;
+            if (invalidCount > 10) {
+                VSLog.d(TAG, "VALIDATE: cur:" + curNum + "; last:" + lastNum);
+                onError.run();
+                invalidCount = 0;
+            }
+            ThreadUtils.sleep(2000);
+        }
+    }
+
+    public static void watchM3U8(final String m3u8Dir, final boolean[] stopValidate) {
+        validateM3U8(m3u8Dir, new Runnable() {
+            @Override
+            public void run() {
+                VSLog.e(TAG, "FFMEPG ERROR");
+                replaceRealPlay(realPlayDir2Path(m3u8Dir));
+            }
+        }, stopValidate);
+    }
+
+    public static void replaceRealPlay(String videoPath) {
+        RequestState requestState = SessionManager.getInstance().isCached(videoPath);
+        String[] params = FileUtils.parentDirName(videoPath).split("-");
+        String ip = params[0] + "." + params[1] + "." + params[2] + "." + params[3];
+        String port = params[4];
+        String channel = params[5];
+        VSLog.d(TAG, "REPLACE realPlay: ip:" + ip + ", port: " + port + "; channel: " + channel);
+        if (requestState != null) {
+            ((RealPlayRes) requestState.getRes()).setConvertProcess(AsyncRealPlay.sysRealPlay(ip, port, channel));
+        }
     }
 
     public static boolean waitForM3U8(String m3u8Path) {
@@ -166,6 +209,5 @@ public class M3U8Mng {
 //        final String realPlayVideoPath = M3U8Mng.realPlayPath(ip, port, channel);
 //        // 在这里发起转换，然后把进程交给Session，等待前端传回终止信息或超时以终止这个进程
 //        final Process convert = AsyncRealPlay.sysRealPlay(ip, port, channel, realPlayVideoPath);
-
     }
 }

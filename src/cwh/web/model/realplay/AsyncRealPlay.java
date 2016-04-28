@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 public class AsyncRealPlay implements Runnable {
     AsyncContext context;
     public static String TAG = "AsyncRealPlay";
+
     public AsyncRealPlay(AsyncContext context) {
         this.context = context;
     }
@@ -56,11 +57,17 @@ public class AsyncRealPlay implements Runnable {
                 // 在这里发起转换，然后把进程交给Session，等待前端传回终止信息或超时以终止这个进程
                 // 长期持有这两个final不知道会不会有东西泄露
                 Process convert = sysRealPlay(ip, port, channel, realPlayVideoPath);
-                RealPlayRes realPlayRes = new RealPlayRes(nvrIP, nvrPort, realPlayVideoPath, convert, stopClean);
+                final RealPlayRes realPlayRes = new RealPlayRes(nvrIP, nvrPort, realPlayVideoPath, convert, stopClean);
                 // 等m3u8生成
                 boolean m3u8Ret = M3U8Mng.waitForM3U8(realPlayVideoPath);
                 if (m3u8Ret && FileUtils.isExist(realPlayVideoPath)) {
                     VSLog.d(TAG, "touch session " + sessionState.getSessionId() + " when read video");
+                    ThreadUtils.runInBackGround(new Runnable() {
+                        @Override
+                        public void run() {
+                            M3U8Mng.watchM3U8(M3U8Mng.realPlayPath2Dir(realPlayVideoPath), realPlayRes.getStopClean());
+                        }
+                    });
                     SessionManager.getInstance().touch(sessionState.getSessionId());
                     ServletHelper.responseString(context.getResponse(), realPlayRes.toJson(sessionState.getSessionId()));
                     context.complete();
@@ -102,7 +109,8 @@ public class AsyncRealPlay implements Runnable {
         return CmdExecutor.run(String.format(CommonDefine.FFMPEG_CONVERT, ip, port, channel, realPlayVideoPath));
     }
 
-    public static void main(String[]args) {
+
+    public static void main(String[] args) {
         Process proc = sysRealPlay("222.201.137.81", "35557", "1");
 //        proc.destroy();
         int i = 20;
@@ -115,4 +123,5 @@ public class AsyncRealPlay implements Runnable {
             }
         }
     }
+
 }
