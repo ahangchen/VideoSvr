@@ -73,7 +73,7 @@ public class CmdExecutor {
                 onLine.onLine(line);
             }
             int exitVal = proc.waitFor();
-            VSLog.d(TAG, "Exit value: "+ exitVal+ "command: " + command + " complete");
+            VSLog.d(TAG, "Exit value: "+ exitVal+ "; command: " + command + " complete");
         } catch (Throwable t) {
             t.printStackTrace();
         }

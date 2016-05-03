@@ -68,11 +68,15 @@ public class AsyncQueryVideo implements Runnable {
                         new PlayCallback() {
                             @Override
                             public void onComplete(String filePath) {
-                                CmdExecutor.wait(String.format("ffmpeg -n -i %s -vcodec libx264 -s 640x360 %s",
-                                        filePath, filePath.replace(CommonDefine.TMP_SUFF, CommonDefine.MP4)));
+                                int retryCnt = 4;
                                 playBackPath[0] = filePath.replace(CommonDefine.TMP_SUFF, CommonDefine.MP4);
+                                while (retryCnt > 0 && !FileUtils.isExist(playBackPath[0])) {
+                                    CmdExecutor.wait(String.format("ffmpeg -n -i %s -vcodec libx264 -s 640x360 %s",
+                                            filePath, playBackPath[0]));
 //                                        .replace(CommonDefine.PLAY_BACK_DIR_PATH + File.separator, "");
-                                FileUtils.rm(filePath);
+                                    FileUtils.rm(filePath);
+                                    retryCnt--; //4次重试，一旦生成成功则不重试
+                                }
                                 waitEnd[0] = true;
                             }
                         });
