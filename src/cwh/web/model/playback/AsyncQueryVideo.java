@@ -71,12 +71,15 @@ public class AsyncQueryVideo implements Runnable {
                                 int retryCnt = 4;
                                 playBackPath[0] = filePath.replace(CommonDefine.TMP_SUFF, CommonDefine.MP4);
                                 while (retryCnt > 0 && !FileUtils.isExist(playBackPath[0])) {
+                                    if (retryCnt < 4) {
+                                        VSLog.d(TAG, "RETRY " + (4 - retryCnt) + " FOR " + playBackPath[0]);
+                                    }
                                     CmdExecutor.wait(String.format("ffmpeg -n -i %s -vcodec libx264 -s 640x360 %s",
                                             filePath, playBackPath[0]));
 //                                        .replace(CommonDefine.PLAY_BACK_DIR_PATH + File.separator, "");
-                                    FileUtils.rm(filePath);
                                     retryCnt--; //4次重试，一旦生成成功则不重试
                                 }
+                                FileUtils.rm(filePath);
                                 waitEnd[0] = true;
                             }
                         });
