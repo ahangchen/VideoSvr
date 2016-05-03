@@ -78,6 +78,7 @@ public class NvrService {
                 nativeResult[0] = SocketServer.listenPort(CommonDefine.NATIVE_PORT);
             }
         });
+        ThreadUtils.sleep(200); // 防止server还未开启
         CmdExecutor.wait(String.format("%s %s %s", CommonDefine.NVR_MNG_PATH, ip, port));
         VSLog.d(TAG, "device time: " + nativeResult[0]);
         return nativeResult[0];

@@ -104,7 +104,9 @@ public class M3U8Mng {
         String channel = params[5];
         VSLog.d(TAG, "REPLACE realPlay: ip:" + ip + ", port: " + port + "; channel: " + channel);
         if (requestState != null) {
-            ((RealPlayRes) requestState.getRes()).setConvertProcess(AsyncRealPlay.sysRealPlay(ip, port, channel));
+            RealPlayRes realPlayRes = (RealPlayRes) requestState.getRes();
+            realPlayRes.getConvertProcess().destroy(); // 防止ffmpeg僵死不死
+            realPlayRes.setConvertProcess(AsyncRealPlay.sysRealPlay(ip, port, channel));
         }
     }
 

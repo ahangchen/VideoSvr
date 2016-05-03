@@ -105,7 +105,6 @@ public class AsyncRealPlay implements Runnable {
     // 拿到创建出来的线程
     public static Process sysRealPlay(String ip, String port, String channel, String realPlayVideoPath) {
         // ffmpeg -i rtsp://admin:admin@192.168.1.108:554/cam/realmonitor?channel=1&subtype=0 -vcodec copy -f hls out.m3u8
-        VSLog.d(TAG, "ffmpeg to :" + realPlayVideoPath);
         return CmdExecutor.run(String.format(CommonDefine.FFMPEG_CONVERT, ip, port, channel, realPlayVideoPath));
     }
 

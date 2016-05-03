@@ -49,7 +49,7 @@ public class CmdExecutor {
                 VSLog.d(TAG, line);
             }
             int exitVal = proc.waitFor();
-            VSLog.d(TAG, "Process exitValue: " + exitVal);
+            VSLog.d(TAG, "Exit value: "+ exitVal+ "command: " + command + " complete");
         } catch (Throwable t) {
             t.printStackTrace();
         }
@@ -73,7 +73,7 @@ public class CmdExecutor {
                 onLine.onLine(line);
             }
             int exitVal = proc.waitFor();
-            VSLog.d(TAG, "Process exitValue: " + exitVal);
+            VSLog.d(TAG, "Exit value: "+ exitVal+ "command: " + command + " complete");
         } catch (Throwable t) {
             t.printStackTrace();
         }
@@ -86,7 +86,7 @@ public class CmdExecutor {
             Runtime runtime = Runtime.getRuntime();
             VSLog.d(TAG, command);
             proc = runtime.exec(command);
-            VSLog.d(TAG, "command: " + command + "complete");
+            VSLog.d(TAG, "call: " + command + " complete");
             if (LOG_TOGGLE) {
                 InputStream err = proc.getErrorStream();
                 InputStreamReader isr = new InputStreamReader(err);
