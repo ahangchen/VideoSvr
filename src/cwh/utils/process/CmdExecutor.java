@@ -38,6 +38,7 @@ public class CmdExecutor {
         try {
             Runtime runtime = Runtime.getRuntime();
             VSLog.d(TAG, command);
+            long curTime = System.currentTimeMillis();
             proc = runtime.exec(command);
             InputStream err = proc.getErrorStream();
             InputStreamReader isr = new InputStreamReader(err);
@@ -49,7 +50,8 @@ public class CmdExecutor {
                 VSLog.d(TAG, line);
             }
             int exitVal = proc.waitFor();
-            VSLog.d(TAG, "Exit value: "+ exitVal+ "command: " + command + " complete");
+            VSLog.d(TAG, "Exit value: " + exitVal + ", time: " + (System.currentTimeMillis() - curTime)
+                    + "ms, command: " + command + " complete");
         } catch (Throwable t) {
             t.printStackTrace();
         }
@@ -73,7 +75,7 @@ public class CmdExecutor {
                 onLine.onLine(line);
             }
             int exitVal = proc.waitFor();
-            VSLog.d(TAG, "Exit value: "+ exitVal+ "; command: " + command + " complete");
+            VSLog.d(TAG, "Exit value: " + exitVal + "; command: " + command + " complete");
         } catch (Throwable t) {
             t.printStackTrace();
         }
