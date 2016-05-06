@@ -70,16 +70,20 @@ public class AsyncQueryVideo implements Runnable {
                             public void onComplete(String filePath) {
                                 int retryCnt = 4;
                                 playBackPath[0] = filePath.replace(CommonDefine.TMP_SUFF, CommonDefine.MP4);
-                                while (retryCnt > 0 && !FileUtils.isExist(playBackPath[0])) {
-                                    if (retryCnt < 4) {
-                                        VSLog.d(TAG, "RETRY " + (4 - retryCnt) + " FOR " + playBackPath[0]);
-                                    }
-                                    CmdExecutor.wait(String.format("ffmpeg -n -i %s -vcodec libx264 -s 640x360 %s",
-                                            filePath, playBackPath[0]));
+                                if (FileUtils.isExist(filePath)) {
+                                    while (retryCnt > 0 && !FileUtils.isExist(playBackPath[0])) {
+                                        if (retryCnt < 4) {
+                                            VSLog.d(TAG, "RETRY " + (4 - retryCnt) + " FOR " + playBackPath[0]);
+                                        }
+                                        CmdExecutor.wait(String.format("ffmpeg -n -i %s -vcodec libx264 -s 640x360 %s",
+                                                filePath, playBackPath[0]));
 //                                        .replace(CommonDefine.PLAY_BACK_DIR_PATH + File.separator, "");
-                                    retryCnt--; //4次重试，一旦生成成功则不重试
+                                        retryCnt--; //4次重试，一旦生成成功则不重试
+                                    }
+                                    FileUtils.rm(filePath);
+                                } else {
+                                    VSLog.e(TAG, "GET DAV " + filePath + " FAILED");
                                 }
-                                FileUtils.rm(filePath);
                                 waitEnd[0] = true;
                             }
                         });
