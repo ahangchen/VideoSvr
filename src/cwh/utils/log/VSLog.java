@@ -60,13 +60,13 @@ public class VSLog {
 
 
     private static String format(String tag, String log, String type) {
-        return DateUtils.formatCurTime() + " "
+        return DateUtils.formatCurMillTime() + " "
                 + type + " : " + "[" + tag + "]\t\t"
                 + log + "\n";
     }
 
     private static String format(String log, String type) {
-        return "          " + DateUtils.formatCurTime() + " "
+        return "          " + DateUtils.formatCurMillTime() + " "
                 + type
                 + " : " + log + "\n";
     }

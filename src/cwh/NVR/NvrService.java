@@ -6,6 +6,7 @@ package cwh.NVR;
 
 import cwh.NVR.play.PlayCallback;
 import cwh.utils.concurrent.ThreadUtils;
+import cwh.utils.date.DateUtils;
 import cwh.utils.log.VSLog;
 import cwh.utils.process.CmdExecutor;
 import cwh.utils.socket.SocketServer;
@@ -106,15 +107,22 @@ public class NvrService {
 //        int iPort = Integer.parseInt(port);
 //        return NVRNative.getDevTime(iIps[0], iIps[1], iIps[2], iIps[3], iPort) + ".000";
         final String[] nativeResult = new String[1];
-        ThreadUtils.runInBackGround(new Runnable() {
-            @Override
-            public void run() {
-                nativeResult[0] = SocketServer.listenPort(CommonDefine.NATIVE_PORT);
-            }
-        });
-        ThreadUtils.sleep(200); // 防止server还未开启
-        CmdExecutor.wait(String.format("%s %s %s", CommonDefine.NVR_MNG_PATH, ip, port));
-        VSLog.d(TAG, "device time: " + nativeResult[0]);
+        int retryCnt = 3;
+        while(retryCnt > 0 && nativeResult[0] != null) {
+            retryCnt --;
+            ThreadUtils.runInBackGround(new Runnable() {
+                @Override
+                public void run() {
+                    nativeResult[0] = SocketServer.listenPort(CommonDefine.NATIVE_PORT);
+                }
+            });
+            ThreadUtils.sleep(200); // 防止server还未开启
+            CmdExecutor.wait(String.format("%s %s %s", CommonDefine.NVR_MNG_PATH, ip, port));
+            VSLog.d(TAG, "device time: " + nativeResult[0]);
+        }
+        if (nativeResult[0] == null) {
+            nativeResult[0] = DateUtils.formatCurDateTime();
+        }
         return nativeResult[0];
     }
 

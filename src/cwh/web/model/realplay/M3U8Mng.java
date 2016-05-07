@@ -191,7 +191,7 @@ public class M3U8Mng {
     public static String realPlayDir(String ip, String port, String channel) {
         // 目录名只与摄像头相关
         String curDirPath = ip.replace(".", "-") + "-" + port + "-" + channel /* + "-"
-                + DateUtils.formatCurDate()+"-"+ DateUtils.formatCurTime().replace(":","-")*/;
+                + DateUtils.formatCurDate()+"-"+ DateUtils.formatCurMillTime().replace(":","-")*/;
         File curDir = new File(CommonDefine.DATA_PATH + "/" + CommonDefine.REAL_PLAY_DIR_PATH + "/" + curDirPath);
         curDir.mkdir();
         return CommonDefine.DATA_PATH + "/" + CommonDefine.REAL_PLAY_DIR_PATH + "/" + curDirPath;
